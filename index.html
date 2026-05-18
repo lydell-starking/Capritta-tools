@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damage & Return Action Tree — Capritta Fine Appliance</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#F5F3EE;--bg2:#EDEAE3;--bg3:#E4E0D7;--ink:#1A1916;--ink2:#4A4843;--ink3:#8A8680;
+  --border:#D5D1C8;--green:#1C6B4A;--green-bg:#EAF4EF;--amber:#8B5E00;--amber-bg:#FDF3DC;
+  --red:#8B2500;--red-bg:#FAEDE8;--blue:#1A4B8B;--blue-bg:#EBF1FA;--accent:#C4502A;
+  --purple:#5B2A8B;--purple-bg:#F0EBF9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.header{background:var(--ink);color:var(--bg);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:14px;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+.header-sub{font-family:'DM Mono',monospace;font-size:11px;color:#888;margin-top:2px}
+.container{max-width:680px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3);margin-bottom:1.75rem;flex-wrap:wrap}
+.breadcrumb .sep{color:var(--border)}
+.breadcrumb .current{color:var(--ink);font-weight:500}
+.breadcrumb span{cursor:pointer}
+.breadcrumb span:hover{color:var(--ink)}
+.step-card{background:white;border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.step-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:.6rem}
+.step-q{font-size:22px;font-weight:600;line-height:1.2;margin-bottom:.6rem;color:var(--ink)}
+.step-hint{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:1.5rem}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s;width:100%}
+.opt-btn:hover{background:white;border-color:var(--ink2);transform:translateX(2px)}
+.opt-btn .opt-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--bg2)}
+.opt-btn .opt-text{flex:1}
+.opt-btn .opt-title{font-size:14px;font-weight:500;color:var(--ink);line-height:1.3}
+.opt-btn .opt-desc{font-size:12px;color:var(--ink3);margin-top:2px;line-height:1.4}
+.opt-btn.urgent{border-color:#E8A87C;background:#FEF7F3}
+.opt-btn.urgent:hover{border-color:var(--accent)}
+.opt-btn.urgent .opt-icon{background:#FAEDE8}
+.opt-btn.good{border-color:#8DC9AA;background:var(--green-bg)}
+.opt-btn.good:hover{border-color:var(--green)}
+.opt-btn.good .opt-icon{background:#C8E8D8}
+.vendor-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.vendor-btn{padding:.7rem .85rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s}
+.vendor-btn:hover{background:white;border-color:var(--ink2)}
+.vendor-btn .vn{font-size:13px;font-weight:500;color:var(--ink)}
+.vendor-btn .vb{font-size:11px;color:var(--ink3);margin-top:1px}
+.info-card{border-radius:10px;padding:1rem 1.1rem;margin-bottom:.65rem;border:1px solid var(--border);background:white}
+.info-card.red{border-left:3px solid var(--accent);background:var(--red-bg)}
+.info-card.amber{border-left:3px solid #D4950A;background:var(--amber-bg)}
+.info-card.green{border-left:3px solid var(--green);background:var(--green-bg)}
+.info-card.blue{border-left:3px solid var(--blue);background:var(--blue-bg)}
+.info-card.purple{border-left:3px solid var(--purple);background:var(--purple-bg)}
+.info-card.neutral{border-left:3px solid var(--ink3)}
+.ic-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.45rem;font-weight:500}
+.red .ic-label{color:var(--red)}.amber .ic-label{color:var(--amber)}.green .ic-label{color:var(--green)}
+.blue .ic-label{color:var(--blue)}.purple .ic-label{color:var(--purple)}.neutral .ic-label{color:var(--ink3)}
+.ic-body{font-size:13px;line-height:1.65;color:var(--ink)}
+.steps-list{list-style:none;padding:0;counter-reset:step-counter}
+.steps-list li{padding:.35rem 0 .35rem 1.6rem;position:relative;font-size:13px;line-height:1.5;color:var(--ink);border-bottom:.5px solid var(--border)}
+.steps-list li:last-child{border-bottom:none}
+.steps-list li::before{content:counter(step-counter);counter-increment:step-counter;position:absolute;left:0;top:.38rem;width:18px;height:18px;background:var(--ink);color:white;border-radius:50%;font-size:10px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;font-weight:500}
+.steps-list li.warn::before{background:var(--accent)}
+.steps-list li.owner{font-weight:500}
+.owner-tag{font-size:10px;font-family:'DM Mono',monospace;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--ink2);margin-left:5px;vertical-align:middle}
+.responsible{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace;margin-bottom:.65rem;flex-wrap:wrap}
+.responsible .r-tag{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--ink2);font-size:11px}
+.contact-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;font-size:12px;margin-top:.5rem;line-height:1.6}
+.contact-box .label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);font-family:'DM Mono',monospace;margin-bottom:.2rem}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:.4rem 0;margin-top:.5rem;transition:color .15s}
+.back-btn:hover{color:var(--ink)}
+.reset-btn{display:block;width:100%;padding:.75rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink2);text-align:center;margin-top:.75rem;transition:all .15s}
+.reset-btn:hover{background:white;color:var(--ink)}
+.divider{height:1px;background:var(--border);margin:1rem 0}
+.doc-box{background:#FFFBF0;border:1px solid #E8D88A;border-radius:10px;padding:1rem 1.1rem;margin-bottom:.65rem}
+.doc-box .ic-label{color:#7A6500}
+.escalation-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
+.e-node{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:500;color:var(--ink)}
+.e-arrow{color:var(--ink3);font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header-title">Damage & Return Action Tree</div>
+    <div class="header-sub">Capritta Fine Appliance — Internal Process + All Vendors</div>
+  </div>
+  <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666">v2.0 · May 2026</div>
+</div>
+<div class="container">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div id="app"></div>
+</div>
+
+<script>
+const VENDORS=[
+  {id:'samsung',n:'Samsung',b:'Samsung',
+   del:{act:'either',win:'Immediately',contact:'M. Moore | m.moore@sea.samsung.com',
+     steps:['Note damage on BOL — refuse OR accept and document immediately','Photograph all 4 sides of carton before truck leaves','Send photos to M. Moore ASAP','Out-of-policy: Moore writes a PUMI — provide all PO/DO/SO numbers, cost, photos']},
+   con:{win:'Contact rep ASAP — no formal window confirmed',contact:'M. Moore | m.moore@sea.samsung.com',
+     steps:['Document model/serial number and all PO/DO/SO numbers','Photograph all damage clearly','Contact M. Moore directly — all claims are rep-managed','Out of policy = PUMI required'],al:false},
+   ra:{how:'Contact M. Moore directly — no portal',fee:'Rep-managed',fr:'TBD'},sc:'Contact M. Moore — PUMI process'},
+  {id:'bsh',n:'BSH Group',b:'Bosch, Thermador',
+   del:{act:'accept',win:'72 hours',contact:'Patti Plavnick | Patricia.plavnick@bshg.com | 407-721-8043',
+     steps:['ALWAYS ACCEPT — do not refuse','Note serial# and SKU on freight bill with damage details','Photograph all damage','Contact Patti within 72 hours','Request RA in One Portal with signed POD and damage photos']},
+   con:{win:'90 days from receipt',contact:'Patti Plavnick | One Portal',
+     steps:['Photograph damage and all sides of carton','Significant damage = full credit, no restock fee (submit RA via One Portal)','Minor damage = up to 20% allowance or parts repair — discuss with Patti','RA requests after 90 days require Patti escalation'],al:true,alNote:'Up to 20% for minor damage'},
+   ra:{how:'One Portal (Patti can submit on your behalf)',fee:'25% max $500/unit',fr:'Dealer pays'},sc:'Written BSH approval required. Appliance Scrap Warrant form. Contact Patti.'},
+  {id:'subzero',n:'Sub-Zero',b:'Sub-Zero, Wolf, Cove, Best',
+   del:{act:'accept',win:'48 hours',contact:'Robert Luyckx | Robert.Luyckx@subzero.com | 407.267.7957',
+     steps:['ALWAYS RECEIVE — never refuse','Note damage on BOL','Photograph all 4 sides','Initiate RA in ComNet within 48 hours','Within 48hrs = no fee | After 48hrs = 25% restock']},
+   con:{win:'Within 90 days = 0% restock | After 90 days = 25%',contact:'Robert Luyckx | ComNet portal',
+     steps:['Photograph all sides of carton and product','Contact Robert Luyckx','Initiate RA in ComNet','TSM approves → VP Sales sign-off','Pickup within 48hrs of approval | Open RAs cancelled after 4 weeks'],al:false},
+   ra:{how:'ComNet portal',fee:'0% within 90 days | 25% after | 105% dealer-caused',fr:'Sub-Zero arranges'},sc:'Contact Robert Luyckx'},
+  {id:'lg',n:'LG',b:'LG',
+   del:{act:'either',win:'ASAP — 90-day hard cutoff from dock',contact:'Trip Malopsy | Trip.malopsy@lge.com | builder.orderentry@lgcns.com | 800-377-8204',
+     steps:['If refused: LG auto-processes credit and rebooks','If accepted: use Concealed Damage form immediately','Submit to builder.orderentry@lgcns.com','Unit must be boxed and palletized for pickup','⚠ No damage or return accepted beyond 90 days from dock date']},
+   con:{win:'90 days from dock date — HARD CUTOFF',contact:'builder.orderentry@lgcns.com | 800-377-8204',
+     steps:['Submit Concealed Damage Return Request form (on file)','Email to builder.orderentry@lgcns.com','LG arranges pickup — must be boxed and palletized','Credit issued once confirmed at LG warehouse','⚠ Absolute 90-day cutoff — no exceptions'],al:false},
+   ra:{how:'Forms only — email builder.orderentry@lgcns.com',fee:'0% damage | 15% good stock',fr:'LG handles damage | Dealer pays good stock'},sc:'Contact Trip Malopsy'},
+  {id:'whirlpool',n:'Whirlpool',b:'Whirlpool, Maytag, Amana, Jenn-Air, KitchenAid',
+   del:{act:'either',win:'30 days',contact:'Jacquelyn Ligon | jacquelyn_d_ligon@whirlpool.com | 407.951.9052 | nar_return_requests@whirlpool.com | 800-331-4921 opt 2',
+     steps:['Document damage on BOL if accepting','Photograph damage','Contact nar_return_requests@whirlpool.com or 800-331-4921 option 2','For shortages/overages: nar_returns_center@whirlpool.com','Portal: WhirlpoolPortal.com 24/7','Escalation: Jacquelyn Ligon']},
+   con:{win:'30 days from invoice (based on prior claim history)',contact:'nar_return_requests@whirlpool.com | 800-331-4921 opt 2',
+     steps:['Contact nar_return_requests@whirlpool.com with model/serial/invoice','Photograph damage','ASM may offer allowance in lieu of return','Submit RA via WhirlpoolPortal.com'],al:true,alNote:'ASM may offer allowance — contact Jacquelyn'},
+   ra:{how:'WhirlpoolPortal.com or nar_return_requests@whirlpool.com',fee:'Contact Jacquelyn — written policy pending',fr:'Dealer pays'},sc:'Contact Jacquelyn | Andrew Kalter (Field Service) andrew_kalter@whirlpool.com 678-409-6679'},
+  {id:'almo',n:'Almo',b:'Broan, Frigidaire, Forno, Crossover, TCL, Zephyr, Brisas, Liebherr',
+   del:{act:'refuse',win:'30 days',contact:'SE-DealerCCC@almo.com | 1-800-253-0370 | Mike Impellizeri 386-627-9174 | Ben Walker 407-304-7839',
+     steps:['REFUSE any product that may be damaged','If accepted: photograph all 4 sides','Contact SE-DealerCCC@almo.com within 30 days','Provide reason, model/serial, and PO or Sales Order #','⚠ No returns on special orders or installed products']},
+   con:{win:'30 days from receipt',contact:'SE-DealerCCC@almo.com | 1-800-253-0370',
+     steps:['SE-DealerCCC@almo.com for ALL Almo brands — one contact','Provide model/serial and PO/Sales Order #','No restocking fee within first 10 days','After 10 days: 30% restock + dealer pays freight'],al:false},
+   ra:{how:'Email SE-DealerCCC@almo.com or call rep — no portal',fee:'0% within 10 days | 30% after',fr:'Dealer pays'},sc:'Contact SE-DealerCCC@almo.com'},
+  {id:'ge',n:'GE',b:'GE, GE Profile, Café, Hotpoint, Haier',
+   del:{act:'either',win:'30 days free | up to 90 days with restock fee',contact:'Troy Adams | Troy.Adams@geappliances.com | Tim Willibey (Monogram) 813-599-1827',
+     steps:['Document damage on BOL with model# AND serial# — carrier must sign','Photograph damage AND legible serial/model numbers','BOL properly noted within 30 days = 0% restock','After 30 days (up to 90) = 10% restock','No BOL notation = 15% restock up to 90 days','⚠ No returns after 90 days — Troy willing to go out of policy if both parties agree']},
+   con:{win:'Up to 90 days — BOL notation determines fee',contact:'Troy Adams | Troy.Adams@geappliances.com',
+     steps:['Photograph damage and legible serial/model number','Contact Troy Adams — may offer allowance','Open carton / no BOL notation = 15% restock up to 90 days','For scrap: ASM approval required before disposal','Scrap photos: damage + removed serial plate + severed power cord'],al:true,alNote:'ASM will offer allowance in lieu of return when possible'},
+   ra:{how:'Contact Troy Adams | GECustomerNet portal',fee:'0-15% depending on BOL and timing',fr:'Dealer pays'},sc:'Scrap at dealer location only. Remove serial plate. Scrap Form + ASM sign-off. Mail plate to ASM.'},
+  {id:'dacor',n:'Dacor',b:'Dacor',
+   del:{act:'refuse',win:'1 business day if accepted',contact:'M. Moore | Dacor.Concierge@sea.samsung.com | CBDReturns@sea.samsung.com',
+     steps:['MUST REFUSE — BOL must note damage','Clean POD = claim void entirely','If accepted with noted POD: notify SEA in writing within 1 business day or claim is void','Photograph box and product with matching serial numbers','60-day hard cutoff from SEA invoice date for all RA requests']},
+   con:{win:'60 days from SEA invoice — hard cutoff',contact:'Dacor.Concierge@sea.samsung.com',
+     steps:['Submit to Dacor.Concierge@sea.samsung.com — service attempted first','Parts available = repair scheduled | No parts = escalates to RMA','RA approved = product ready for pickup within 21 days or RA voided','Photos: product damage + label | box damage + POD notation'],al:false},
+   ra:{how:'Dacor.Concierge@sea.samsung.com | A-Stock: CBDReturns@sea.samsung.com',fee:'0% damage | 25% A-stock',fr:'Samsung Logistics handles and pays'},sc:'Contact M. Moore — Samsung PUMI process'},
+  {id:'fp',n:'F&P',b:'Fisher & Paykel, DCS',
+   del:{act:'refuse',win:'90 days if accepted',contact:'Leslie Egan | Leslie.Egan@fisherpaykel.com | RA Portal: fs30.formsite.com/fisherpaykel/APR-request',
+     steps:['Do NOT accept if visibly damaged — have driver note on BOL and sign','If accepted: report immediately via RA portal','Photos: product + carton + matching serial numbers + signed POD','F&P reviews within 3 working days','Replacement must be reordered once RA approved']},
+   con:{win:'90 days from delivery',contact:'Leslie Egan | RA Portal: fs30.formsite.com/fisherpaykel/APR-request',
+     steps:['Submit via RA portal with photos: damage + serial tag + all 4 carton sides','F&P rep inspection required or photos if in-person not possible','Preferred resolution: damage allowance 5-20% based on severity','Full return at F&P discretion','⚠ Cartons must be free of marks or writing — packaging fees apply'],al:true,alNote:'5% parts/door | 10% minor | 15% medium | 20% major'},
+   ra:{how:'fs30.formsite.com/fisherpaykel/APR-request',fee:'10% restock',fr:'Dealer pays | Return within 7 days of RA approval'},sc:'Contact Leslie Egan | 1-888-936-7872'},
+  {id:'sea',n:'SEA',b:'Elica, Ilve, Fire Magic',
+   del:{act:'refuse',win:'0-90 days concealed after refusal',contact:'returns@seadistributing.com | Rhett Reynolds 239-257-8486',
+     steps:['MUST REFUSE — claims on accepted visible damage may be denied','Document refusal on BOL','Submit via portal ONLY: seadistributing.com → Dealer Resources → Dealer Reserved Area','Email claims not processed | One unit per submission']},
+   con:{win:'0-90 days = 100% | 91-180 days = 50% | Over 180 days = denied',contact:'returns@seadistributing.com | seadistributing.com portal',
+     steps:['Portal: seadistributing.com → Dealer Resources → Dealer Reserved Area','One unit per submission — no combining','Upload: product photos, packaging photos, label (SKU+serial), invoice, damage description','Processing: 15 business days','Installed products: claims may be denied','Post-install mechanical = contact Rhett Reynolds directly'],al:false},
+   ra:{how:'Portal only — seadistributing.com',fee:'0% within 90 days | 50% at 91-180 days',fr:'SEA handles'},sc:'Contact Rhett Reynolds 239-257-8486'},
+  {id:'composition',n:'Composition',b:'Scotsman, Tradewind, Viking, La Cornue, AGA, Lynx',
+   del:{act:'either',win:'LTL: refuse or 5 calendar days | Dedicated carrier: accept + document',contact:'R. Cabana | rcabana@middlebyresidential.com | customercare@middlebyresidential.com | 888-845-4641',
+     steps:['⚠ CARRIER TYPE determines your path entirely','LTL with visible damage: REFUSE immediately, note on POD, photos = no charges','LTL visible damage within 5 calendar days: return with 25% restock | After 5 days = not accepted','Dedicated carrier: Accept, note on POD, contact Middleby for RMA, photos required','Custom colors/finishes: non-cancellable, non-returnable']},
+   con:{win:'Cosmetic: field repair | Unrepairable <90 days = 0% | >90 days = 25%',contact:'customercare@middlebyresidential.com | 888-845-4641 | Escalations: escalations@middlebyresidential.com',
+     steps:['Concealed cosmetic: field repair only — not returnable','Concealed unrepairable within 90 days: 0% restock','Concealed unrepairable after 90 days: 25% restock','Units older than 365 days: NO return','Dealer pays return freight','Escalations: escalations@middlebyresidential.com — 24hr response'],al:false},
+   ra:{how:'Contact R. Cabana | customercare@middlebyresidential.com',fee:'0% <90 days unrepairable | 25% after 90 days | 35% 90-365 days',fr:'Dealer pays'},sc:'Contact R. Cabana'},
+  {id:'true',n:'True',b:'True, Caliber',
+   del:{act:'refuse',win:'30 days for RA',contact:'Jackie Aller | jaller@truemfg.com | 888.616.8783 | TrueCaliberCS@truemfg.com',
+     steps:['Inspect BEFORE signing freight bill','VISIBLE DAMAGE: Do NOT accept','If accepted with visible damage: note on freight bill, get driver signature','⚠ If you accept with visible damage, True is out — claim is you vs. carrier only','Keep all crating and cartons for inspection']},
+   con:{win:'Notify carrier within 24 hours | RA request within 30 days',contact:'Jackie Aller | jaller@truemfg.com | TrueCaliberCS@truemfg.com',
+     steps:['Concealed damage: notify carrier within 24 hours by phone and in writing','Request carrier sends agent for inspection report','Keep ALL crating and cartons — do not discard','RA: prior written approval from True within 30 days','Original crating, inspected by True factory sales rep required','25% restock + dealer pays freight prepaid'],al:false},
+   ra:{how:'Contact Jackie Aller for written approval | TrueCaliberCS@truemfg.com',fee:'25% restock',fr:'Dealer pays — prepaid'},sc:'Contact Jackie Aller | re-crate costs deducted from net credit'},
+  {id:'pinnacle',n:'Pinnacle',b:'Azure, Marvel, Capital, Falmec, Fulgor Milano, Vent A Hood, Coyote, Asko, Alfresco, Artisan, U-Line',
+   del:{act:'either',win:'48 hours to inspect if accepted | 12 days concealed',contact:'C. Blackmon | cblackmon@pinnaclesalesgroup.com | 800-292-8374',
+     steps:['Refuse damaged pallets OR get exception number from driver','If accepting: get exception number and inspect within 48 hours','Notify Pinnacle with photos and exception number','Pinnacle creates RGA, files freight claim, schedules return','You issue PO for replacement','Broken inspection sticker on pallet = document it']},
+   con:{win:'⚠ 12 CALENDAR DAYS ONLY — one of the tightest windows',contact:'cblackmon@pinnaclesalesgroup.com | service@pinnaclesalesgroup.com | 800-292-8374 opt 4',
+     steps:['⚠ ONLY 12 CALENDAR DAYS from delivery','Photos of packaging and concealed damage','Notify C. Blackmon — Pinnacle files freight claim and creates RGA','You issue PO for replacement','Service: service@pinnaclesalesgroup.com or pinnaclesalesgroup.com/warranty-service-department'],al:false},
+   ra:{how:'pinnaclesalesgroup.com/psg-return-policy-and-forms',fee:'20% appliances | 25% parts | 30% plumbing',fr:'Dealer pays | Within 60 days of invoice'},sc:'Contact C. Blackmon'},
+  {id:'smg',n:'Signature Marketing',b:'Perlick',
+   del:{act:'refuse',win:'3 days for carrier claim',contact:'Mickey Peyton | mickey@smgltd.net | 904-228-5030 | Danielle@smgltd.net',
+     steps:['REFUSE at delivery — no exceptions','Document on BOL at time of delivery','Signature starts freight claim with documentation','Send replacement PO to Danielle@smgltd.net','Perlick service: Parts Town Service 844.411.8050']},
+   con:{win:'⚠ 3-DAY WINDOW to file carrier claim',contact:'Angelica@smgltd.net (photos) | Mickey Peyton mickey@smgltd.net',
+     steps:['⚠ FILE CARRIER CLAIM WITHIN 3 DAYS','Photos of unit and box to Angelica@smgltd.net immediately','Monetary allowance available for cosmetic damage — contact Mickey','Amount based on nature of damage','Good stock: 25% restock or 25% discount to keep | 60 days | dealer freight'],al:true,alNote:'Monetary allowance case-by-case for cosmetic damage'},
+   ra:{how:'Contact Mickey Peyton directly',fee:'25% restock OR 25% discount to keep',fr:'Dealer pays (SMG can arrange, deducted from RA credit)'},sc:'Contact Mickey Peyton'},
+  {id:'climatic',n:'Climatic',b:'Crosley, Faber, Sharp',
+   del:{act:'either',win:'10 business days visible | 90 business days concealed',contact:'Mike Alfano | malfano@climaticcorp.com | claims@climaticcorp.com | 800-845-4555 ext.326',
+     steps:['Note damage on BOL at delivery','Report to claims@climaticcorp.com within 10 business days','Pick-up/will-call orders NOT eligible for claims','Photograph all 4 sides, damage, and model/serial tag','Keep original packaging — if discarded, no return option','⚠ 40% restock fee — highest across all vendors']},
+   con:{win:'90 business days from receipt',contact:'claims@climaticcorp.com | 800-845-4555 ext.326',
+     steps:['Report within 90 business days','6 photos: all 4 box sides + damage + model/serial tag','First: can it be sold at discount? → 20% allowance option','If not: Climatic takes it back','RMA required — carton must show RMA number or refused','Fix First policy — service attempted before RA'],al:true,alNote:'20% allowance if can be sold at discount'},
+   ra:{how:'Contact Mike Alfano | claims@climaticcorp.com',fee:'40% restock',fr:'Dealer pays'},sc:'Approved scrap only. Remove serial plate, attach to RA, mail to claims. Retain copy.'},
+  {id:'eastern',n:'Eastern Marketing',b:'Bertazzoni, XO, Blomberg',
+   del:{act:'refuse',win:'60 days',contact:'Jack Buytendorp | jack@easternmarketing.com | 920-539-4213 | Joselyn Gallardo joselyn@easternmarketing.com 973-403-8900 x43',
+     steps:['Refuse delivery on any damaged items','Report to Joselyn Gallardo within 60 days','Claims evaluated case by case','Submit RA: easternmarketing.com/rma-form (responds within 1 business day)','15% restock on sealed items (covers return freight)','XO: 90-day Love It or Leave It guarantee applies']},
+   con:{win:'60 days — case by case',contact:'Joselyn Gallardo | joselyn@easternmarketing.com | 973-403-8900 x43',
+     steps:['Contact Joselyn Gallardo for all claims','Submit RA: easternmarketing.com/rma-form','XO (90-day): Eastern contacts customer directly, attempts resolution, pays dealer original cost if return required','Once returned: Eastern works with you on RMA, scratch & dent, or scrap','XO excludes: Outdoor products and Ice Makers'],al:true,alNote:'XO: Eastern pays dealer original cost within 90 days'},
+   ra:{how:'easternmarketing.com/rma-form',fee:'15% restock (covers freight)',fr:'Included in restock fee'},sc:'Contact Jack — Eastern works with dealer on disposition'},
+  {id:'summit',n:'Summit',b:'Summit, Accucold, PureTherm',
+   del:{act:'refuse',win:'5 days concealed | 30 days from FSI ship date',contact:"Ray P. | rayp@summitappliance.com | claims@summitappliance.com | 718-893-3900 ext.514",
+     steps:['FSI carrier: Refuse damaged units | Multi-unit = accept rest, refuse damaged','Note on POD, delivery person signs','⚠ Dealer/3rd party carrier: NOT eligible for FSI return — file claim with your own carrier','No RA = no credit — always get RA number from claims first','No buyer\'s remorse returns']},
+   con:{win:'5 days from accepting delivery',contact:'claims@summitappliance.com | 718-893-3900 ext.514',
+     steps:['⚠ Report within 5 days of accepting delivery','Contact claims@summitappliance.com for RA number','⚠ Whose carrier delivered = who owns the claim','Good stock: 25% restock + 6 panel photos + original carton + dealer freight | 30 days from FSI ship date','No returns on custom/made-to-order models'],al:false},
+   ra:{how:'claims@summitappliance.com | 718-893-3900 ext.514',fee:"25% | No buyer's remorse",fr:'Dealer pays'},sc:"Contact Ray P. | rayp@summitappliance.com"},
+  {id:'orourke',n:"O'Rourke",b:'Speed Queen, Electrolux, Danby, Silhouette',
+   del:{act:'refuse',win:'Speed Queen: 6 months from mfg date | Others: contact Mario',contact:'Mario Fajardo | mfajardo@orourkesales.com | 954-918-0342 | Kim Toliver ktoliver@orourkesales.com',
+     steps:['Refuse visibly damaged units','Speed Queen: submit to Mario within 6 months of manufacturing date (from serial#)','Damage must be dime-sized or larger','Allowance by zone: Front $150 | Side $125 | Back/Bottom $100','Parts replacement: cd.alliancels.net (CDESS portal)','Electrolux/Danby/Silhouette: contact Mario for process']},
+   con:{win:'Speed Queen: 6 months from manufacturing date | Others: contact Mario',contact:'Mario Fajardo | mfajardo@orourkesales.com | 954-918-0342',
+     steps:['Speed Queen: submit to Mario with model/serial, photo, damage location','Zone allowance: Zone A (front) $150 | Zone B (side) $125 | Zone C (back/bottom) $100','Parts path: cd.alliancels.net (CDESS portal)','All units: top load, front load, stacks, dryers, CTR','Electrolux/Danby/Silhouette: contact Mario'],al:true,alNote:'Speed Queen zone allowance: $100-$150 by damage location'},
+   ra:{how:'Contact Mario Fajardo | sales@orourkesales.com | 800-523-4730',fee:'Contact Mario',fr:'TBD'},sc:'Contact Mario Fajardo'},
+  {id:'sks',n:'SKS',b:'Signature Kitchen Suite',
+   del:{act:'either',win:'Pending — contact Tiffany',contact:'Tiffany Candler | tiffany.candler@lge.com',
+     steps:['⚠ SKS policy pending from Tiffany Candler','Contact Tiffany Candler directly for all SKS situations until policy received','tiffany.candler@lge.com']},
+   con:{win:'Pending — contact Tiffany Candler',contact:'Tiffany Candler | tiffany.candler@lge.com',
+     steps:['⚠ SKS damage/return policy not yet received','Contact Tiffany Candler directly: tiffany.candler@lge.com','This record will be updated once policy is received'],al:false},
+   ra:{how:'Contact Tiffany Candler',fee:'Pending',fr:'Pending'},sc:'Contact Tiffany Candler'},
+  {id:'bluestar',n:'BlueStar',b:'BlueStar Cooking',
+   del:{act:'either',win:'⚠ 5 days to inspect if accepted | 90 days concealed',contact:'N. Lamneck | NLamneck@Bluestarcooking.com | 904-826-9899',
+     steps:['Refuse at delivery OR accept with BOL notation and inspect within 5 days','⚠ Miss the 5-day window = claim void','Photograph all sides of carton','Contact N. Lamneck','RMA number must be on carton — no exceptions','No freight collect returns without prior written consent']},
+   con:{win:'⚠ 5 days from delivery for RMA eligibility | 90 days for concealed',contact:'N. Lamneck | NLamneck@Bluestarcooking.com | 904-826-9899',
+     steps:['⚠ 5-DAY window from delivery for RMA eligibility','Concealed: report to Lamneck within 90 days with serial# and photos','BlueStar decides repair vs. replace at sole discretion','Non-conforming/excess: notify in writing within 10 days','20% restock + dealer pays freight','Product must return within 60 days of RMA date'],al:false},
+   ra:{how:'Contact N. Lamneck | RMA number must be on carton',fee:'20% restock',fr:'Dealer pays | No freight collect without written consent'},sc:'Cannot scrap without BlueStar written approval. Contact Lamneck.'}
+];
+
+// ── STATE ──
+let state={step:'start',vendor:null,history:[]};
+
+// ── NAVIGATION ──
+function go(step,vendor=null){
+  state.history.push({step:state.step,vendor:state.vendor});
+  state.step=step;
+  if(vendor!==null)state.vendor=vendor;
+  render();
+}
+function back(){
+  if(!state.history.length)return;
+  const p=state.history.pop();
+  state.step=p.step;state.vendor=p.vendor;render();
+}
+function reset(){state={step:'start',vendor:null,history:[]};render();}
+function goStep(step){
+  const idx=state.history.findIndex(h=>h.step===step);
+  if(idx>=0){
+    const s=state.history[idx];
+    state.history=state.history.slice(0,idx);
+    state.step=s.step;state.vendor=s.vendor;render();
+  } else if(step==='start') reset();
+}
+window.go=go;window.back=back;window.reset=reset;window.goStep=goStep;
+window.selectDeliveryVendor=id=>go('delivery_result',id);
+window.selectConcealedVendor=id=>go('concealed_result',id);
+window.selectVendorStart=function(id){go('situation',id);};
+
+function warehouseVisibleStep(){
+  const v=VENDORS.find(x=>x.id===state.vendor);if(!v)return '';
+  const ac=v.del.act==='refuse'?
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body"><strong>Do not accept this shipment.</strong> Note damage on BOL, have carrier sign, then photograph all 4 sides before truck leaves.</div></div>`:
+    v.del.act==='accept'?
+    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Note damage with serial# and SKU on freight bill. Carrier signs. Report within <strong>${v.del.win}</strong>.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Either (Prefer Refuse)</div><div class="ic-body">Refuse if possible. If accepting: document on BOL immediately. Window: <strong>${v.del.win}</strong>.</div></div>`;
+  return `<div class="step-card">
+    <div class="step-label">Warehouse Receiving — ${v.n}</div>
+    <div class="step-q">Damage visible on carton at receiving</div>
+    ${resp(['Warehouse'])}
+    ${ac}
+    <div class="info-card neutral"><div class="ic-label">Immediate Steps</div>
+    ${steps(['Document damage on BOL — note model# and serial#, carrier signs','Photograph all 4 sides of carton and all visible damage','Complete damage sheet: customer name, work order #, model/serial, damage description','Email photos and damage sheet to warranty immediately','Place one copy of damage sheet on unit'])}
+    </div>
+    ${docBox()}
+    ${warrantyHandoff()}
+    <button class="opt-btn" onclick="go('delivery_result')" style="margin-bottom:.5rem">
+      <div class="opt-icon">→</div>
+      <div class="opt-text"><div class="opt-title">View ${v.n} vendor instructions</div><div class="opt-desc">Refuse/accept rule, window, contact, and all required steps</div></div>
+    </button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function warehouseConcealedStep(){
+  const v=VENDORS.find(x=>x.id===state.vendor);if(!v)return '';
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
+    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
+  return `<div class="step-card">
+    <div class="step-label">Warehouse — Concealed Damage — ${v.n}</div>
+    <div class="step-q">Damage found during warehouse inspection</div>
+    ${resp(['Warehouse', 'Warranty'])}
+    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}${v.n} Window</div><div class="ic-body">${v.con.win}<br><strong>Window runs from date received, not date found.</strong></div></div>
+    <div class="info-card neutral"><div class="ic-label">Immediate Steps</div>
+    ${steps(['Photograph damage and all sides of carton — keep all packaging','Note when product was originally received','Complete damage sheet: customer name, work order #, model/serial, damage description','Email photos and damage sheet to warranty immediately','One copy on unit, one to warranty desk','Do not install or move the unit until warranty reviews'])}
+    </div>
+    ${docBox()}
+    ${warrantyHandoff()}
+    <button class="opt-btn" onclick="go('concealed_result')" style="margin-bottom:.5rem">
+      <div class="opt-icon">→</div>
+      <div class="opt-text"><div class="opt-title">View ${v.n} vendor claim process</div><div class="opt-desc">Full process, contacts, restock fees, and RA details</div></div>
+    </button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function scrapStep(){
+  const samsung=state.vendor==='samsung';
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  const vname=v?v.n:'vendor';
+  return `<div class="step-card">
+    <div class="step-label">${samsung?'Samsung 1% Field Scrap':'Scrap — Unit Beyond Repair'}</div>
+    <div class="step-q">${samsung?'1% Field Scrap Program':'Unit beyond repair'}</div>
+    ${resp(['Management', 'Sales Rep', 'Warranty', 'Warehouse'])}
+    <div class="info-card red"><div class="ic-label">⚠ Management Authorization Required</div><div class="ic-body"><strong>Only the Capritta management team can declare a unit unrepairable.</strong> Stop and escalate if not management.</div></div>
+    ${samsung?'<div class="info-card blue"><div class="ic-label">Samsung 1% Program</div><div class="ic-body">Samsung\'s field scrap program applies to unrepairable units that cannot be returned. Claim filed through M. Moore via PUMI. Provide model/serial, photos, and cost.</div></div>':''}
+    <div class="info-card neutral"><div class="ic-label">Scrap Process — Once Management Has Authorized</div>
+    ${steps(['Warranty contacts '+vname+' rep/ASM — get written scrap approval before touching the unit',samsung?'Samsung: Contact M. Moore — PUMI required (model/serial, photos, cost)':'Get written approval from vendor before proceeding','Remove the serial number plate from the unit','Attach serial plate to the vendor Scrap Form or equivalent','Photograph: the damage, removed serial/model plate (numbers legible), and evidence unit is inoperable (severed power cord)','Warranty submits form and photos to vendor/ASM for sign-off','Dispose lawfully — shredder or landfill | comply with all environmental and CFC regulations','Retain all documentation on file','Warranty closes out any open POs or RAs'])}
+    </div>
+    <div class="info-card blue"><div class="ic-label">Vendor Scrap Notes</div><div class="ic-body" style="font-size:12px;line-height:1.8">
+      <strong>Samsung:</strong> 1% field scrap — PUMI via M. Moore.<br>
+      <strong>GE:</strong> Scrap at dealer location. Scrap Form + ASM sign-off. Mail serial plate to ASM.<br>
+      <strong>BSH:</strong> Written approval required. Appliance Scrap Warrant form. Contact Patti.<br>
+      <strong>Sub-Zero:</strong> Contact Robert Luyckx. 105% fee if no documentation.<br>
+      <strong>Climatic:</strong> Approved scrap only. Serial plate to claims dept.<br>
+      <strong>BlueStar:</strong> Cannot scrap without written approval. Contact Lamneck.<br>
+      <strong>All others:</strong> Contact vendor rep — written authorization required.
+    </div></div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+function situationStep(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const samsung=state.vendor==='samsung';
+  const delNote=v.del.act==='accept'?'<span style="font-size:11px;color:var(--amber);margin-left:6px">Always accept</span>':
+    v.del.act==='refuse'?'<span style="font-size:11px;color:var(--accent);margin-left:6px">Must refuse</span>':'';
+  return `<div class="step-card">
+    <div class="step-label">Step 2 of 3 — ${v.n}</div>
+    <div class="step-q">What happened?</div>
+    <div class="step-hint" style="font-size:12px;color:var(--ink3)">${v.b}</div>
+    <div class="options" style="margin-top:1rem">
+      <button class="opt-btn" onclick="go('warehouse_visible')">
+        <div class="opt-icon">🏭</div>
+        <div class="opt-text">
+          <div class="opt-title">Delivery damage — visible at warehouse receiving${delNote}</div>
+          <div class="opt-desc">Damage visible on carton when product arrived from vendor</div>
+        </div>
+      </button>
+      <button class="opt-btn" onclick="go('delivery_call')">
+        <div class="opt-icon">🚚</div>
+        <div class="opt-text">
+          <div class="opt-title">Delivery damage — found at job site</div>
+          <div class="opt-desc">Damage found during delivery, unboxing, or install at customer's home</div>
+        </div>
+      </button>
+      <button class="opt-btn" onclick="go('warehouse_concealed')">
+        <div class="opt-icon">📦</div>
+        <div class="opt-text">
+          <div class="opt-title">Concealed damage — found at warehouse</div>
+          <div class="opt-desc">Box looked fine but damage found during warehouse inspection</div>
+        </div>
+      </button>
+      <button class="opt-btn" onclick="go('concealed_installed')">
+        <div class="opt-icon">🔍</div>
+        <div class="opt-text">
+          <div class="opt-title">Concealed damage — found at job site or later</div>
+          <div class="opt-desc">Damage discovered after warehouse, during or before install</div>
+        </div>
+      </button>
+      <button class="opt-btn" onclick="go('postinstall')">
+        <div class="opt-icon">🔧</div>
+        <div class="opt-text">
+          <div class="opt-title">Post-install issue</div>
+          <div class="opt-desc">Product already installed — functional or cosmetic</div>
+        </div>
+      </button>
+      <button class="opt-btn urgent" onclick="go('scrap')">
+        <div class="opt-icon">⚠️</div>
+        <div class="opt-text">
+          <div class="opt-title">${samsung?'1% Field Scrap (Samsung)':'Unit beyond repair — Scrap'}</div>
+          <div class="opt-desc">Management has authorized unit as unrepairable${samsung?' — Samsung 1% program applies':''}</div>
+        </div>
+      </button>
+    </div>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+// ── BREADCRUMB ──
+const SL={start:'Brand',situation:'What Happened',warehouse_visible:'Warehouse — Visible',warehouse_concealed:'Warehouse — Concealed',
+  delivery_call:'Job Site Damage',delivery_decision:'Delivery Decision',
+  delivery_install:'Install As-Is',delivery_warehouse:'Return for RA',delivery_partsroom:'Repair Path',
+  delivery_vendor:'Delivery — Vendor',delivery_result:'Delivery — Instructions',
+  concealed_installed:'Concealed Damage',concealed_vendor:'Concealed — Vendor',concealed_result:'Concealed — Instructions',
+  postinstall:'Post-Install',postinstall_functional:'Post-Install Functional',postinstall_cosmetic:'Post-Install Cosmetic',scrap:'Scrap / 1%'};
+function renderBreadcrumb(){
+  const el=document.getElementById('breadcrumb');
+  let crumbs=[{label:'Start',step:'start'}];
+  state.history.forEach(h=>{
+    if(h.step!=='start'&&SL[h.step]){
+      const l=SL[h.step];
+      if(!crumbs.find(c=>c.label===l))crumbs.push({label:l,step:h.step});
+    }
+  });
+  if(state.step!=='start'&&SL[state.step]){
+    const cur=SL[state.step];
+    if(!crumbs.find(c=>c.label===cur))crumbs.push({label:cur,current:true});
+    else crumbs=crumbs.map(c=>c.label===cur?{...c,current:true}:c);
+  }
+  el.innerHTML=crumbs.map((c,i)=>{
+    const prefix=i>0?'<span class="sep">›</span>':'';
+    const cls=c.current?'current':'';
+    const oc=c.current?'':'onclick="goStep(\''+c.step+'\')"';
+    return prefix+'<span class="'+cls+'" '+oc+'>'+c.label+'</span>';
+  }).join('');
+}
+
+// ── HELPERS ──
+function resp(roles){
+  return `<div class="responsible">RESPONSIBLE: ${roles.map(r=>`<span class="r-tag">${r}</span>`).join('')}</div>`;
+}
+function steps(arr){
+  return `<ol class="steps-list">${arr.map(s=>`<li class="${s.startsWith('⚠')?'warn':''}">${s}</li>`).join('')}</ol>`;
+}
+function contact(c){
+  return `<div class="contact-box"><div class="label">Contact</div>${c.split('|').map(p=>p.trim()).join('<br>')}</div>`;
+}
+function docBox(){
+  return `<div class="doc-box">
+    <div class="ic-label">📋 Required Documentation — Every Scenario</div>
+    <div class="ic-body" style="font-size:12px;line-height:1.7">
+      <strong>Damage sheet</strong> (one copy on appliance, one to warranty desk):<br>
+      Customer name · Work order # · Model & serial # · Damage description<br>
+      <strong>Work order</strong>: note damage in work order<br>
+      <strong>Email</strong>: send photos and details to warranty department
+    </div>
+  </div>`;
+}
+function warrantyHandoff(){
+  return `<div class="info-card purple">
+    <div class="ic-label">→ Warranty Handoff</div>
+    <div class="ic-body">Once documentation is complete, warranty department processes all vendor claims. Do not contact the vendor directly — route through warranty.</div>
+  </div>`;
+}
+function vendorGrid(fn){
+  return `<div class="vendor-grid">${VENDORS.map(v=>
+    `<button class="vendor-btn" onclick="${fn}('${v.id}')">
+      <div class="vn">${v.n}</div>
+      <div class="vb">${v.b.split(',').slice(0,2).join(',')}${v.b.split(',').length>2?'…':''}</div>
+    </button>`).join('')}</div>`;
+}
+
+// ── STEPS ──
+const S={
+
+start:`<div class="step-card">
+  <div class="step-label">Step 1 of 3</div>
+  <div class="step-q">Select the brand</div>
+  <div class="step-hint">Every step after this will be specific to that vendor.</div>
+  ${vendorGrid('selectVendorStart')}
+</div>`,
+
+warehouse_visible:'__DYNAMIC__',
+
+warehouse_concealed:'__DYNAMIC__',
+
+delivery_call:`<div class="step-card">
+  <div class="step-label">Job Site — Damage Found</div>
+  <div class="step-q">Stop — call the Delivery Lead first</div>
+  ${resp(['Delivery Team', 'Delivery Lead'])}
+  <div class="info-card red">
+    <div class="ic-label">⚠ Do Not Proceed Without Authorization</div>
+    <div class="ic-body">Delivery team does not make the call on what happens next. Call the Delivery Lead immediately. If the Lead is unsure, escalate to the Delivery Manager.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Escalation Chain</div>
+    <div class="ic-body">
+      <div class="escalation-chain">
+        <div class="e-node">Delivery Team</div>
+        <div class="e-arrow">→</div>
+        <div class="e-node">Delivery Lead</div>
+        <div class="e-arrow">→</div>
+        <div class="e-node">Delivery Manager</div>
+      </div>
+    </div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">While You Wait for Guidance</div>
+    ${steps(['Photograph all damage immediately — unit and carton','Note model number and serial number','Do not install and do not discard any packaging','Document in your work order that damage was found and who you called'])}
+  </div>
+  <div class="info-card blue">
+    <div class="ic-label">Delivery Lead — What Is Your Decision?</div>
+    <div class="ic-body" style="margin-bottom:.75rem">Select the outcome the Lead has authorized.</div>
+    <div class="options" style="margin-top:.5rem">
+      <button class="opt-btn good" onclick="go('delivery_install')">
+        <div class="opt-icon">✅</div>
+        <div class="opt-text"><div class="opt-title">Install as-is</div><div class="opt-desc">Damage is minor — install and document</div></div>
+      </button>
+      <button class="opt-btn" onclick="go('delivery_warehouse')">
+        <div class="opt-icon">🔄</div>
+        <div class="opt-text"><div class="opt-title">Return to warehouse for RA</div><div class="opt-desc">Unit needs to come back — will be processed for return</div></div>
+      </button>
+      <button class="opt-btn" onclick="go('delivery_partsroom')">
+        <div class="opt-icon">🔧</div>
+        <div class="opt-text"><div class="opt-title">Return to warehouse for repair</div><div class="opt-desc">Unit can be fixed in the parts room</div></div>
+      </button>
+    </div>
+  </div>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+delivery_install:`<div class="step-card">
+  <div class="step-label">Decision: Install As-Is</div>
+  <div class="step-q">Install and document</div>
+  ${resp(['Delivery Team', 'Warranty'])}
+  <div class="info-card neutral">
+    <div class="ic-label">Steps</div>
+    ${steps(['Install the unit','Document damage in your work order — be specific about what was found and where','Complete damage sheet: customer name, work order #, model/serial, damage description','One copy of damage sheet stays with the unit (or left with customer)','One copy to warranty desk when you return','Email photos to warranty department','Warranty will assess whether a claim or allowance should be filed with the vendor'])}
+  </div>
+  ${docBox()}
+  ${warrantyHandoff()}
+  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+delivery_warehouse:`<div class="step-card">
+  <div class="step-label">Decision: Return to Warehouse for RA</div>
+  <div class="step-q">Bring unit back — warranty will process RA</div>
+  ${resp(['Delivery Team', 'Warranty', 'Sales Rep'])}
+  <div class="info-card amber">
+    <div class="ic-label">Important</div>
+    <div class="ic-body">Vendor windows run from the original delivery date to your warehouse — not from today. Warranty needs this back and documented quickly.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Delivery Team Steps</div>
+    ${steps(['Do not leave the unit at the job site — bring it back to the warehouse','Keep all original packaging and cartons — do not discard anything','Complete damage sheet: customer name, work order #, model/serial, damage description','Document in work order — note decision to return and who authorized it','Email photos to warranty department before leaving the job site','Attach damage sheet to the unit'])}
+  </div>
+  ${docBox()}
+  <div class="info-card neutral">
+    <div class="ic-label">Once Back at Warehouse — Warranty Steps</div>
+    ${steps(['Warranty reviews damage sheet and photos','Selects vendor-specific process based on damage type and timing','Processes RA with vendor','If vendor requires reorder: warranty creates new PO','If vendor is sending replacement: warranty creates receiving PO'])}
+  </div>
+  ${warrantyHandoff()}
+  <div id="delivery_warehouse_vendor_btn"></div>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+delivery_partsroom:`<div class="step-card">
+  <div class="step-label">Decision: Repair Path</div>
+  <div class="step-q">Unit goes to the parts room</div>
+  ${resp(['Delivery Team', 'Service Team', 'Warranty'])}
+  <div class="info-card green">
+    <div class="ic-label">Capritta is Certified</div>
+    <div class="ic-body">Capritta's service team is manufacturer-certified for all brands and will repair the unit. This is a service issue until repair is complete.</div>
+  </div>
+  <div class="info-card blue">
+    <div class="ic-label">Preferred Path — Direct to Parts Room Same Day</div>
+    <div class="ic-body">Delivery should bring the unit directly to the parts room the same day if at all possible. Do not let it sit.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Delivery Team Steps</div>
+    ${steps(['Bring unit directly to the parts room the same day if possible — do not leave it on the truck','Keep all original packaging and cartons — do not discard anything','Complete damage sheet: customer name, work order #, model/serial, damage description','Document in work order — note decision to repair, who authorized it, and that unit was delivered to parts room','Email photos to warranty department','If unit cannot go to parts room same day and must return to warehouse first: attach work order to the unit so warehouse can route it to parts room — it will not move without it'])}
+  </div>
+  ${docBox()}
+  <div class="info-card amber">
+    <div class="ic-label">If Unit Goes to Warehouse First</div>
+    <div class="ic-body">Warehouse team will print a copy of the work order and attach it to the unit. The work order contains all the information the warranty coordinator needs and serves as identification for routing the unit to the parts room.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Parts Room / Service Path</div>
+    ${steps(['Service team assesses and performs repair','Parts ordered through warranty if needed — warranty creates PO','Once repaired and passes safety/functional checks: unit returns to inventory','If repair cannot be completed: escalate to management — only management can declare a unit unrepairable'])}
+  </div>
+  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+delivery_vendor:'__UNUSED__',
+
+concealed_installed:`<div class="step-card">
+  <div class="step-label">Concealed Damage</div>
+  <div class="step-q">Is the unit installed?</div>
+  <div class="step-hint">This changes what options are available.</div>
+  <div class="options">
+    <button class="opt-btn" onclick="go('concealed_result')">
+      <div class="opt-icon">✅</div>
+      <div class="opt-text"><div class="opt-title">Not installed</div><div class="opt-desc">Still in warehouse or job site — not yet connected</div></div>
+    </button>
+    <button class="opt-btn urgent" onclick="go('postinstall')">
+      <div class="opt-icon">⚠️</div>
+      <div class="opt-text"><div class="opt-title">Already installed</div><div class="opt-desc">Product is in the customer's home — options are limited</div></div>
+    </button>
+  </div>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+concealed_vendor:'__UNUSED__',
+
+postinstall:`<div class="step-card">
+  <div class="step-label">Post-Install Issue</div>
+  <div class="step-q">Functional or cosmetic?</div>
+  <div class="step-hint">This determines whether it's a warranty/service issue or a cosmetic claim.</div>
+  <div class="options">
+    <button class="opt-btn" onclick="go('postinstall_functional')">
+      <div class="opt-icon">⚙️</div>
+      <div class="opt-text"><div class="opt-title">Functional — doesn't work</div><div class="opt-desc">Not powering on, not operating correctly</div></div>
+    </button>
+    <button class="opt-btn" onclick="go('postinstall_cosmetic')">
+      <div class="opt-icon">🪞</div>
+      <div class="opt-text"><div class="opt-title">Cosmetic — visible damage only</div><div class="opt-desc">Dent, scratch, chip — product still works</div></div>
+    </button>
+  </div>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+postinstall_functional:`<div class="step-card">
+  <div class="step-label">Post-Install — Functional</div>
+  <div class="step-q">Warranty / service path</div>
+  ${resp(['Warranty', 'Service Team', 'Sales Rep'])}
+  <div class="info-card amber">
+    <div class="ic-label">Important</div>
+    <div class="ic-body">Most vendors do not accept returns on installed product. The path is repair, not RA — unless a Capritta-certified technician deems it unrepairable. Do not promise a replacement before service is attempted.</div>
+  </div>
+  <div class="info-card green">
+    <div class="ic-label">Capritta Advantage</div>
+    <div class="ic-body">Capritta's service team is manufacturer-certified for all brands. Initiate a service call through warranty — our team handles the repair in most cases without involving the manufacturer's service network.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Steps</div>
+    ${steps(['Warranty initiates service call — do not contact vendor directly','Technician assesses: repairable in field vs. escalation needed','If repairable: parts ordered through warranty (warranty creates PO), tech completes repair','If unit fails within 30 days of install (DOA): contact your vendor rep immediately — most vendors expedite','If Safeware/extended warranty was sold: initiate parallel claim through Safeware','Only if tech and management confirm unrepairable: escalate to scrap process'])}
+  </div>
+  <div class="info-card blue">
+    <div class="ic-label">Manufacturer Service Contacts</div>
+    <div class="ic-body" style="font-size:12px;line-height:1.8">
+      GE/Monogram: tradecare_express@whirlpool.com | (866) 233-8547<br>
+      Whirlpool brands: tradecare_express@whirlpool.com | (866) 233-8547<br>
+      LG: lgeus.my.site.com/serviceportal/s/homebuilders<br>
+      Samsung: 844-SAM4BLD | SamsungBuilderB2B@sea.samsung.com<br>
+      F&P/DCS: 1-888-936-7872<br>
+      BSH: Contact Patti Plavnick<br>
+      Sub-Zero/Wolf: Contact Robert Luyckx<br>
+      Pinnacle: service@pinnaclesalesgroup.com | opt 4<br>
+      True/Caliber: TrueCaliberCS@truemfg.com<br>
+      SMG/Perlick: Parts Town Service 844.411.8050<br>
+      Composition: customercare@middlebyresidential.com | 888-845-4641
+    </div>
+  </div>
+  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+postinstall_cosmetic:`<div class="step-card">
+  <div class="step-label">Post-Install — Cosmetic</div>
+  <div class="step-q">Limited options once installed</div>
+  ${resp(['Warranty', 'Sales Rep', 'Management'])}
+  <div class="info-card red">
+    <div class="ic-label">⚠ Most Vendors Will Not Accept Returns</div>
+    <div class="ic-body">Cosmetic damage after installation is typically the dealer's responsibility unless it can be proven as a pre-existing defect. Contact your vendor rep before committing anything to the customer.</div>
+  </div>
+  <div class="info-card neutral">
+    <div class="ic-label">Steps</div>
+    ${steps(['Document all damage with photos immediately','Warranty contacts vendor sales rep — do not promise anything to customer first','Ask rep about out-of-policy cosmetic allowance — several vendors consider case by case','If vendor denies: management decides whether dealer absorbs cost or negotiates with customer'])}
+  </div>
+  <div class="info-card green">
+    <div class="ic-label">Vendors with Known Allowance Programs</div>
+    <div class="ic-body" style="font-size:12px;line-height:1.8">
+      GE: ASM offers allowance at discretion<br>
+      F&P: 5-20% based on severity<br>
+      Climatic: 20% allowance to keep<br>
+      SMG/Perlick: Case by case monetary allowance<br>
+      Speed Queen: Zone-based $100-$150<br>
+      BSH: Up to 20% for minor damage<br>
+      XO (Eastern): 90-day Love It or Leave It<br>
+      Whirlpool: ASM discretion
+    </div>
+  </div>
+  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`,
+
+scrap:`<div class="step-card">
+  <div class="step-label">${state.vendor==='samsung'?'Samsung 1% Field Scrap':'Scrap — Unit Beyond Repair'}</div>
+  <div class="step-q">${state.vendor==='samsung'?'1% Field Scrap Program':'Unit beyond repair'}</div>
+  ${resp(['Management', 'Sales Rep', 'Warranty', 'Warehouse'])}
+  <div class="info-card red">
+    <div class="ic-label">⚠ Management Authorization Required</div>
+    <div class="ic-body"><strong>Only the Capritta management team can declare a unit unrepairable.</strong> Delivery team, warranty, and service team cannot authorize scrap. Stop and escalate if not management.</div>
+  </div>
+  ${state.vendor==='samsung'?'<div class="info-card blue"><div class="ic-label">Samsung 1% Program</div><div class="ic-body">Samsung\'s field scrap program applies to unrepairable units that cannot be returned. Claim is filed through M. Moore via the PUMI process. Provide model/serial, photos, and cost.</div></div>':''}
+  <div class="info-card neutral">
+    <div class="ic-label">Scrap Process — Once Management Has Authorized</div>
+    ${steps(['Warranty contacts vendor rep/ASM — get written scrap approval before touching the unit',state.vendor==='samsung'?'Samsung: Contact M. Moore — PUMI required (model/serial, photos, cost)':'Get written approval from vendor in writing before proceeding','Remove the serial number plate from the unit','Attach serial plate to the vendor Scrap Form or equivalent','Photograph: the damage, the removed serial/model plate (numbers legible), and evidence unit is inoperable (severed power cord)','Warranty submits form and photos to vendor/ASM for sign-off','Dispose of unit lawfully — shredder or landfill | comply with all environmental and CFC regulations','Retain all documentation on file','Warranty closes out any open POs or RAs'])}
+  </div>
+  <div class="info-card blue">
+    <div class="ic-label">Vendor Scrap Notes</div>
+    <div class="ic-body" style="font-size:12px;line-height:1.8">
+      <strong>Samsung:</strong> 1% field scrap — PUMI via M. Moore. Provide all PO/DO/SO numbers.<br>
+      <strong>GE:</strong> Scrap at dealer location only. Scrap Form + ASM sign-off. Mail serial plate to ASM.<br>
+      <strong>BSH:</strong> Written approval required. Appliance Scrap Warrant form. Contact Patti.<br>
+      <strong>Sub-Zero:</strong> Contact Robert Luyckx. 105% fee if no documentation.<br>
+      <strong>Climatic:</strong> Approved scrap only. Serial plate to claims dept.<br>
+      <strong>BlueStar:</strong> Cannot scrap without written approval. Contact Lamneck.<br>
+      <strong>All others:</strong> Contact vendor rep — written authorization required before disposal.
+    </div>
+  </div>
+  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+  <button class="back-btn" onclick="back()">← Back</button>
+</div>`
+
+};
+
+// ── RESULT STEPS ──
+function delivery_result(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const ac=v.del.act==='refuse'?
+    `<div class="info-card red"><div class="ic-label">⚠ Action Required</div><div class="ic-body"><strong>REFUSE at delivery</strong> — do not accept. Note damage on BOL.</div></div>`:
+    v.del.act==='accept'?
+    `<div class="info-card amber"><div class="ic-label">Accept & Document</div><div class="ic-body"><strong>ALWAYS ACCEPT</strong> — do not refuse. Document on freight bill immediately.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">Either — Prefer Refuse</div><div class="ic-body">Refuse OR accept with full BOL documentation. When in doubt, <strong>refuse</strong>.</div></div>`;
+  return `<div class="step-card">
+    <div class="step-label">Delivery Damage — ${v.n}</div>
+    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
+    ${resp(['Warehouse','Warranty'])}
+    ${ac}
+    <div class="info-card neutral"><div class="ic-label">⏱ Reporting Window</div><div class="ic-body">${v.del.win}</div></div>
+    <div class="info-card neutral"><div class="ic-label">Vendor Steps</div>${steps(v.del.steps)}</div>
+    ${docBox()}
+    ${warrantyHandoff()}
+    <div class="info-card purple"><div class="ic-label">Warranty — If Reorder Needed</div><div class="ic-body">Warranty creates a new PO for the reorder. If vendor is sending a replacement, warranty creates a PO to receive against.</div></div>
+    <div class="contact-box"><div class="label">Vendor Contact</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function concealed_result(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
+    v.con.win.toLowerCase().includes('12')||v.con.win.toLowerCase().includes('10 day')?'amber':'neutral';
+  return `<div class="step-card">
+    <div class="step-label">Concealed Damage — ${v.n}</div>
+    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
+    ${resp(['Warranty','Sales Rep'])}
+    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}Reporting Window</div><div class="ic-body">${v.con.win}</div></div>
+    ${v.con.al?`<div class="info-card green"><div class="ic-label">💰 Damage Allowance Available</div><div class="ic-body">${v.con.alNote}</div></div>`:''}
+    <div class="info-card neutral"><div class="ic-label">Vendor Process</div>${steps(v.con.steps)}</div>
+    <div class="divider"></div>
+    <div class="info-card neutral"><div class="ic-label">RA Details</div><div class="ic-body"><strong>How:</strong> ${v.ra.how}<br><strong>Restock fee:</strong> ${v.ra.fee}<br><strong>Return freight:</strong> ${v.ra.fr}</div></div>
+    ${docBox()}
+    ${warrantyHandoff()}
+    <div class="info-card purple"><div class="ic-label">Warranty — POs</div><div class="ic-body">If reorder required: warranty creates new PO. If vendor is sending replacement: warranty creates a receiving PO.</div></div>
+    <div class="contact-box"><div class="label">Vendor Contact</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+// ── RENDER ──
+function render(){
+  renderBreadcrumb();
+  const app=document.getElementById('app');
+  if(state.step==='delivery_result'){app.innerHTML=delivery_result();}
+  else if(state.step==='concealed_result'){app.innerHTML=concealed_result();}
+  else if(state.step==='situation'){app.innerHTML=situationStep();}
+  else if(state.step==='warehouse_visible'){app.innerHTML=warehouseVisibleStep();}
+  else if(state.step==='warehouse_concealed'){app.innerHTML=warehouseConcealedStep();}
+  else if(state.step==='scrap'){app.innerHTML=scrapStep();}
+  else{app.innerHTML=S[state.step]||'<p>Unknown step.</p>';}
+  // Wire up delivery_warehouse vendor button if on that step
+  const dwBtn=document.getElementById('delivery_warehouse_vendor_btn');
+  if(dwBtn){
+    const v=VENDORS.find(x=>x.id===state.vendor);
+    dwBtn.innerHTML=`<button class="opt-btn" onclick="go('concealed_result')" style="margin-bottom:.5rem"><div class="opt-icon">→</div><div class="opt-text"><div class="opt-title">View ${v?v.n:'vendor'} claim process</div><div class="opt-desc">Full RA process, contacts, and restock fees</div></div></button>`;
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+render();
+</script>
+</body>
+</html>

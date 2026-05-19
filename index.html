@@ -99,7 +99,7 @@ const VENDORS=[
      steps:['Note damage on BOL — refuse OR accept and document immediately','Photograph all 4 sides of carton before truck leaves','Send photos to M. Moore ASAP','Out-of-policy: Moore writes a PUMI — provide all PO/DO/SO numbers, cost, photos']},
    con:{win:'Contact rep ASAP — no formal window confirmed',contact:'M. Moore | m.moore@sea.samsung.com',
      steps:['Document model/serial number and all PO/DO/SO numbers','Photograph all damage clearly','Contact M. Moore directly — all claims are rep-managed','Out of policy = PUMI required'],al:false},
-   ra:{how:'Contact M. Moore directly — no portal',fee:'Rep-managed',fr:'TBD'},sc:'Contact M. Moore — PUMI process'},
+   ra:{how:'Contact M. Moore directly — no portal',fee:'Rep-managed',fr:'TBD'},sc:'Cosmetic/service: Warranty (Klarissa) → SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD. Returns/PUMI: Contact M. Moore.'},
   {id:'bsh',n:'BSH Group',b:'Bosch, Thermador',
    del:{act:'accept',win:'72 hours',contact:'Patti Plavnick | Patricia.plavnick@bshg.com | 407-721-8043',
      steps:['ALWAYS ACCEPT — do not refuse','Note serial# and SKU on freight bill with damage details','Photograph all damage','Contact Patti within 72 hours','Request RA in One Portal with signed POD and damage photos']},
@@ -248,23 +248,31 @@ window.selectVendorStart=function(id){go('situation',id);};
 function warehouseVisibleStep(){
   const v=VENDORS.find(x=>x.id===state.vendor);if(!v)return '';
   const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body"><strong>Do not accept this shipment.</strong> Note damage on BOL, have carrier sign, then photograph all 4 sides before truck leaves.</div></div>`:
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE this shipment</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign it before the truck leaves.</div></div>`:
     v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Note damage with serial# and SKU on freight bill. Carrier signs. Report within <strong>${v.del.win}</strong>.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">${v.n} — Either (Prefer Refuse)</div><div class="ic-body">Refuse if possible. If accepting: document on BOL immediately. Window: <strong>${v.del.win}</strong>.</div></div>`;
+    `<div class="info-card amber"><div class="ic-label">${v.n} — Accept and Document</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment, then document the damage on the freight bill with model# and serial# before the driver leaves.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if you can</div><div class="ic-body">Refuse the shipment if possible. If you must accept, document damage on the BOL with model# and serial# before the driver leaves.</div></div>`;
   return `<div class="step-card">
-    <div class="step-label">Warehouse Receiving — ${v.n}</div>
-    <div class="step-q">Damage visible on carton at receiving</div>
+    <div class="step-label">Warehouse — Visible Damage at Receiving</div>
+    <div class="step-q">What to do right now</div>
     ${resp(['Warehouse'])}
     ${ac}
-    <div class="info-card neutral"><div class="ic-label">Immediate Steps</div>
-    ${steps(['Document damage on BOL — note model# and serial#, carrier signs','Photograph all 4 sides of carton and all visible damage','Complete damage sheet: customer name, work order #, model/serial, damage description','Email photos and damage sheet to warranty immediately','Place one copy of damage sheet on unit'])}
+    <div class="info-card neutral"><div class="ic-label">Your Steps — Do These Before Moving the Unit</div>
+    ${steps([
+      'Get the driver to note the damage on the BOL and sign it — do this before the truck leaves',
+      'Photograph all 4 sides of the carton',
+      'Photograph the damage itself and the model/serial number tag',
+      'Do not discard any packaging',
+      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+      'Place one copy of the damage sheet on the unit',
+      'Bring the other copy to the warranty desk',
+      'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original delivery date'
+    ])}
     </div>
-    ${docBox()}
     ${warrantyHandoff()}
     <button class="opt-btn" onclick="go('delivery_result')" style="margin-bottom:.5rem">
       <div class="opt-icon">→</div>
-      <div class="opt-text"><div class="opt-title">View ${v.n} vendor instructions</div><div class="opt-desc">Refuse/accept rule, window, contact, and all required steps</div></div>
+      <div class="opt-text"><div class="opt-title">See what warranty needs to know for ${v.n}</div><div class="opt-desc">Vendor-specific windows, contacts, and RA process</div></div>
     </button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
@@ -275,18 +283,27 @@ function warehouseConcealedStep(){
   const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
     v.con.win.toLowerCase().includes('12')?'amber':'neutral';
   return `<div class="step-card">
-    <div class="step-label">Warehouse — Concealed Damage — ${v.n}</div>
-    <div class="step-q">Damage found during warehouse inspection</div>
-    ${resp(['Warehouse', 'Warranty'])}
-    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}${v.n} Window</div><div class="ic-body">${v.con.win}<br><strong>Window runs from date received, not date found.</strong></div></div>
-    <div class="info-card neutral"><div class="ic-label">Immediate Steps</div>
-    ${steps(['Photograph damage and all sides of carton — keep all packaging','Note when product was originally received','Complete damage sheet: customer name, work order #, model/serial, damage description','Email photos and damage sheet to warranty immediately','One copy on unit, one to warranty desk','Do not install or move the unit until warranty reviews'])}
+    <div class="step-label">Warehouse — Concealed Damage</div>
+    <div class="step-q">What to do right now</div>
+    ${resp(['Warehouse'])}
+    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Tight Window — ':'⏱ '}${v.n} claim window: ${v.con.win}</div><div class="ic-body"><strong>The clock started the day the unit was received — not today.</strong> Email warranty now.</div></div>
+    <div class="info-card neutral"><div class="ic-label">Your Steps — Do These Now</div>
+    ${steps([
+      'Stop — do not move or install the unit',
+      'Keep all packaging and cartons — do not discard anything',
+      'Photograph all 4 sides of the carton',
+      'Photograph the damage and the model/serial number tag',
+      'Look up or confirm the original date this unit was received',
+      'Fill out the damage sheet: customer name, work order #, model #, serial #, date received, description of damage',
+      'Place one copy of the damage sheet on the unit',
+      'Bring the other copy to the warranty desk',
+      'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original received date'
+    ])}
     </div>
-    ${docBox()}
     ${warrantyHandoff()}
     <button class="opt-btn" onclick="go('concealed_result')" style="margin-bottom:.5rem">
       <div class="opt-icon">→</div>
-      <div class="opt-text"><div class="opt-title">View ${v.n} vendor claim process</div><div class="opt-desc">Full process, contacts, restock fees, and RA details</div></div>
+      <div class="opt-text"><div class="opt-title">See what warranty needs to know for ${v.n}</div><div class="opt-desc">Vendor claim process, contacts, and RA details</div></div>
     </button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
@@ -417,19 +434,21 @@ function contact(c){
 }
 function docBox(){
   return `<div class="doc-box">
-    <div class="ic-label">📋 Required Documentation — Every Scenario</div>
-    <div class="ic-body" style="font-size:12px;line-height:1.7">
-      <strong>Damage sheet</strong> (one copy on appliance, one to warranty desk):<br>
-      Customer name · Work order # · Model & serial # · Damage description<br>
-      <strong>Work order</strong>: note damage in work order<br>
-      <strong>Email</strong>: send photos and details to warranty department
+    <div class="ic-label">📋 What Warranty Needs From You — Every Time</div>
+    <div class="ic-body" style="font-size:12px;line-height:1.8">
+      <strong>Damage sheet</strong> — fill it out completely:<br>
+      Customer name · Work order # · Model # · Serial # · Date received · Damage description<br><br>
+      <strong>Photos</strong> — always include:<br>
+      All 4 sides of the carton · The damage itself · The model/serial number tag<br><br>
+      <strong>Email warranty and CC Lydell</strong> — attach the sheet and photos<br>
+      <strong>Damage sheet copies</strong> — one on the unit, one to the warranty desk
     </div>
   </div>`;
 }
 function warrantyHandoff(){
   return `<div class="info-card purple">
-    <div class="ic-label">→ Warranty Handoff</div>
-    <div class="ic-body">Once documentation is complete, warranty department processes all vendor claims. Do not contact the vendor directly — route through warranty.</div>
+    <div class="ic-label">→ Hand Off to Warranty</div>
+    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.</div>
   </div>`;
 }
 function vendorGrid(fn){
@@ -456,11 +475,20 @@ warehouse_concealed:'__DYNAMIC__',
 
 delivery_call:`<div class="step-card">
   <div class="step-label">Job Site — Damage Found</div>
-  <div class="step-q">Stop — call the Delivery Lead first</div>
+  <div class="step-q">Stop. Document first, then call the Delivery Lead.</div>
   ${resp(['Delivery Team', 'Delivery Lead'])}
+  <div class="info-card neutral">
+    <div class="ic-label">Do These Right Now — Before You Call Anyone</div>
+    ${steps([
+      'Do not install the unit and do not discard any packaging',
+      'Photograph all damage — unit and carton, all sides',
+      'Photograph the model number and serial number tag',
+      'Write down the model #, serial #, customer name, and work order #'
+    ])}
+  </div>
   <div class="info-card red">
-    <div class="ic-label">⚠ Do Not Proceed Without Authorization</div>
-    <div class="ic-body">Delivery team does not make the call on what happens next. Call the Delivery Lead immediately. If the Lead is unsure, escalate to the Delivery Manager.</div>
+    <div class="ic-label">⚠ Now Call the Delivery Lead</div>
+    <div class="ic-body">The delivery team does not decide what happens next — that is the Delivery Lead's call. Call them now. If the Lead is unsure or unreachable, escalate to Kevin (Sales &amp; Delivery Manager).</div>
   </div>
   <div class="info-card neutral">
     <div class="ic-label">Escalation Chain</div>
@@ -470,17 +498,13 @@ delivery_call:`<div class="step-card">
         <div class="e-arrow">→</div>
         <div class="e-node">Delivery Lead</div>
         <div class="e-arrow">→</div>
-        <div class="e-node">Delivery Manager</div>
+        <div class="e-node">Kevin — Sales &amp; Delivery Mgr</div>
       </div>
     </div>
   </div>
-  <div class="info-card neutral">
-    <div class="ic-label">While You Wait for Guidance</div>
-    ${steps(['Photograph all damage immediately — unit and carton','Note model number and serial number','Do not install and do not discard any packaging','Document in your work order that damage was found and who you called'])}
-  </div>
   <div class="info-card blue">
-    <div class="ic-label">Delivery Lead — What Is Your Decision?</div>
-    <div class="ic-body" style="margin-bottom:.75rem">Select the outcome the Lead has authorized.</div>
+    <div class="ic-label">Delivery Lead — Select Your Decision</div>
+    <div class="ic-body" style="margin-bottom:.75rem">What did the Lead authorize?</div>
     <div class="options" style="margin-top:.5rem">
       <button class="opt-btn good" onclick="go('delivery_install')">
         <div class="opt-icon">✅</div>
@@ -488,11 +512,11 @@ delivery_call:`<div class="step-card">
       </button>
       <button class="opt-btn" onclick="go('delivery_warehouse')">
         <div class="opt-icon">🔄</div>
-        <div class="opt-text"><div class="opt-title">Return to warehouse for RA</div><div class="opt-desc">Unit needs to come back — will be processed for return</div></div>
+        <div class="opt-text"><div class="opt-title">Bring back to warehouse</div><div class="opt-desc">Unit comes back — warranty will process the return or repair</div></div>
       </button>
       <button class="opt-btn" onclick="go('delivery_partsroom')">
         <div class="opt-icon">🔧</div>
-        <div class="opt-text"><div class="opt-title">Return to warehouse for repair</div><div class="opt-desc">Unit can be fixed in the parts room</div></div>
+        <div class="opt-text"><div class="opt-title">Bring back for parts room repair</div><div class="opt-desc">Unit can be fixed by our service team</div></div>
       </button>
     </div>
   </div>
@@ -501,34 +525,41 @@ delivery_call:`<div class="step-card">
 
 delivery_install:`<div class="step-card">
   <div class="step-label">Decision: Install As-Is</div>
-  <div class="step-q">Install and document</div>
-  ${resp(['Delivery Team', 'Warranty'])}
+  <div class="step-q">Install the unit, then hand off to warranty</div>
+  ${resp(['Delivery Team'])}
   <div class="info-card neutral">
-    <div class="ic-label">Steps</div>
-    ${steps(['Install the unit','Document damage in your work order — be specific about what was found and where','Complete damage sheet: customer name, work order #, model/serial, damage description','One copy of damage sheet stays with the unit (or left with customer)','One copy to warranty desk when you return','Email photos to warranty department','Warranty will assess whether a claim or allowance should be filed with the vendor'])}
+    <div class="ic-label">Your Steps</div>
+    ${steps([
+      'Install the unit',
+      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage and location',
+      'Leave a copy of the damage sheet with the customer or with the unit',
+      'Bring the other copy to the warranty desk when you return',
+      'Email warranty (CC Lydell): attach all photos, damage sheet, and note that the Lead authorized install as-is'
+    ])}
   </div>
-  ${docBox()}
   ${warrantyHandoff()}
   <button class="reset-btn" onclick="reset()">↩ Start Over</button>
   <button class="back-btn" onclick="back()">← Back</button>
 </div>`,
 
 delivery_warehouse:`<div class="step-card">
-  <div class="step-label">Decision: Return to Warehouse for RA</div>
-  <div class="step-q">Bring unit back — warranty will process RA</div>
-  ${resp(['Delivery Team', 'Warranty', 'Sales Rep'])}
+  <div class="step-label">Decision: Bring Back to Warehouse</div>
+  <div class="step-q">Your job is to get it back with the right paperwork</div>
+  ${resp(['Delivery Team'])}
   <div class="info-card amber">
-    <div class="ic-label">Important</div>
-    <div class="ic-body">Vendor windows run from the original delivery date to your warehouse — not from today. Warranty needs this back and documented quickly.</div>
+    <div class="ic-label">⏱ Don't Wait — Vendor Windows Are Already Running</div>
+    <div class="ic-body">The claim window started the day this unit arrived at our warehouse — not today. Get it back and emailed to warranty as fast as possible.</div>
   </div>
   <div class="info-card neutral">
-    <div class="ic-label">Delivery Team Steps</div>
-    ${steps(['Do not leave the unit at the job site — bring it back to the warehouse','Keep all original packaging and cartons — do not discard anything','Complete damage sheet: customer name, work order #, model/serial, damage description','Document in work order — note decision to return and who authorized it','Email photos to warranty department before leaving the job site','Attach damage sheet to the unit'])}
-  </div>
-  ${docBox()}
-  <div class="info-card neutral">
-    <div class="ic-label">Once Back at Warehouse — Warranty Steps</div>
-    ${steps(['Warranty reviews damage sheet and photos','Selects vendor-specific process based on damage type and timing','Processes RA with vendor','If vendor requires reorder: warranty creates new PO','If vendor is sending replacement: warranty creates receiving PO'])}
+    <div class="ic-label">Your Steps</div>
+    ${steps([
+      'Do not leave the unit at the job site — load it and bring it back',
+      'Keep all original packaging and cartons — do not throw anything away',
+      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+      'Note in the work order: decision to return, who authorized it (Lead or Kevin), and the original delivery date',
+      'Attach the damage sheet to the unit',
+      'Email warranty (CC Lydell) before you leave the job site: attach all photos, the damage sheet, and note who authorized the return'
+    ])}
   </div>
   ${warrantyHandoff()}
   <div id="delivery_warehouse_vendor_btn"></div>
@@ -536,30 +567,25 @@ delivery_warehouse:`<div class="step-card">
 </div>`,
 
 delivery_partsroom:`<div class="step-card">
-  <div class="step-label">Decision: Repair Path</div>
-  <div class="step-q">Unit goes to the parts room</div>
-  ${resp(['Delivery Team', 'Service Team', 'Warranty'])}
-  <div class="info-card green">
-    <div class="ic-label">Capritta is Certified</div>
-    <div class="ic-body">Capritta's service team is manufacturer-certified for all brands and will repair the unit. This is a service issue until repair is complete.</div>
-  </div>
+  <div class="step-label">Decision: Bring Back for Parts Room Repair</div>
+  <div class="step-q">Your job is to get it back with the right paperwork</div>
+  ${resp(['Delivery Team'])}
   <div class="info-card blue">
-    <div class="ic-label">Preferred Path — Direct to Parts Room Same Day</div>
-    <div class="ic-body">Delivery should bring the unit directly to the parts room the same day if at all possible. Do not let it sit.</div>
+    <div class="ic-label">Same Day if Possible</div>
+    <div class="ic-body">Bring the unit straight to the parts room today if you can. Don't leave it on the truck overnight.</div>
   </div>
   <div class="info-card neutral">
-    <div class="ic-label">Delivery Team Steps</div>
-    ${steps(['Bring unit directly to the parts room the same day if possible — do not leave it on the truck','Keep all original packaging and cartons — do not discard anything','Complete damage sheet: customer name, work order #, model/serial, damage description','Document in work order — note decision to repair, who authorized it, and that unit was delivered to parts room','Email photos to warranty department','If unit cannot go to parts room same day and must return to warehouse first: attach work order to the unit so warehouse can route it to parts room — it will not move without it'])}
+    <div class="ic-label">Your Steps</div>
+    ${steps([
+      'Load the unit and bring it back — keep all original packaging, do not throw anything away',
+      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+      'Note in the work order: decision to repair, who authorized it (Lead or Kevin)',
+      'Attach the damage sheet to the unit',
+      'Email warranty (CC Lydell): attach all photos and the damage sheet — note that it is going to the parts room for repair',
+      'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
+    ])}
   </div>
-  ${docBox()}
-  <div class="info-card amber">
-    <div class="ic-label">If Unit Goes to Warehouse First</div>
-    <div class="ic-body">Warehouse team will print a copy of the work order and attach it to the unit. The work order contains all the information the warranty coordinator needs and serves as identification for routing the unit to the parts room.</div>
-  </div>
-  <div class="info-card neutral">
-    <div class="ic-label">Parts Room / Service Path</div>
-    ${steps(['Service team assesses and performs repair','Parts ordered through warranty if needed — warranty creates PO','Once repaired and passes safety/functional checks: unit returns to inventory','If repair cannot be completed: escalate to management — only management can declare a unit unrepairable'])}
-  </div>
+  ${warrantyHandoff()}
   <button class="reset-btn" onclick="reset()">↩ Start Over</button>
   <button class="back-btn" onclick="back()">← Back</button>
 </div>`,
@@ -646,13 +672,30 @@ postinstall_cosmetic:`<div class="step-card">
     <div class="ic-label">⚠ Most Vendors Will Not Accept Returns</div>
     <div class="ic-body">Cosmetic damage after installation is typically the dealer's responsibility unless it can be proven as a pre-existing defect. Contact your vendor rep before committing anything to the customer.</div>
   </div>
-  <div class="info-card neutral">
+  ${state.vendor==='samsung'?`<div class="info-card blue">
+    <div class="ic-label">Samsung — Cosmetic Damage Path (Post-Install)</div>
+    <div class="ic-body" style="font-size:13px;line-height:1.7">
+      <strong>Do not contact Mike Moore.</strong> All post-install cosmetic issues go through Warranty (Klarissa).<br><br>
+      <ol class="steps-list" style="margin-top:.5rem">
+        <li>Delivery team photographs damage and sends to Warranty (Klarissa) with model#, serial#, and damage description</li>
+        <li>Klarissa opens a cosmetic ticket with Samsung Builder Support</li>
+        <li>Samsung Builder Support: <strong>SamsungBuilderB2B@sea.samsung.com</strong> | 1-844-SAM4BLD (726-4253)</li>
+        <li>Klarissa orders cosmetic parts and schedules a certified tech</li>
+        <li>Non-bulky parts (knobs, handles, shelves, bins) can ship directly — no tech needed</li>
+        <li>Bulky parts (doors, panels) require tech installation</li>
+      </ol>
+      <br><strong>Cosmetic Program window:</strong> Occupied home — 30 days from delivery | Unoccupied/pre-closing — 90 days from delivery<br><br>
+      <strong>⚠ Physical damage</strong> (frame damage, unrepairable cabinet side) is NOT covered by the cosmetic program — covered by Samsung's NRA damage allowance built into your sales contract. Contact Klarissa to assess.
+    </div>
+  </div>`:''}
+  ${state.vendor!=='samsung'?`<div class="info-card neutral">
     <div class="ic-label">Steps</div>
     ${steps(['Document all damage with photos immediately','Warranty contacts vendor sales rep — do not promise anything to customer first','Ask rep about out-of-policy cosmetic allowance — several vendors consider case by case','If vendor denies: management decides whether dealer absorbs cost or negotiates with customer'])}
-  </div>
+  </div>`:''}
   <div class="info-card green">
     <div class="ic-label">Vendors with Known Allowance Programs</div>
     <div class="ic-body" style="font-size:12px;line-height:1.8">
+      Samsung: Cosmetic Program (30-day occupied / 90-day unoccupied) — via Klarissa/Warranty → SamsungBuilderB2B@sea.samsung.com<br>
       GE: ASM offers allowance at discretion<br>
       F&P: 5-20% based on severity<br>
       Climatic: 20% allowance to keep<br>

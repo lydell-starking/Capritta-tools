@@ -17,6 +17,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .header{background:var(--ink);color:var(--bg);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between}
 .header-title{font-size:14px;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
 .header-sub{font-family:'DM Mono',monospace;font-size:11px;color:#888;margin-top:2px}
+.role-badge{font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #444;color:#ccc;cursor:pointer}
+.role-badge:hover{border-color:#888;color:white}
 .container{max-width:680px;margin:0 auto;padding:2rem 1.5rem 4rem}
 .breadcrumb{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3);margin-bottom:1.75rem;flex-wrap:wrap}
 .breadcrumb .sep{color:var(--border)}
@@ -40,6 +42,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .opt-btn.good{border-color:#8DC9AA;background:var(--green-bg)}
 .opt-btn.good:hover{border-color:var(--green)}
 .opt-btn.good .opt-icon{background:#C8E8D8}
+/* Role picker cards */
+.role-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:1.5rem}
+@media(max-width:520px){.role-cards{grid-template-columns:1fr}}
+.role-card{background:white;border:2px solid var(--border);border-radius:14px;padding:1.5rem 1rem;cursor:pointer;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif}
+.role-card:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.role-card.delivery{border-top:4px solid #C4502A}
+.role-card.warehouse{border-top:4px solid #1A4B8B}
+.role-card.warranty{border-top:4px solid #1C6B4A}
+.role-card .rc-icon{font-size:28px;margin-bottom:.65rem}
+.role-card .rc-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:.3rem}
+.role-card .rc-desc{font-size:12px;color:var(--ink3);line-height:1.4}
+/* Vendor lookup grid */
 .vendor-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .vendor-btn{padding:.7rem .85rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s}
 .vendor-btn:hover{background:white;border-color:var(--ink2)}
@@ -61,8 +75,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .steps-list li:last-child{border-bottom:none}
 .steps-list li::before{content:counter(step-counter);counter-increment:step-counter;position:absolute;left:0;top:.38rem;width:18px;height:18px;background:var(--ink);color:white;border-radius:50%;font-size:10px;font-family:'DM Mono',monospace;display:flex;align-items:center;justify-content:center;font-weight:500}
 .steps-list li.warn::before{background:var(--accent)}
-.steps-list li.owner{font-weight:500}
-.owner-tag{font-size:10px;font-family:'DM Mono',monospace;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--ink2);margin-left:5px;vertical-align:middle}
 .responsible{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace;margin-bottom:.65rem;flex-wrap:wrap}
 .responsible .r-tag{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--ink2);font-size:11px}
 .contact-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;font-size:12px;margin-top:.5rem;line-height:1.6}
@@ -77,15 +89,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-
 .escalation-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
 .e-node{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:500;color:var(--ink)}
 .e-arrow{color:var(--ink3);font-size:12px}
+/* Warranty vendor lookup card */
+.vendor-detail-card{background:white;border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.vendor-detail-card h2{font-size:20px;font-weight:600;margin-bottom:.2rem}
+.vendor-detail-card .brands{font-size:12px;color:var(--ink3);margin-bottom:1rem;font-family:'DM Mono',monospace}
+.policy-row{display:flex;gap:.5rem;margin-bottom:.45rem;font-size:13px;line-height:1.5}
+.policy-row .pl{font-weight:500;min-width:120px;color:var(--ink2);flex-shrink:0}
+.policy-row .pv{color:var(--ink)}
+.section-head{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin:1rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.3rem}
 </style>
 </head>
 <body>
 <div class="header">
   <div>
     <div class="header-title">Damage & Return Action Tree</div>
-    <div class="header-sub">Capritta Fine Appliance — Internal Process + All Vendors</div>
+    <div class="header-sub">Capritta Fine Appliance — Internal Use Only</div>
   </div>
-  <div style="font-family:'DM Mono',monospace;font-size:11px;color:#666">v2.0 · May 2026</div>
+  <div id="role-indicator" style="font-family:'DM Mono',monospace;font-size:11px;color:#666"></div>
 </div>
 <div class="container">
   <div class="breadcrumb" id="breadcrumb"></div>
@@ -217,7 +237,7 @@ const VENDORS=[
 ];
 
 // ── STATE ──
-let state={step:'start',vendor:null,history:[]};
+let state={role:null,step:'role_pick',vendor:null,history:[]};
 
 // ── NAVIGATION ──
 function go(step,vendor=null){
@@ -231,206 +251,32 @@ function back(){
   const p=state.history.pop();
   state.step=p.step;state.vendor=p.vendor;render();
 }
-function reset(){state={step:'start',vendor:null,history:[]};render();}
-function goStep(step){
-  const idx=state.history.findIndex(h=>h.step===step);
-  if(idx>=0){
-    const s=state.history[idx];
-    state.history=state.history.slice(0,idx);
-    state.step=s.step;state.vendor=s.vendor;render();
-  } else if(step==='start') reset();
+function reset(){state={role:null,step:'role_pick',vendor:null,history:[]};render();}
+function setRole(r){
+  state.role=r;
+  state.history=[];
+  if(r==='delivery') state.step='del_situation';
+  else if(r==='warehouse') state.step='wh_situation';
+  else state.step='warranty_lookup';
+  render();
 }
-window.go=go;window.back=back;window.reset=reset;window.goStep=goStep;
-window.selectDeliveryVendor=id=>go('delivery_result',id);
-window.selectConcealedVendor=id=>go('concealed_result',id);
-window.selectVendorStart=function(id){go('situation',id);};
-
-function warehouseVisibleStep(){
-  const v=VENDORS.find(x=>x.id===state.vendor);if(!v)return '';
-  const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE this shipment</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign it before the truck leaves.</div></div>`:
-    v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">${v.n} — Accept and Document</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment, then document the damage on the freight bill with model# and serial# before the driver leaves.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if you can</div><div class="ic-body">Refuse the shipment if possible. If you must accept, document damage on the BOL with model# and serial# before the driver leaves.</div></div>`;
-  return `<div class="step-card">
-    <div class="step-label">Warehouse — Visible Damage at Receiving</div>
-    <div class="step-q">What to do right now</div>
-    ${resp(['Warehouse'])}
-    ${ac}
-    <div class="info-card neutral"><div class="ic-label">Your Steps — Do These Before Moving the Unit</div>
-    ${steps([
-      'Get the driver to note the damage on the BOL and sign it — do this before the truck leaves',
-      'Photograph all 4 sides of the carton',
-      'Photograph the damage itself and the model/serial number tag',
-      'Do not discard any packaging',
-      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
-      'Place one copy of the damage sheet on the unit',
-      'Bring the other copy to the warranty desk',
-      'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original delivery date'
-    ])}
-    </div>
-    ${warrantyHandoff()}
-    <button class="opt-btn" onclick="go('delivery_result')" style="margin-bottom:.5rem">
-      <div class="opt-icon">→</div>
-      <div class="opt-text"><div class="opt-title">See what warranty needs to know for ${v.n}</div><div class="opt-desc">Vendor-specific windows, contacts, and RA process</div></div>
-    </button>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-
-function warehouseConcealedStep(){
-  const v=VENDORS.find(x=>x.id===state.vendor);if(!v)return '';
-  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
-    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
-  return `<div class="step-card">
-    <div class="step-label">Warehouse — Concealed Damage</div>
-    <div class="step-q">What to do right now</div>
-    ${resp(['Warehouse'])}
-    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Tight Window — ':'⏱ '}${v.n} claim window: ${v.con.win}</div><div class="ic-body"><strong>The clock started the day the unit was received — not today.</strong> Email warranty now.</div></div>
-    <div class="info-card neutral"><div class="ic-label">Your Steps — Do These Now</div>
-    ${steps([
-      'Stop — do not move or install the unit',
-      'Keep all packaging and cartons — do not discard anything',
-      'Photograph all 4 sides of the carton',
-      'Photograph the damage and the model/serial number tag',
-      'Look up or confirm the original date this unit was received',
-      'Fill out the damage sheet: customer name, work order #, model #, serial #, date received, description of damage',
-      'Place one copy of the damage sheet on the unit',
-      'Bring the other copy to the warranty desk',
-      'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original received date'
-    ])}
-    </div>
-    ${warrantyHandoff()}
-    <button class="opt-btn" onclick="go('concealed_result')" style="margin-bottom:.5rem">
-      <div class="opt-icon">→</div>
-      <div class="opt-text"><div class="opt-title">See what warranty needs to know for ${v.n}</div><div class="opt-desc">Vendor claim process, contacts, and RA details</div></div>
-    </button>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-
-function scrapStep(){
-  const samsung=state.vendor==='samsung';
-  const v=VENDORS.find(x=>x.id===state.vendor);
-  const vname=v?v.n:'vendor';
-  return `<div class="step-card">
-    <div class="step-label">${samsung?'Samsung 1% Field Scrap':'Scrap — Unit Beyond Repair'}</div>
-    <div class="step-q">${samsung?'1% Field Scrap Program':'Unit beyond repair'}</div>
-    ${resp(['Management', 'Sales Rep', 'Warranty', 'Warehouse'])}
-    <div class="info-card red"><div class="ic-label">⚠ Management Authorization Required</div><div class="ic-body"><strong>Only the Capritta management team can declare a unit unrepairable.</strong> Stop and escalate if not management.</div></div>
-    ${samsung?'<div class="info-card blue"><div class="ic-label">Samsung 1% Program</div><div class="ic-body">Samsung\'s field scrap program applies to unrepairable units that cannot be returned. Claim filed through M. Moore via PUMI. Provide model/serial, photos, and cost.</div></div>':''}
-    <div class="info-card neutral"><div class="ic-label">Scrap Process — Once Management Has Authorized</div>
-    ${steps(['Warranty contacts '+vname+' rep/ASM — get written scrap approval before touching the unit',samsung?'Samsung: Contact M. Moore — PUMI required (model/serial, photos, cost)':'Get written approval from vendor before proceeding','Remove the serial number plate from the unit','Attach serial plate to the vendor Scrap Form or equivalent','Photograph: the damage, removed serial/model plate (numbers legible), and evidence unit is inoperable (severed power cord)','Warranty submits form and photos to vendor/ASM for sign-off','Dispose lawfully — shredder or landfill | comply with all environmental and CFC regulations','Retain all documentation on file','Warranty closes out any open POs or RAs'])}
-    </div>
-    <div class="info-card blue"><div class="ic-label">Vendor Scrap Notes</div><div class="ic-body" style="font-size:12px;line-height:1.8">
-      <strong>Samsung:</strong> 1% field scrap — PUMI via M. Moore.<br>
-      <strong>GE:</strong> Scrap at dealer location. Scrap Form + ASM sign-off. Mail serial plate to ASM.<br>
-      <strong>BSH:</strong> Written approval required. Appliance Scrap Warrant form. Contact Patti.<br>
-      <strong>Sub-Zero:</strong> Contact Robert Luyckx. 105% fee if no documentation.<br>
-      <strong>Climatic:</strong> Approved scrap only. Serial plate to claims dept.<br>
-      <strong>BlueStar:</strong> Cannot scrap without written approval. Contact Lamneck.<br>
-      <strong>All others:</strong> Contact vendor rep — written authorization required.
-    </div></div>
-    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-function situationStep(){
-  const v=VENDORS.find(x=>x.id===state.vendor);
-  if(!v)return '';
-  const samsung=state.vendor==='samsung';
-  const delNote=v.del.act==='accept'?'<span style="font-size:11px;color:var(--amber);margin-left:6px">Always accept</span>':
-    v.del.act==='refuse'?'<span style="font-size:11px;color:var(--accent);margin-left:6px">Must refuse</span>':'';
-  return `<div class="step-card">
-    <div class="step-label">Step 2 of 3 — ${v.n}</div>
-    <div class="step-q">What happened?</div>
-    <div class="step-hint" style="font-size:12px;color:var(--ink3)">${v.b}</div>
-    <div class="options" style="margin-top:1rem">
-      <button class="opt-btn" onclick="go('warehouse_visible')">
-        <div class="opt-icon">🏭</div>
-        <div class="opt-text">
-          <div class="opt-title">Delivery damage — visible at warehouse receiving${delNote}</div>
-          <div class="opt-desc">Damage visible on carton when product arrived from vendor</div>
-        </div>
-      </button>
-      <button class="opt-btn" onclick="go('delivery_call')">
-        <div class="opt-icon">🚚</div>
-        <div class="opt-text">
-          <div class="opt-title">Delivery damage — found at job site</div>
-          <div class="opt-desc">Damage found during delivery, unboxing, or install at customer's home</div>
-        </div>
-      </button>
-      <button class="opt-btn" onclick="go('warehouse_concealed')">
-        <div class="opt-icon">📦</div>
-        <div class="opt-text">
-          <div class="opt-title">Concealed damage — found at warehouse</div>
-          <div class="opt-desc">Box looked fine but damage found during warehouse inspection</div>
-        </div>
-      </button>
-      <button class="opt-btn" onclick="go('concealed_installed')">
-        <div class="opt-icon">🔍</div>
-        <div class="opt-text">
-          <div class="opt-title">Concealed damage — found at job site or later</div>
-          <div class="opt-desc">Damage discovered after warehouse, during or before install</div>
-        </div>
-      </button>
-      <button class="opt-btn" onclick="go('postinstall')">
-        <div class="opt-icon">🔧</div>
-        <div class="opt-text">
-          <div class="opt-title">Post-install issue</div>
-          <div class="opt-desc">Product already installed — functional or cosmetic</div>
-        </div>
-      </button>
-      <button class="opt-btn urgent" onclick="go('scrap')">
-        <div class="opt-icon">⚠️</div>
-        <div class="opt-text">
-          <div class="opt-title">${samsung?'1% Field Scrap (Samsung)':'Unit beyond repair — Scrap'}</div>
-          <div class="opt-desc">Management has authorized unit as unrepairable${samsung?' — Samsung 1% program applies':''}</div>
-        </div>
-      </button>
-    </div>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-
-// ── BREADCRUMB ──
-const SL={start:'Brand',situation:'What Happened',warehouse_visible:'Warehouse — Visible',warehouse_concealed:'Warehouse — Concealed',
-  delivery_call:'Job Site Damage',delivery_decision:'Delivery Decision',
-  delivery_install:'Install As-Is',delivery_warehouse:'Return for RA',delivery_partsroom:'Repair Path',
-  delivery_vendor:'Delivery — Vendor',delivery_result:'Delivery — Instructions',
-  concealed_installed:'Concealed Damage',concealed_vendor:'Concealed — Vendor',concealed_result:'Concealed — Instructions',
-  postinstall:'Post-Install',postinstall_functional:'Post-Install Functional',postinstall_cosmetic:'Post-Install Cosmetic',scrap:'Scrap / 1%'};
-function renderBreadcrumb(){
-  const el=document.getElementById('breadcrumb');
-  let crumbs=[{label:'Start',step:'start'}];
-  state.history.forEach(h=>{
-    if(h.step!=='start'&&SL[h.step]){
-      const l=SL[h.step];
-      if(!crumbs.find(c=>c.label===l))crumbs.push({label:l,step:h.step});
-    }
-  });
-  if(state.step!=='start'&&SL[state.step]){
-    const cur=SL[state.step];
-    if(!crumbs.find(c=>c.label===cur))crumbs.push({label:cur,current:true});
-    else crumbs=crumbs.map(c=>c.label===cur?{...c,current:true}:c);
-  }
-  el.innerHTML=crumbs.map((c,i)=>{
-    const prefix=i>0?'<span class="sep">›</span>':'';
-    const cls=c.current?'current':'';
-    const oc=c.current?'':'onclick="goStep(\''+c.step+'\')"';
-    return prefix+'<span class="'+cls+'" '+oc+'>'+c.label+'</span>';
-  }).join('');
-}
+window.go=go;window.back=back;window.reset=reset;window.setRole=setRole;
+window.selectWarrantyVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='warranty_vendor_detail';render();};
+window.selectDelVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='del_vendor_detail';render();};
+window.selectWhVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='wh_vendor_detail';render();};
 
 // ── HELPERS ──
 function resp(roles){
   return `<div class="responsible">RESPONSIBLE: ${roles.map(r=>`<span class="r-tag">${r}</span>`).join('')}</div>`;
 }
-function steps(arr){
+function stepsHtml(arr){
   return `<ol class="steps-list">${arr.map(s=>`<li class="${s.startsWith('⚠')?'warn':''}">${s}</li>`).join('')}</ol>`;
 }
-function contact(c){
-  return `<div class="contact-box"><div class="label">Contact</div>${c.split('|').map(p=>p.trim()).join('<br>')}</div>`;
+function warrantyHandoff(){
+  return `<div class="info-card purple">
+    <div class="ic-label">→ Hand Off to Warranty</div>
+    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.</div>
+  </div>`;
 }
 function docBox(){
   return `<div class="doc-box">
@@ -445,12 +291,6 @@ function docBox(){
     </div>
   </div>`;
 }
-function warrantyHandoff(){
-  return `<div class="info-card purple">
-    <div class="ic-label">→ Hand Off to Warranty</div>
-    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.</div>
-  </div>`;
-}
 function vendorGrid(fn){
   return `<div class="vendor-grid">${VENDORS.map(v=>
     `<button class="vendor-btn" onclick="${fn}('${v.id}')">
@@ -459,353 +299,549 @@ function vendorGrid(fn){
     </button>`).join('')}</div>`;
 }
 
-// ── STEPS ──
-const S={
-
-start:`<div class="step-card">
-  <div class="step-label">Step 1 of 3</div>
-  <div class="step-q">Select the brand</div>
-  <div class="step-hint">Every step after this will be specific to that vendor.</div>
-  ${vendorGrid('selectVendorStart')}
-</div>`,
-
-warehouse_visible:'__DYNAMIC__',
-
-warehouse_concealed:'__DYNAMIC__',
-
-delivery_call:`<div class="step-card">
-  <div class="step-label">Job Site — Damage Found</div>
-  <div class="step-q">Stop. Document first, then call the Delivery Lead.</div>
-  ${resp(['Delivery Team', 'Delivery Lead'])}
-  <div class="info-card neutral">
-    <div class="ic-label">Do These Right Now — Before You Call Anyone</div>
-    ${steps([
-      'Do not install the unit and do not discard any packaging',
-      'Photograph all damage — unit and carton, all sides',
-      'Photograph the model number and serial number tag',
-      'Write down the model #, serial #, customer name, and work order #'
-    ])}
-  </div>
-  <div class="info-card red">
-    <div class="ic-label">⚠ Now Call the Delivery Lead</div>
-    <div class="ic-body">The delivery team does not decide what happens next — that is the Delivery Lead's call. Call them now. If the Lead is unsure or unreachable, escalate to Kevin (Sales &amp; Delivery Manager).</div>
-  </div>
-  <div class="info-card neutral">
-    <div class="ic-label">Escalation Chain</div>
-    <div class="ic-body">
-      <div class="escalation-chain">
-        <div class="e-node">Delivery Team</div>
-        <div class="e-arrow">→</div>
-        <div class="e-node">Delivery Lead</div>
-        <div class="e-arrow">→</div>
-        <div class="e-node">Kevin — Sales &amp; Delivery Mgr</div>
+// ── ROLE PICKER ──
+function rolePick(){
+  return `<div class="step-card">
+    <div class="step-label">Capritta Fine Appliance</div>
+    <div class="step-q">Who are you?</div>
+    <div class="step-hint">Select your role to see only what's relevant to you.</div>
+    <div class="role-cards">
+      <div class="role-card delivery" onclick="setRole('delivery')">
+        <div class="rc-icon">🚚</div>
+        <div class="rc-title">Delivery Team</div>
+        <div class="rc-desc">Damage found at a customer job site during delivery or install</div>
+      </div>
+      <div class="role-card warehouse" onclick="setRole('warehouse')">
+        <div class="rc-icon">🏭</div>
+        <div class="rc-title">Warehouse Team</div>
+        <div class="rc-desc">Damage found at receiving or during warehouse inspection</div>
+      </div>
+      <div class="role-card warranty" onclick="setRole('warranty')">
+        <div class="rc-icon">📋</div>
+        <div class="rc-title">Warranty / Office</div>
+        <div class="rc-desc">Vendor policy lookup — windows, contacts, RA process, allowances</div>
       </div>
     </div>
-  </div>
-  <div class="info-card blue">
-    <div class="ic-label">Delivery Lead — Select Your Decision</div>
-    <div class="ic-body" style="margin-bottom:.75rem">What did the Lead authorize?</div>
-    <div class="options" style="margin-top:.5rem">
-      <button class="opt-btn good" onclick="go('delivery_install')">
-        <div class="opt-icon">✅</div>
-        <div class="opt-text"><div class="opt-title">Install as-is</div><div class="opt-desc">Damage is minor — install and document</div></div>
+  </div>`;
+}
+
+// ── DELIVERY SCREENS ──
+function delSituation(){
+  return `<div class="step-card">
+    <div class="step-label">Delivery Team</div>
+    <div class="step-q">What's happening?</div>
+    <div class="options" style="margin-top:1rem">
+      <button class="opt-btn" onclick="go('del_damage_found')">
+        <div class="opt-icon">📦</div>
+        <div class="opt-text"><div class="opt-title">I found damage at the job site</div><div class="opt-desc">Damage visible during delivery, unboxing, or before install</div></div>
       </button>
-      <button class="opt-btn" onclick="go('delivery_warehouse')">
-        <div class="opt-icon">🔄</div>
-        <div class="opt-text"><div class="opt-title">Bring back to warehouse</div><div class="opt-desc">Unit comes back — warranty will process the return or repair</div></div>
-      </button>
-      <button class="opt-btn" onclick="go('delivery_partsroom')">
+      <button class="opt-btn" onclick="go('del_postinstall')">
         <div class="opt-icon">🔧</div>
-        <div class="opt-text"><div class="opt-title">Bring back for parts room repair</div><div class="opt-desc">Unit can be fixed by our service team</div></div>
+        <div class="opt-text"><div class="opt-title">Product already installed — issue found</div><div class="opt-desc">Functional problem or cosmetic damage after install</div></div>
       </button>
     </div>
-  </div>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
+    <button class="back-btn" onclick="reset()">← Change Role</button>
+  </div>`;
+}
 
-delivery_install:`<div class="step-card">
-  <div class="step-label">Decision: Install As-Is</div>
-  <div class="step-q">Install the unit, then hand off to warranty</div>
-  ${resp(['Delivery Team'])}
-  <div class="info-card neutral">
-    <div class="ic-label">Your Steps</div>
-    ${steps([
-      'Install the unit',
-      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage and location',
-      'Leave a copy of the damage sheet with the customer or with the unit',
-      'Bring the other copy to the warranty desk when you return',
-      'Email warranty (CC Lydell): attach all photos, damage sheet, and note that the Lead authorized install as-is'
-    ])}
-  </div>
-  ${warrantyHandoff()}
-  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-delivery_warehouse:`<div class="step-card">
-  <div class="step-label">Decision: Bring Back to Warehouse</div>
-  <div class="step-q">Your job is to get it back with the right paperwork</div>
-  ${resp(['Delivery Team'])}
-  <div class="info-card amber">
-    <div class="ic-label">⏱ Don't Wait — Vendor Windows Are Already Running</div>
-    <div class="ic-body">The claim window started the day this unit arrived at our warehouse — not today. Get it back and emailed to warranty as fast as possible.</div>
-  </div>
-  <div class="info-card neutral">
-    <div class="ic-label">Your Steps</div>
-    ${steps([
-      'Do not leave the unit at the job site — load it and bring it back',
-      'Keep all original packaging and cartons — do not throw anything away',
-      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
-      'Note in the work order: decision to return, who authorized it (Lead or Kevin), and the original delivery date',
-      'Attach the damage sheet to the unit',
-      'Email warranty (CC Lydell) before you leave the job site: attach all photos, the damage sheet, and note who authorized the return'
-    ])}
-  </div>
-  ${warrantyHandoff()}
-  <div id="delivery_warehouse_vendor_btn"></div>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-delivery_partsroom:`<div class="step-card">
-  <div class="step-label">Decision: Bring Back for Parts Room Repair</div>
-  <div class="step-q">Your job is to get it back with the right paperwork</div>
-  ${resp(['Delivery Team'])}
-  <div class="info-card blue">
-    <div class="ic-label">Same Day if Possible</div>
-    <div class="ic-body">Bring the unit straight to the parts room today if you can. Don't leave it on the truck overnight.</div>
-  </div>
-  <div class="info-card neutral">
-    <div class="ic-label">Your Steps</div>
-    ${steps([
-      'Load the unit and bring it back — keep all original packaging, do not throw anything away',
-      'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
-      'Note in the work order: decision to repair, who authorized it (Lead or Kevin)',
-      'Attach the damage sheet to the unit',
-      'Email warranty (CC Lydell): attach all photos and the damage sheet — note that it is going to the parts room for repair',
-      'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
-    ])}
-  </div>
-  ${warrantyHandoff()}
-  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-delivery_vendor:'__UNUSED__',
-
-concealed_installed:`<div class="step-card">
-  <div class="step-label">Concealed Damage</div>
-  <div class="step-q">Is the unit installed?</div>
-  <div class="step-hint">This changes what options are available.</div>
-  <div class="options">
-    <button class="opt-btn" onclick="go('concealed_result')">
-      <div class="opt-icon">✅</div>
-      <div class="opt-text"><div class="opt-title">Not installed</div><div class="opt-desc">Still in warehouse or job site — not yet connected</div></div>
-    </button>
-    <button class="opt-btn urgent" onclick="go('postinstall')">
-      <div class="opt-icon">⚠️</div>
-      <div class="opt-text"><div class="opt-title">Already installed</div><div class="opt-desc">Product is in the customer's home — options are limited</div></div>
-    </button>
-  </div>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-concealed_vendor:'__UNUSED__',
-
-postinstall:`<div class="step-card">
-  <div class="step-label">Post-Install Issue</div>
-  <div class="step-q">Functional or cosmetic?</div>
-  <div class="step-hint">This determines whether it's a warranty/service issue or a cosmetic claim.</div>
-  <div class="options">
-    <button class="opt-btn" onclick="go('postinstall_functional')">
-      <div class="opt-icon">⚙️</div>
-      <div class="opt-text"><div class="opt-title">Functional — doesn't work</div><div class="opt-desc">Not powering on, not operating correctly</div></div>
-    </button>
-    <button class="opt-btn" onclick="go('postinstall_cosmetic')">
-      <div class="opt-icon">🪞</div>
-      <div class="opt-text"><div class="opt-title">Cosmetic — visible damage only</div><div class="opt-desc">Dent, scratch, chip — product still works</div></div>
-    </button>
-  </div>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-postinstall_functional:`<div class="step-card">
-  <div class="step-label">Post-Install — Functional</div>
-  <div class="step-q">Warranty / service path</div>
-  ${resp(['Warranty', 'Service Team', 'Sales Rep'])}
-  <div class="info-card amber">
-    <div class="ic-label">Important</div>
-    <div class="ic-body">Most vendors do not accept returns on installed product. The path is repair, not RA — unless a Capritta-certified technician deems it unrepairable. Do not promise a replacement before service is attempted.</div>
-  </div>
-  <div class="info-card green">
-    <div class="ic-label">Capritta Advantage</div>
-    <div class="ic-body">Capritta's service team is manufacturer-certified for all brands. Initiate a service call through warranty — our team handles the repair in most cases without involving the manufacturer's service network.</div>
-  </div>
-  <div class="info-card neutral">
-    <div class="ic-label">Steps</div>
-    ${steps(['Warranty initiates service call — do not contact vendor directly','Technician assesses: repairable in field vs. escalation needed','If repairable: parts ordered through warranty (warranty creates PO), tech completes repair','If unit fails within 30 days of install (DOA): contact your vendor rep immediately — most vendors expedite','If Safeware/extended warranty was sold: initiate parallel claim through Safeware','Only if tech and management confirm unrepairable: escalate to scrap process'])}
-  </div>
-  <div class="info-card blue">
-    <div class="ic-label">Manufacturer Service Contacts</div>
-    <div class="ic-body" style="font-size:12px;line-height:1.8">
-      GE/Monogram: tradecare_express@whirlpool.com | (866) 233-8547<br>
-      Whirlpool brands: tradecare_express@whirlpool.com | (866) 233-8547<br>
-      LG: lgeus.my.site.com/serviceportal/s/homebuilders<br>
-      Samsung: 844-SAM4BLD | SamsungBuilderB2B@sea.samsung.com<br>
-      F&P/DCS: 1-888-936-7872<br>
-      BSH: Contact Patti Plavnick<br>
-      Sub-Zero/Wolf: Contact Robert Luyckx<br>
-      Pinnacle: service@pinnaclesalesgroup.com | opt 4<br>
-      True/Caliber: TrueCaliberCS@truemfg.com<br>
-      SMG/Perlick: Parts Town Service 844.411.8050<br>
-      Composition: customercare@middlebyresidential.com | 888-845-4641
+function delDamageFound(){
+  return `<div class="step-card">
+    <div class="step-label">Delivery Team — Damage at Job Site</div>
+    <div class="step-q">Stop. Document first, then call the Delivery Lead.</div>
+    ${resp(['Delivery Team','Delivery Lead'])}
+    <div class="info-card neutral">
+      <div class="ic-label">Do These Right Now — Before You Call Anyone</div>
+      ${stepsHtml([
+        'Do not install the unit and do not discard any packaging',
+        'Photograph all damage — unit and carton, all sides',
+        'Photograph the model number and serial number tag',
+        'Write down the model #, serial #, customer name, and work order #'
+      ])}
     </div>
-  </div>
-  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-postinstall_cosmetic:`<div class="step-card">
-  <div class="step-label">Post-Install — Cosmetic</div>
-  <div class="step-q">Limited options once installed</div>
-  ${resp(['Warranty', 'Sales Rep', 'Management'])}
-  <div class="info-card red">
-    <div class="ic-label">⚠ Most Vendors Will Not Accept Returns</div>
-    <div class="ic-body">Cosmetic damage after installation is typically the dealer's responsibility unless it can be proven as a pre-existing defect. Contact your vendor rep before committing anything to the customer.</div>
-  </div>
-  ${state.vendor==='samsung'?`<div class="info-card blue">
-    <div class="ic-label">Samsung — Cosmetic Damage Path (Post-Install)</div>
-    <div class="ic-body" style="font-size:13px;line-height:1.7">
-      <strong>Do not contact Mike Moore.</strong> All post-install cosmetic issues go through Warranty (Klarissa).<br><br>
-      <ol class="steps-list" style="margin-top:.5rem">
-        <li>Delivery team photographs damage and sends to Warranty (Klarissa) with model#, serial#, and damage description</li>
-        <li>Klarissa opens a cosmetic ticket with Samsung Builder Support</li>
-        <li>Samsung Builder Support: <strong>SamsungBuilderB2B@sea.samsung.com</strong> | 1-844-SAM4BLD (726-4253)</li>
-        <li>Klarissa orders cosmetic parts and schedules a certified tech</li>
-        <li>Non-bulky parts (knobs, handles, shelves, bins) can ship directly — no tech needed</li>
-        <li>Bulky parts (doors, panels) require tech installation</li>
-      </ol>
-      <br><strong>Cosmetic Program window:</strong> Occupied home — 30 days from delivery | Unoccupied/pre-closing — 90 days from delivery<br><br>
-      <strong>⚠ Physical damage</strong> (frame damage, unrepairable cabinet side) is NOT covered by the cosmetic program — covered by Samsung's NRA damage allowance built into your sales contract. Contact Klarissa to assess.
+    <div class="info-card red">
+      <div class="ic-label">⚠ Now Call the Delivery Lead</div>
+      <div class="ic-body">You do not decide what happens next — that is the Delivery Lead's call. Call them now. If the Lead is unsure or unreachable, escalate to Kevin (Sales &amp; Delivery Manager).</div>
     </div>
-  </div>`:''}
-  ${state.vendor!=='samsung'?`<div class="info-card neutral">
-    <div class="ic-label">Steps</div>
-    ${steps(['Document all damage with photos immediately','Warranty contacts vendor sales rep — do not promise anything to customer first','Ask rep about out-of-policy cosmetic allowance — several vendors consider case by case','If vendor denies: management decides whether dealer absorbs cost or negotiates with customer'])}
-  </div>`:''}
-  <div class="info-card green">
-    <div class="ic-label">Vendors with Known Allowance Programs</div>
-    <div class="ic-body" style="font-size:12px;line-height:1.8">
-      Samsung: Cosmetic Program (30-day occupied / 90-day unoccupied) — via Klarissa/Warranty → SamsungBuilderB2B@sea.samsung.com<br>
-      GE: ASM offers allowance at discretion<br>
-      F&P: 5-20% based on severity<br>
-      Climatic: 20% allowance to keep<br>
-      SMG/Perlick: Case by case monetary allowance<br>
-      Speed Queen: Zone-based $100-$150<br>
-      BSH: Up to 20% for minor damage<br>
-      XO (Eastern): 90-day Love It or Leave It<br>
-      Whirlpool: ASM discretion
+    <div class="info-card neutral">
+      <div class="ic-label">Escalation Chain</div>
+      <div class="ic-body">
+        <div class="escalation-chain">
+          <div class="e-node">Delivery Team</div><div class="e-arrow">→</div>
+          <div class="e-node">Delivery Lead</div><div class="e-arrow">→</div>
+          <div class="e-node">Kevin — Sales &amp; Delivery Mgr</div>
+        </div>
+      </div>
     </div>
-  </div>
-  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`,
-
-scrap:`<div class="step-card">
-  <div class="step-label">${state.vendor==='samsung'?'Samsung 1% Field Scrap':'Scrap — Unit Beyond Repair'}</div>
-  <div class="step-q">${state.vendor==='samsung'?'1% Field Scrap Program':'Unit beyond repair'}</div>
-  ${resp(['Management', 'Sales Rep', 'Warranty', 'Warehouse'])}
-  <div class="info-card red">
-    <div class="ic-label">⚠ Management Authorization Required</div>
-    <div class="ic-body"><strong>Only the Capritta management team can declare a unit unrepairable.</strong> Delivery team, warranty, and service team cannot authorize scrap. Stop and escalate if not management.</div>
-  </div>
-  ${state.vendor==='samsung'?'<div class="info-card blue"><div class="ic-label">Samsung 1% Program</div><div class="ic-body">Samsung\'s field scrap program applies to unrepairable units that cannot be returned. Claim is filed through M. Moore via the PUMI process. Provide model/serial, photos, and cost.</div></div>':''}
-  <div class="info-card neutral">
-    <div class="ic-label">Scrap Process — Once Management Has Authorized</div>
-    ${steps(['Warranty contacts vendor rep/ASM — get written scrap approval before touching the unit',state.vendor==='samsung'?'Samsung: Contact M. Moore — PUMI required (model/serial, photos, cost)':'Get written approval from vendor in writing before proceeding','Remove the serial number plate from the unit','Attach serial plate to the vendor Scrap Form or equivalent','Photograph: the damage, the removed serial/model plate (numbers legible), and evidence unit is inoperable (severed power cord)','Warranty submits form and photos to vendor/ASM for sign-off','Dispose of unit lawfully — shredder or landfill | comply with all environmental and CFC regulations','Retain all documentation on file','Warranty closes out any open POs or RAs'])}
-  </div>
-  <div class="info-card blue">
-    <div class="ic-label">Vendor Scrap Notes</div>
-    <div class="ic-body" style="font-size:12px;line-height:1.8">
-      <strong>Samsung:</strong> 1% field scrap — PUMI via M. Moore. Provide all PO/DO/SO numbers.<br>
-      <strong>GE:</strong> Scrap at dealer location only. Scrap Form + ASM sign-off. Mail serial plate to ASM.<br>
-      <strong>BSH:</strong> Written approval required. Appliance Scrap Warrant form. Contact Patti.<br>
-      <strong>Sub-Zero:</strong> Contact Robert Luyckx. 105% fee if no documentation.<br>
-      <strong>Climatic:</strong> Approved scrap only. Serial plate to claims dept.<br>
-      <strong>BlueStar:</strong> Cannot scrap without written approval. Contact Lamneck.<br>
-      <strong>All others:</strong> Contact vendor rep — written authorization required before disposal.
+    <div class="info-card blue">
+      <div class="ic-label">Delivery Lead — What Was Decided?</div>
+      <div class="ic-body" style="margin-bottom:.75rem">Select what the Lead authorized:</div>
+      <div class="options" style="margin-top:.5rem">
+        <button class="opt-btn good" onclick="go('del_install')">
+          <div class="opt-icon">✅</div>
+          <div class="opt-text"><div class="opt-title">Install as-is</div><div class="opt-desc">Damage is minor — install and document</div></div>
+        </button>
+        <button class="opt-btn" onclick="go('del_return')">
+          <div class="opt-icon">🔄</div>
+          <div class="opt-text"><div class="opt-title">Bring back to warehouse</div><div class="opt-desc">Unit comes back — warranty will handle the return or repair</div></div>
+        </button>
+        <button class="opt-btn" onclick="go('del_partsroom')">
+          <div class="opt-icon">🔧</div>
+          <div class="opt-text"><div class="opt-title">Bring back for parts room repair</div><div class="opt-desc">Unit can be fixed by our service team</div></div>
+        </button>
+      </div>
     </div>
-  </div>
-  <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-  <button class="back-btn" onclick="back()">← Back</button>
-</div>`
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
 
-};
+function delInstall(){
+  return `<div class="step-card">
+    <div class="step-label">Decision: Install As-Is</div>
+    <div class="step-q">Install the unit, then hand off to warranty</div>
+    ${resp(['Delivery Team'])}
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps</div>
+      ${stepsHtml([
+        'Install the unit',
+        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage and location',
+        'Leave a copy of the damage sheet with the customer or with the unit',
+        'Bring the other copy to the warranty desk when you return',
+        'Email warranty (CC Lydell): attach all photos, damage sheet, and note that the Lead authorized install as-is'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    ${docBox()}
+    <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
+      <div class="opt-icon">🔍</div>
+      <div class="opt-text"><div class="opt-title">Look up vendor details for warranty</div><div class="opt-desc">Optional — windows, contacts, RA process</div></div>
+    </button>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
 
-// ── RESULT STEPS ──
-function delivery_result(){
+function delReturn(){
+  return `<div class="step-card">
+    <div class="step-label">Decision: Bring Back to Warehouse</div>
+    <div class="step-q">Your job is to get it back with the right paperwork</div>
+    ${resp(['Delivery Team'])}
+    <div class="info-card amber">
+      <div class="ic-label">⏱ Don't Wait — Vendor Windows Are Already Running</div>
+      <div class="ic-body">The claim window started the day this unit arrived at our warehouse — not today. Get it back and emailed to warranty as fast as possible.</div>
+    </div>
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps</div>
+      ${stepsHtml([
+        'Do not leave the unit at the job site — load it and bring it back',
+        'Keep all original packaging and cartons — do not throw anything away',
+        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+        'Note in the work order: decision to return, who authorized it (Lead or Kevin), and the original delivery date',
+        'Attach the damage sheet to the unit',
+        'Email warranty (CC Lydell) before you leave the job site: attach all photos, the damage sheet, and note who authorized the return'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    ${docBox()}
+    <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
+      <div class="opt-icon">🔍</div>
+      <div class="opt-text"><div class="opt-title">Look up vendor details for warranty</div><div class="opt-desc">Optional — windows, contacts, RA process</div></div>
+    </button>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delPartsroom(){
+  return `<div class="step-card">
+    <div class="step-label">Decision: Bring Back for Parts Room Repair</div>
+    <div class="step-q">Your job is to get it back with the right paperwork</div>
+    ${resp(['Delivery Team'])}
+    <div class="info-card blue">
+      <div class="ic-label">Same Day if Possible</div>
+      <div class="ic-body">Bring the unit straight to the parts room today if you can. Don't leave it on the truck overnight.</div>
+    </div>
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps</div>
+      ${stepsHtml([
+        'Load the unit and bring it back — keep all original packaging, do not throw anything away',
+        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+        'Note in the work order: decision to repair, who authorized it (Lead or Kevin)',
+        'Attach the damage sheet to the unit',
+        'Email warranty (CC Lydell): attach all photos and the damage sheet — note that it is going to the parts room for repair',
+        'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    ${docBox()}
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delPostinstall(){
+  return `<div class="step-card">
+    <div class="step-label">Delivery Team — Post-Install Issue</div>
+    <div class="step-q">What kind of issue?</div>
+    <div class="options" style="margin-top:1rem">
+      <button class="opt-btn" onclick="go('del_postinstall_functional')">
+        <div class="opt-icon">⚙️</div>
+        <div class="opt-text"><div class="opt-title">Functional — product doesn't work</div><div class="opt-desc">Not powering on, not operating correctly</div></div>
+      </button>
+      <button class="opt-btn" onclick="go('del_postinstall_cosmetic')">
+        <div class="opt-icon">🪞</div>
+        <div class="opt-text"><div class="opt-title">Cosmetic — visible damage only</div><div class="opt-desc">Dent, scratch, chip — product still works</div></div>
+      </button>
+    </div>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delPostinstallFunctional(){
+  return `<div class="step-card">
+    <div class="step-label">Post-Install — Functional Issue</div>
+    <div class="step-q">This goes through warranty / service</div>
+    ${resp(['Warranty','Service Team'])}
+    <div class="info-card amber">
+      <div class="ic-label">Do Not Promise a Replacement</div>
+      <div class="ic-body">Most vendors require a service attempt before any return on installed product. Let warranty handle it — do not make promises to the customer about replacement.</div>
+    </div>
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps</div>
+      ${stepsHtml([
+        'Document the issue — photograph and note model #, serial #, customer name, work order #',
+        'Email warranty (CC Lydell): describe the issue, attach photos — do not contact the vendor yourself',
+        'Warranty will initiate a service call'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delPostinstallCosmetic(){
+  return `<div class="step-card">
+    <div class="step-label">Post-Install — Cosmetic Issue</div>
+    <div class="step-q">Document and send to warranty</div>
+    ${resp(['Delivery Team','Warranty'])}
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps</div>
+      ${stepsHtml([
+        'Photograph all damage clearly — unit, all sides, model/serial tag',
+        'Note model #, serial #, customer name, work order #, and description',
+        'Email warranty (CC Lydell): attach all photos with the above info — do not contact the vendor yourself',
+        'Do not promise the customer anything — warranty will determine next steps'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    <div class="info-card blue">
+      <div class="ic-label">Samsung — Special Note</div>
+      <div class="ic-body" style="font-size:13px">Samsung cosmetic issues go through <strong>Warranty (Klarissa)</strong> — not Mike Moore. Window: 30 days (occupied) / 90 days (unoccupied/pre-closing).</div>
+    </div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delVendorLookup(){
+  return `<div class="step-card">
+    <div class="step-label">Vendor Details — For Warranty Reference</div>
+    <div class="step-q">Which vendor?</div>
+    <div class="step-hint" style="margin-bottom:1rem">Pick the brand to see what warranty will need to know.</div>
+    ${vendorGrid('selectDelVendor')}
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function delVendorDetail(){
   const v=VENDORS.find(x=>x.id===state.vendor);
   if(!v)return '';
   const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ Action Required</div><div class="ic-body"><strong>REFUSE at delivery</strong> — do not accept. Note damage on BOL.</div></div>`:
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body">Do not accept. Driver must note damage on BOL before leaving.</div></div>`:
     v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">Accept & Document</div><div class="ic-body"><strong>ALWAYS ACCEPT</strong> — do not refuse. Document on freight bill immediately.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">Either — Prefer Refuse</div><div class="ic-body">Refuse OR accept with full BOL documentation. When in doubt, <strong>refuse</strong>.</div></div>`;
+    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body">Do NOT refuse. Document on freight bill with model# and serial#.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if possible</div><div class="ic-body">Refuse OR accept with full BOL documentation.</div></div>`;
   return `<div class="step-card">
-    <div class="step-label">Delivery Damage — ${v.n}</div>
+    <div class="step-label">Vendor Info — ${v.n}</div>
     <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
-    ${resp(['Warehouse','Warranty'])}
     ${ac}
-    <div class="info-card neutral"><div class="ic-label">⏱ Reporting Window</div><div class="ic-body">${v.del.win}</div></div>
-    <div class="info-card neutral"><div class="ic-label">Vendor Steps</div>${steps(v.del.steps)}</div>
-    ${docBox()}
-    ${warrantyHandoff()}
-    <div class="info-card purple"><div class="ic-label">Warranty — If Reorder Needed</div><div class="ic-body">Warranty creates a new PO for the reorder. If vendor is sending a replacement, warranty creates a PO to receive against.</div></div>
-    <div class="contact-box"><div class="label">Vendor Contact</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <div class="info-card neutral"><div class="ic-label">Delivery Window</div><div class="ic-body">${v.del.win}</div></div>
+    <div class="info-card neutral"><div class="ic-label">Vendor Steps</div>${stepsHtml(v.del.steps)}</div>
+    <div class="contact-box"><div class="label">Vendor Contact (for Warranty)</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
 }
 
-function concealed_result(){
-  const v=VENDORS.find(x=>x.id===state.vendor);
-  if(!v)return '';
-  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
-    v.con.win.toLowerCase().includes('12')||v.con.win.toLowerCase().includes('10 day')?'amber':'neutral';
+// ── WAREHOUSE SCREENS ──
+function whSituation(){
   return `<div class="step-card">
-    <div class="step-label">Concealed Damage — ${v.n}</div>
-    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
-    ${resp(['Warranty','Sales Rep'])}
-    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}Reporting Window</div><div class="ic-body">${v.con.win}</div></div>
-    ${v.con.al?`<div class="info-card green"><div class="ic-label">💰 Damage Allowance Available</div><div class="ic-body">${v.con.alNote}</div></div>`:''}
-    <div class="info-card neutral"><div class="ic-label">Vendor Process</div>${steps(v.con.steps)}</div>
-    <div class="divider"></div>
-    <div class="info-card neutral"><div class="ic-label">RA Details</div><div class="ic-body"><strong>How:</strong> ${v.ra.how}<br><strong>Restock fee:</strong> ${v.ra.fee}<br><strong>Return freight:</strong> ${v.ra.fr}</div></div>
-    ${docBox()}
+    <div class="step-label">Warehouse Team</div>
+    <div class="step-q">What kind of damage?</div>
+    <div class="options" style="margin-top:1rem">
+      <button class="opt-btn" onclick="go('wh_visible')">
+        <div class="opt-icon">📦</div>
+        <div class="opt-text"><div class="opt-title">Visible damage at receiving</div><div class="opt-desc">Damage visible on the carton when the truck arrived</div></div>
+      </button>
+      <button class="opt-btn" onclick="go('wh_concealed')">
+        <div class="opt-icon">🔍</div>
+        <div class="opt-text"><div class="opt-title">Concealed damage</div><div class="opt-desc">Box looked fine but damage found during inspection</div></div>
+      </button>
+    </div>
+    <button class="back-btn" onclick="reset()">← Change Role</button>
+  </div>`;
+}
+
+function whVisible(){
+  return `<div class="step-card">
+    <div class="step-label">Warehouse — Visible Damage at Receiving</div>
+    <div class="step-q">What to do right now</div>
+    ${resp(['Warehouse'])}
+    <div class="info-card amber">
+      <div class="ic-label">First: Check if this vendor requires refusal</div>
+      <div class="ic-body">Some vendors require you to refuse the shipment — others say always accept. Look up the vendor at the end of this checklist if you're unsure, or check with warranty.</div>
+    </div>
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps — Do These Before Moving the Unit</div>
+      ${stepsHtml([
+        'Get the driver to note the damage on the BOL and sign it — do this before the truck leaves',
+        'Photograph all 4 sides of the carton',
+        'Photograph the damage itself and the model/serial number tag',
+        'Do not discard any packaging',
+        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
+        'Place one copy of the damage sheet on the unit',
+        'Bring the other copy to the warranty desk',
+        'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original delivery date'
+      ])}
+    </div>
     ${warrantyHandoff()}
-    <div class="info-card purple"><div class="ic-label">Warranty — POs</div><div class="ic-body">If reorder required: warranty creates new PO. If vendor is sending replacement: warranty creates a receiving PO.</div></div>
-    <div class="contact-box"><div class="label">Vendor Contact</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    ${docBox()}
+    <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
+      <div class="opt-icon">🔍</div>
+      <div class="opt-text"><div class="opt-title">Look up this vendor's receive policy</div><div class="opt-desc">Refuse vs. accept, windows, contacts — for warranty reference</div></div>
+    </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
 }
+
+function whConcealed(){
+  return `<div class="step-card">
+    <div class="step-label">Warehouse — Concealed Damage</div>
+    <div class="step-q">What to do right now</div>
+    ${resp(['Warehouse'])}
+    <div class="info-card red">
+      <div class="ic-label">⚠ The Clock Started When the Unit Arrived — Not Today</div>
+      <div class="ic-body">Vendor claim windows run from the original received date. Some windows are as short as 5 days. Email warranty immediately.</div>
+    </div>
+    <div class="info-card neutral">
+      <div class="ic-label">Your Steps — Do These Now</div>
+      ${stepsHtml([
+        'Stop — do not move or install the unit',
+        'Keep all packaging and cartons — do not discard anything',
+        'Photograph all 4 sides of the carton',
+        'Photograph the damage and the model/serial number tag',
+        'Look up or confirm the original date this unit was received',
+        'Fill out the damage sheet: customer name, work order #, model #, serial #, date received, description of damage',
+        'Place one copy of the damage sheet on the unit',
+        'Bring the other copy to the warranty desk',
+        'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original received date'
+      ])}
+    </div>
+    ${warrantyHandoff()}
+    ${docBox()}
+    <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
+      <div class="opt-icon">🔍</div>
+      <div class="opt-text"><div class="opt-title">Look up this vendor's claim window</div><div class="opt-desc">See how urgent the timeline is — for warranty reference</div></div>
+    </button>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function whVendorLookup(){
+  return `<div class="step-card">
+    <div class="step-label">Vendor Details — For Warranty Reference</div>
+    <div class="step-q">Which vendor?</div>
+    <div class="step-hint" style="margin-bottom:1rem">Pick the brand to see receive policy and claim windows.</div>
+    ${vendorGrid('selectWhVendor')}
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function whVendorDetail(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const ac=v.del.act==='refuse'?
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE this shipment</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign before the truck leaves.</div></div>`:
+    v.del.act==='accept'?
+    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment and document damage on the freight bill.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if you can</div><div class="ic-body">Refuse if possible. If you must accept, document on BOL before truck leaves.</div></div>`;
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
+    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
+  return `<div class="step-card">
+    <div class="step-label">Vendor Info — ${v.n}</div>
+    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
+    ${ac}
+    <div class="info-card neutral"><div class="ic-label">Delivery Window</div><div class="ic-body">${v.del.win}</div></div>
+    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}Concealed Damage Window</div><div class="ic-body">${v.con.win}</div></div>
+    <div class="contact-box"><div class="label">Vendor Contact (for Warranty)</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+// ── WARRANTY SCREENS ──
+function warrantyLookup(){
+  return `<div class="step-card">
+    <div class="step-label">Warranty / Office — Vendor Policy Lookup</div>
+    <div class="step-q">Select a vendor</div>
+    <div class="step-hint" style="margin-bottom:1rem">Full policy details: windows, contacts, RA process, allowances, scrap notes.</div>
+    ${vendorGrid('selectWarrantyVendor')}
+    <button class="back-btn" onclick="reset()">← Change Role</button>
+  </div>`;
+}
+
+function warrantyVendorDetail(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const samsung=v.id==='samsung';
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
+    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
+  const ac=v.del.act==='refuse'?
+    `<div class="info-card red"><div class="ic-label">⚠ Delivery Action</div><div class="ic-body"><strong>REFUSE</strong> — do not accept. Note on BOL required.</div></div>`:
+    v.del.act==='accept'?
+    `<div class="info-card amber"><div class="ic-label">Delivery Action</div><div class="ic-body"><strong>ALWAYS ACCEPT</strong> — never refuse. Document on freight bill.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">Delivery Action</div><div class="ic-body">Refuse OR accept with full BOL documentation.</div></div>`;
+  return `<div class="vendor-detail-card">
+    <div class="step-label" style="margin-bottom:.4rem">Warranty — Vendor Policy</div>
+    <h2>${v.n}</h2>
+    <div class="brands">${v.b}</div>
+
+    ${ac}
+
+    <div class="section-head">Claim Windows</div>
+    <div class="policy-row"><span class="pl">Delivery window</span><span class="pv">${v.del.win}</span></div>
+    <div class="policy-row"><span class="pl">Concealed window</span><span class="pv">${v.con.win}</span></div>
+
+    <div class="section-head">RA / Returns</div>
+    <div class="policy-row"><span class="pl">How to initiate</span><span class="pv">${v.ra.how}</span></div>
+    <div class="policy-row"><span class="pl">Restock fee</span><span class="pv">${v.ra.fee}</span></div>
+    <div class="policy-row"><span class="pl">Return freight</span><span class="pv">${v.ra.fr}</span></div>
+
+    ${v.con.al?`<div class="info-card green"><div class="ic-label">💰 Damage Allowance Available</div><div class="ic-body">${v.con.alNote}</div></div>`:''}
+
+    <div class="section-head">Delivery Steps (for field reference)</div>
+    ${stepsHtml(v.del.steps)}
+
+    <div class="section-head">Concealed Damage Steps</div>
+    ${stepsHtml(v.con.steps)}
+
+    ${samsung?`<div class="info-card blue" style="margin-top:.75rem">
+      <div class="ic-label">Samsung — Post-Install Cosmetic Path</div>
+      <div class="ic-body" style="font-size:13px;line-height:1.7">
+        <strong>Do not contact Mike Moore for cosmetic.</strong> All post-install cosmetic issues go through Warranty (Klarissa).<br><br>
+        <ol class="steps-list" style="margin-top:.5rem">
+          <li>Delivery sends photos to Klarissa with model#, serial#, damage description</li>
+          <li>Klarissa opens cosmetic ticket with Samsung Builder Support</li>
+          <li>Samsung Builder Support: <strong>SamsungBuilderB2B@sea.samsung.com</strong> | 1-844-SAM4BLD</li>
+          <li>Klarissa orders cosmetic parts and schedules certified tech</li>
+          <li>Non-bulky parts (knobs, handles, shelves, bins) can ship direct — no tech needed</li>
+          <li>Bulky parts (doors, panels) require tech installation</li>
+        </ol>
+        <br><strong>Window:</strong> Occupied — 30 days | Unoccupied/pre-closing — 90 days<br><br>
+        <strong>⚠ Physical damage</strong> (frame, unrepairable cabinet) NOT covered by cosmetic program — NRA allowance applies.
+      </div>
+    </div>`:''}
+
+    <div class="section-head">Scrap Notes</div>
+    <div class="info-card neutral"><div class="ic-body">${v.sc}</div></div>
+
+    <div class="section-head">Contacts</div>
+    <div class="contact-box"><div class="label">Delivery Claims</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <div class="contact-box" style="margin-top:.5rem"><div class="label">Concealed / RA</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+
+    <button class="reset-btn" onclick="go('warranty_lookup')">← Back to Vendor List</button>
+    <button class="back-btn" onclick="reset()">↩ Change Role</button>
+  </div>`;
+}
+
+// ── BREADCRUMB ──
+const ROLE_LABELS={delivery:'Delivery',warehouse:'Warehouse',warranty:'Warranty'};
+const SL={
+  role_pick:'Home',
+  del_situation:'Delivery',del_damage_found:'Damage Found',del_install:'Install As-Is',
+  del_return:'Return to Warehouse',del_partsroom:'Parts Room',
+  del_postinstall:'Post-Install',del_postinstall_functional:'Functional Issue',del_postinstall_cosmetic:'Cosmetic Issue',
+  del_vendor_lookup:'Vendor Lookup',del_vendor_detail:'Vendor Details',
+  wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_concealed:'Concealed Damage',
+  wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
+  warranty_lookup:'Vendor Lookup',warranty_vendor_detail:'Vendor Details'
+};
+function renderBreadcrumb(){
+  const el=document.getElementById('breadcrumb');
+  const ri=document.getElementById('role-indicator');
+  if(state.role){
+    ri.textContent=ROLE_LABELS[state.role]||'';
+    ri.style.color='#aaa';
+  } else {
+    ri.textContent='v2.1 · May 2026';
+    ri.style.color='#666';
+  }
+  let crumbs=[{label:'Home',step:'role_pick'}];
+  state.history.forEach(h=>{
+    if(h.step!=='role_pick'&&SL[h.step]){
+      const l=SL[h.step];
+      if(!crumbs.find(c=>c.label===l))crumbs.push({label:l,step:h.step});
+    }
+  });
+  if(state.step!=='role_pick'&&SL[state.step]){
+    const cur=SL[state.step];
+    if(!crumbs.find(c=>c.label===cur))crumbs.push({label:cur,current:true});
+    else crumbs=crumbs.map(c=>c.label===cur?{...c,current:true}:c);
+  }
+  el.innerHTML=crumbs.map((c,i)=>{
+    const prefix=i>0?'<span class="sep">›</span>':'';
+    const cls=c.current?'current':'';
+    const oc=c.current||!c.step?'':('onclick="goStep(\''+c.step+'\')"');
+    return prefix+'<span class="'+cls+'" '+oc+'>'+c.label+'</span>';
+  }).join('');
+}
+function goStep(step){
+  if(step==='role_pick'){reset();return;}
+  const idx=state.history.findIndex(h=>h.step===step);
+  if(idx>=0){
+    const s=state.history[idx];
+    state.history=state.history.slice(0,idx);
+    state.step=s.step;state.vendor=s.vendor;render();
+  }
+}
+window.goStep=goStep;
 
 // ── RENDER ──
 function render(){
   renderBreadcrumb();
   const app=document.getElementById('app');
-  if(state.step==='delivery_result'){app.innerHTML=delivery_result();}
-  else if(state.step==='concealed_result'){app.innerHTML=concealed_result();}
-  else if(state.step==='situation'){app.innerHTML=situationStep();}
-  else if(state.step==='warehouse_visible'){app.innerHTML=warehouseVisibleStep();}
-  else if(state.step==='warehouse_concealed'){app.innerHTML=warehouseConcealedStep();}
-  else if(state.step==='scrap'){app.innerHTML=scrapStep();}
-  else{app.innerHTML=S[state.step]||'<p>Unknown step.</p>';}
-  // Wire up delivery_warehouse vendor button if on that step
-  const dwBtn=document.getElementById('delivery_warehouse_vendor_btn');
-  if(dwBtn){
-    const v=VENDORS.find(x=>x.id===state.vendor);
-    dwBtn.innerHTML=`<button class="opt-btn" onclick="go('concealed_result')" style="margin-bottom:.5rem"><div class="opt-icon">→</div><div class="opt-text"><div class="opt-title">View ${v?v.n:'vendor'} claim process</div><div class="opt-desc">Full RA process, contacts, and restock fees</div></div></button>`;
-  }
+  const s=state.step;
+  if(s==='role_pick')           app.innerHTML=rolePick();
+  else if(s==='del_situation')  app.innerHTML=delSituation();
+  else if(s==='del_damage_found')app.innerHTML=delDamageFound();
+  else if(s==='del_install')    app.innerHTML=delInstall();
+  else if(s==='del_return')     app.innerHTML=delReturn();
+  else if(s==='del_partsroom')  app.innerHTML=delPartsroom();
+  else if(s==='del_postinstall')app.innerHTML=delPostinstall();
+  else if(s==='del_postinstall_functional')app.innerHTML=delPostinstallFunctional();
+  else if(s==='del_postinstall_cosmetic')  app.innerHTML=delPostinstallCosmetic();
+  else if(s==='del_vendor_lookup')app.innerHTML=delVendorLookup();
+  else if(s==='del_vendor_detail')app.innerHTML=delVendorDetail();
+  else if(s==='wh_situation')   app.innerHTML=whSituation();
+  else if(s==='wh_visible')     app.innerHTML=whVisible();
+  else if(s==='wh_concealed')   app.innerHTML=whConcealed();
+  else if(s==='wh_vendor_lookup')app.innerHTML=whVendorLookup();
+  else if(s==='wh_vendor_detail')app.innerHTML=whVendorDetail();
+  else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();
+  else if(s==='warranty_vendor_detail')app.innerHTML=warrantyVendorDetail();
+  else app.innerHTML='<p style="padding:2rem;color:#888">Unknown step.</p>';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 render();

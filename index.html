@@ -119,19 +119,37 @@ const VENDORS=[
      steps:['Note damage on BOL — refuse OR accept and document immediately','Photograph all 4 sides of carton before truck leaves','Send photos to M. Moore ASAP','Out-of-policy: Moore writes a PUMI — provide all PO/DO/SO numbers, cost, photos']},
    con:{win:'Contact rep ASAP — no formal window confirmed',contact:'M. Moore | m.moore@sea.samsung.com',
      steps:['Document model/serial number and all PO/DO/SO numbers','Photograph all damage clearly','Contact M. Moore directly — all claims are rep-managed','Out of policy = PUMI required'],al:false},
-   ra:{how:'Contact M. Moore directly — no portal',fee:'Rep-managed',fr:'TBD'},sc:'Cosmetic/service: Warranty (Klarissa) → SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD. Returns/PUMI: Contact M. Moore.'},
+   ra:{how:'Contact M. Moore directly — no portal',fee:'Rep-managed',fr:'TBD'},sc:'Cosmetic/service: Warranty (Klarissa) → SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD. Returns/PUMI: Contact M. Moore. 1% Field Scrap program (Samsung-specific).',
+   warranty:{
+     warehouseSteps:['Receive damage sheet + photos from delivery or warehouse','Verify damage sheet is complete: customer name, work order #, model #, serial #, all PO/DO/SO numbers, date received, damage description','Verify photos: all 4 sides of carton, the damage itself, model/serial tag','Coordinate with Capritta service team — review damage, decide if repair is feasible, identify parts needed (we always try repair before RA)','If repair viable: order parts from Samsung Builder Support (SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD)','Service performs repair once parts arrive','If repaired: return to inventory, close out damage sheet','If NOT repairable: email M. Moore directly (m.moore@sea.samsung.com) with photos and full details — Samsung is rep-managed, no portal','Note in email whether damage was visible at delivery (BOL noted) or concealed (found at inspection/unboxing)','If out of policy: M. Moore writes a PUMI — provide unit cost + all PO/DO/SO numbers','Once approved: create replacement PO in Aptora','Track credit/replacement until closed','Update damage sheet status and file in records'],
+     serviceRoomSteps:['Unit is at service room — typically smaller items that didn\'t get installed (larger units end up at warehouse)','Receive damage sheet + photos with unit','Verify info: model #, serial #, customer name, work order #, full damage description','Coordinate with Capritta service team — assess damage, decide if repair is feasible, identify parts needed','If repair viable: order parts from Samsung Builder Support (SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD)','Service performs repair once parts arrive','If repaired: return to inventory or route back to customer install, close out','If NOT repairable: email M. Moore (m.moore@sea.samsung.com) with photos, damage details, and service assessment notes','M. Moore advises path — RA, PUMI, or 1% Field Scrap','PUMI required for out-of-policy — provide unit cost + all PO/DO/SO numbers','If RA approved: arrange pickup or create return PO in Aptora','Track credit, update damage sheet, file in records'],
+     installedFunctionalSteps:['Receive issue report (call, email, or builder ticket)','Verify: model #, serial #, customer name/address, work order #, install date, issue description','Coordinate with Capritta service team — review issue and identify parts needed (may require initial diagnostic visit if cause unclear)','Order parts from Samsung Builder Support (SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD)','Schedule service tech to customer site once parts arrive','Service tech installs parts, completes repair','If repaired: close ticket','If unrepairable: route to NRA / Unrepairable path'],
+     installedCosmeticSteps:['⚠ Do NOT contact M. Moore for cosmetic — cosmetic goes through Samsung Builder Support, not the rep','Receive damage sheet + photos from delivery','Verify model#, serial#, customer info, damage description','Coordinate with Capritta service team — review photos and identify cosmetic parts needed','Order cosmetic parts through Samsung Builder Support: SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD','Non-bulky parts (knobs, handles, shelves, bins) can ship direct to customer — no tech needed','Bulky parts (doors, panels): service tech installs once parts arrive','Window: Occupied — 30 days | Unoccupied/pre-closing — 90 days','⚠ Physical damage (frame, unrepairable cabinet) NOT covered — route to NRA path'],
+     installedNraSteps:['Confirm damage is NOT cosmetic and NOT repairable (frame, structural, unrepairable cabinet)','Gather: model #, serial #, photos of damage, repair estimate if available, all PO/DO/SO numbers','Hand off to Klarissa (Warranty Dept) with full details — request NRA allowance or full replacement','Klarissa contacts Samsung Builder Support: SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD','Klarissa escalates to M. Moore for PUMI / NRA allowance approval','M. Moore reviews — may write PUMI for unrepairable units at customer home','If PUMI approved: provide unit cost','Create replacement PO in Aptora if replacement is authorized','If unit stays at customer with allowance: document allowance amount, customer accepts','Track credit/replacement, close out damage sheet'],
+     showroomSteps:['Document damage: model #, serial #, photos, date discovered, cause if known','Service team assesses — can it be cosmetically and functionally restored to sellable condition?','For cosmetic parts (knobs, handles, doors, panels): contact Klarissa → SamsungBuilderB2B@sea.samsung.com | 1-844-SAM4BLD','For functional parts: order through service team\'s normal parts channel','If restored to sellable: return to floor inventory, close out damage record','If NOT restorable: email M. Moore with photos, damage details, age of unit, repair attempts','M. Moore advises path — PUMI for credit, sell-at-discount with allowance, or vendor return','If PUMI: provide unit cost','If sold at discount: document discount amount in Aptora','Track credit if applicable, close out damage record'],
+     scrapSteps:['Receive notification from delivery/field that unit is unrepairable and must be scrapped onsite','Verify damage sheet has model#, serial#, all PO/DO/SO numbers, and photos of damage','Email M. Moore for 1% Field Scrap approval — note "1% Field Scrap" in subject','Provide unit cost and all PO/DO/SO numbers','M. Moore writes PUMI for credit','⚠ Do NOT authorize scrap until written approval from M. Moore','Once approved: instruct field to sever power cord and photograph','Create replacement PO in Aptora if needed','Track credit, close out damage sheet, file in records']
+   }},
   {id:'bsh',n:'BSH Group',b:'Bosch, Thermador',
    del:{act:'accept',win:'72 hours',contact:'Patti Plavnick | Patricia.plavnick@bshg.com | 407-721-8043',
      steps:['ALWAYS ACCEPT — do not refuse','Note serial# and SKU on freight bill with damage details','Photograph all damage','Contact Patti within 72 hours','Request RA in One Portal with signed POD and damage photos']},
    con:{win:'90 days from receipt',contact:'Patti Plavnick | One Portal',
      steps:['Photograph damage and all sides of carton','Significant damage = full credit, no restock fee (submit RA via One Portal)','Minor damage = up to 20% allowance or parts repair — discuss with Patti','RA requests after 90 days require Patti escalation'],al:true,alNote:'Up to 20% for minor damage'},
-   ra:{how:'One Portal (Patti can submit on your behalf)',fee:'25% max $500/unit',fr:'Dealer pays'},sc:'Written BSH approval required. Appliance Scrap Warrant form. Contact Patti.'},
+   ra:{how:'One Portal (Patti can submit on your behalf)',fee:'25% max $500/unit',fr:'Dealer pays'},sc:'Written BSH approval required. Appliance Scrap Warrant form. Contact Patti.',
+   warranty:{
+     warehouseSteps:['Receive damage sheet + photos from delivery or warehouse (BSH was accepted — never refused, BOL should be noted)','Verify damage sheet: customer name, work order #, model #, serial #, all PO/DO/SO numbers, date received, damage description','Verify photos: all 4 sides of carton, the damage itself, model/serial tag, signed POD with damage notation','⚠ 72-hour window: notify Patti Plavnick of the issue immediately (Patricia.plavnick@bshg.com | 407-721-8043) so the window doesn\'t close while repair is attempted','Coordinate with Capritta service team — review damage, decide if repair is feasible, identify parts needed (always try repair before RA)','If repair viable: order parts through Patti / One Portal','Service performs repair once parts arrive','If repaired: return to inventory, close out damage sheet','If NOT repairable: submit RA via One Portal with full damage details — Patti can submit on your behalf','Significant damage = full credit, no restock | Minor damage = up to 20% allowance or parts repair (Patti decides)','Create replacement PO in Aptora','Track credit/replacement, close out damage sheet'],
+     serviceRoomSteps:['Unit is at service room — typically smaller items that didn\'t get installed (larger units end up at warehouse)','Receive damage sheet + photos with unit','Verify info: model #, serial #, customer name, work order #, full damage description','Coordinate with Capritta service team — assess damage, decide if repair is feasible, identify parts needed','If repair viable: order parts through Patti / One Portal (Patricia.plavnick@bshg.com | 407-721-8043)','Service performs repair once parts arrive','If repaired: return to inventory or route back to customer install, close out','If NOT repairable: contact Patti Plavnick, submit RA via One Portal with full damage details','Standard BSH terms: significant damage = full credit (no restock) | minor = up to 20% allowance | RA fee 25% max $500/unit if applies','If RA approved: arrange pickup per Patti\'s direction, create replacement PO in Aptora','Track credit, update damage sheet'],
+     installedFunctionalSteps:['Receive issue report from customer or builder','Verify: model #, serial #, customer name/address, work order #, install date, issue description','Coordinate with Capritta service team — review issue and identify parts needed (may require initial diagnostic visit)','Contact Patti Plavnick (Patricia.plavnick@bshg.com | 407-721-8043) to order parts through BSH','Schedule service tech to customer site once parts arrive','Service tech installs parts, completes repair','If repaired: close ticket','If unrepairable: route to NRA / Unrepairable path'],
+     installedCosmeticSteps:['Receive damage report + photos from delivery/install team','Verify: model #, serial #, customer info, damage description','Coordinate with Capritta service team — review photos and identify cosmetic parts/options needed','Contact Patti Plavnick (Patricia.plavnick@bshg.com | 407-721-8043) — discuss path','BSH options: up to 20% allowance for minor cosmetic damage OR parts repair','If parts repair: Patti orders cosmetic parts through BSH → service tech installs once parts arrive','If allowance: document amount, customer accepts, file records','Window aligns with 90-day concealed from receipt — act promptly'],
+     installedNraSteps:['Confirm damage is NOT cosmetic and NOT repairable (frame, structural)','Gather: model #, serial #, photos, repair estimate (if any), all PO/DO/SO numbers','Email Patti Plavnick: Patricia.plavnick@bshg.com | 407-721-8043 — request NRA allowance or replacement','⚠ Cannot scrap without written BSH approval — Appliance Scrap Warrant form required','Patti reviews and provides options','If approved replacement: create PO in Aptora','If allowance: document amount, customer accepts','Track credit/replacement, close out'],
+     showroomSteps:['Document damage: model #, serial #, photos, date discovered, cause if known','Service team assesses — can it be cosmetically and functionally restored to sellable condition?','For BSH parts: contact Patti to order through One Portal','If restored to sellable: return to floor inventory, close out','If NOT restorable: email Patti Plavnick with photos, damage details, age of unit on floor','Patti advises path — RA via One Portal (significant damage = full credit), 20% allowance (minor), or sell-at-discount','If RA: 25% restock max $500/unit, dealer pays freight','If sold at discount: document discount amount in Aptora','Track credit if applicable, close out damage record'],
+     scrapSteps:['⚠ Cannot scrap without written BSH approval — Appliance Scrap Warrant form REQUIRED','Receive notification from delivery/field that unit must be scrapped onsite','Verify damage sheet has model#, serial#, all PO/DO/SO numbers, photos of damage','Contact Patti Plavnick: Patricia.plavnick@bshg.com | 407-721-8043 — request scrap authorization AND the Appliance Scrap Warrant form','Complete the form Patti sends back','⚠ Do NOT authorize scrap until written approval received from BSH','Once approved: instruct field to sever power cord and photograph','Follow specific BSH disposal instructions (serial plate, etc.)','Create replacement PO in Aptora if needed','Track credit, close out damage sheet']
+   }},
   {id:'subzero',n:'Sub-Zero',b:'Sub-Zero, Wolf, Cove, Best',
    del:{act:'accept',win:'48 hours',contact:'Robert Luyckx | Robert.Luyckx@subzero.com | 407.267.7957',
      steps:['ALWAYS RECEIVE — never refuse','Note damage on BOL','Photograph all 4 sides','Initiate RA in ComNet within 48 hours','Within 48hrs = no fee | After 48hrs = 25% restock']},
    con:{win:'Within 90 days = 0% restock | After 90 days = 25%',contact:'Robert Luyckx | ComNet portal',
      steps:['Photograph all sides of carton and product','Contact Robert Luyckx','Initiate RA in ComNet','TSM approves → VP Sales sign-off','Pickup within 48hrs of approval | Open RAs cancelled after 4 weeks'],al:false},
-   ra:{how:'ComNet portal',fee:'0% within 90 days | 25% after | 105% dealer-caused',fr:'Sub-Zero arranges'},sc:'Contact Robert Luyckx'},
+   ra:{how:'ComNet portal',fee:'0% within 90 days | 25% after | 105% dealer-caused',fr:'Sub-Zero arranges'},sc:'Contact Robert Luyckx. 105% fee if no documentation.'},
   {id:'lg',n:'LG',b:'LG',
    del:{act:'either',win:'ASAP — 90-day hard cutoff from dock',contact:'Trip Malopsy | Trip.malopsy@lge.com | builder.orderentry@lgcns.com | 800-377-8204',
      steps:['If refused: LG auto-processes credit and rebooks','If accepted: use Concealed Damage form immediately','Submit to builder.orderentry@lgcns.com','Unit must be boxed and palletized for pickup','⚠ No damage or return accepted beyond 90 days from dock date']},
@@ -223,11 +241,11 @@ const VENDORS=[
      steps:['Speed Queen: submit to Mario with model/serial, photo, damage location','Zone allowance: Zone A (front) $150 | Zone B (side) $125 | Zone C (back/bottom) $100','Parts path: cd.alliancels.net (CDESS portal)','All units: top load, front load, stacks, dryers, CTR','Electrolux/Danby/Silhouette: contact Mario'],al:true,alNote:'Speed Queen zone allowance: $100-$150 by damage location'},
    ra:{how:'Contact Mario Fajardo | sales@orourkesales.com | 800-523-4730',fee:'Contact Mario',fr:'TBD'},sc:'Contact Mario Fajardo'},
   {id:'sks',n:'SKS',b:'Signature Kitchen Suite',
-   del:{act:'either',win:'Pending — contact Tiffany',contact:'Tiffany Candler | tiffany.candler@lge.com',
-     steps:['⚠ SKS policy pending from Tiffany Candler','Contact Tiffany Candler directly for all SKS situations until policy received','tiffany.candler@lge.com']},
-   con:{win:'Pending — contact Tiffany Candler',contact:'Tiffany Candler | tiffany.candler@lge.com',
-     steps:['⚠ SKS damage/return policy not yet received','Contact Tiffany Candler directly: tiffany.candler@lge.com','This record will be updated once policy is received'],al:false},
-   ra:{how:'Contact Tiffany Candler',fee:'Pending',fr:'Pending'},sc:'Contact Tiffany Candler'},
+   del:{act:'either',win:'Warranty states 7 days — Tiffany allowing 30 days',contact:'Tiffany Candler | tiffany.candler@lge.com | 904-307-7835 | concierge@skscares.com | 855-790-6655',
+     steps:['Document damage and photograph immediately','Warranty reports to Tiffany Candler within 30 days','Photos of damage and proof of purchase required','No portal — all claims through Tiffany directly','SKS Concierge: concierge@skscares.com / 855-790-6655']},
+   con:{win:'30 days (Tiffany allows, warranty states 7)',contact:'Tiffany Candler | tiffany.candler@lge.com | 904-307-7835',
+     steps:['Concealed damage handled by Builder Order Entry — email Tiffany','RAs reviewed by Tiffany case by case — email with full details','No portal — Tiffany is the only escalation point','Photos and proof of purchase required for all claims'],al:false},
+   ra:{how:'Email Tiffany Candler | tiffany.candler@lge.com',fee:'Case by case — contact Tiffany',fr:'Contact Tiffany'},sc:'Contact Tiffany Candler'},
   {id:'bluestar',n:'BlueStar',b:'BlueStar Cooking',
    del:{act:'either',win:'⚠ 5 days to inspect if accepted | 90 days concealed',contact:'N. Lamneck | NLamneck@Bluestarcooking.com | 904-826-9899',
      steps:['Refuse at delivery OR accept with BOL notation and inspect within 5 days','⚠ Miss the 5-day window = claim void','Photograph all sides of carton','Contact N. Lamneck','RMA number must be on carton — no exceptions','No freight collect returns without prior written consent']},
@@ -237,11 +255,11 @@ const VENDORS=[
 ];
 
 // ── STATE ──
-let state={role:null,step:'role_pick',vendor:null,history:[]};
+let state={role:null,step:'role_pick',vendor:null,scenario:null,history:[]};
 
 // ── NAVIGATION ──
 function go(step,vendor=null){
-  state.history.push({step:state.step,vendor:state.vendor});
+  state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});
   state.step=step;
   if(vendor!==null)state.vendor=vendor;
   render();
@@ -249,21 +267,28 @@ function go(step,vendor=null){
 function back(){
   if(!state.history.length)return;
   const p=state.history.pop();
-  state.step=p.step;state.vendor=p.vendor;render();
+  state.step=p.step;state.vendor=p.vendor;state.scenario=p.scenario;render();
 }
-function reset(){state={role:null,step:'role_pick',vendor:null,history:[]};render();}
+function reset(){state={role:null,step:'role_pick',vendor:null,scenario:null,history:[]};render();}
 function setRole(r){
   state.role=r;
+  state.scenario=null;
   state.history=[];
   if(r==='delivery') state.step='del_situation';
   else if(r==='warehouse') state.step='wh_situation';
-  else state.step='warranty_lookup';
+  else state.step='warranty_scenario';
   render();
 }
-window.go=go;window.back=back;window.reset=reset;window.setRole=setRole;
-window.selectWarrantyVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='warranty_vendor_detail';render();};
-window.selectDelVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='del_vendor_detail';render();};
-window.selectWhVendor=id=>{state.history.push({step:state.step,vendor:state.vendor});state.vendor=id;state.step='wh_vendor_detail';render();};
+function setScenario(s){
+  state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});
+  state.scenario=s;
+  state.step=(s==='installed')?'warranty_installed_subpicker':'warranty_lookup';
+  render();
+}
+window.go=go;window.back=back;window.reset=reset;window.setRole=setRole;window.setScenario=setScenario;
+window.selectWarrantyVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='warranty_vendor_detail';render();};
+window.selectDelVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='del_vendor_detail';render();};
+window.selectWhVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_vendor_detail';render();};
 
 // ── HELPERS ──
 function resp(roles){
@@ -692,13 +717,96 @@ function whVendorDetail(){
 }
 
 // ── WARRANTY SCREENS ──
-function warrantyLookup(){
+function warrantyScenario(){
   return `<div class="step-card">
-    <div class="step-label">Warranty / Office — Vendor Policy Lookup</div>
-    <div class="step-q">Select a vendor</div>
-    <div class="step-hint" style="margin-bottom:1rem">Full policy details: windows, contacts, RA process, allowances, scrap notes.</div>
-    ${vendorGrid('selectWarrantyVendor')}
+    <div class="step-label">Warranty / Office</div>
+    <div class="step-q">Where is the unit?</div>
+    <div class="step-hint">Pick the location so we show only the workflow that fits.</div>
+    <div class="role-cards" style="grid-template-columns:1fr 1fr">
+      <div class="role-card warehouse" onclick="setScenario('warehouse')">
+        <div class="rc-icon">📦</div>
+        <div class="rc-title">At Warehouse</div>
+        <div class="rc-desc">Damage at receiving, in stock, or returned from field</div>
+      </div>
+      <div class="role-card delivery" onclick="setScenario('service')">
+        <div class="rc-icon">🔧</div>
+        <div class="rc-title">Service / Parts Room</div>
+        <div class="rc-desc">Unit awaiting repair decision or escalation</div>
+      </div>
+      <div class="role-card warranty" onclick="setScenario('installed')">
+        <div class="rc-icon">🏠</div>
+        <div class="rc-title">Installed at Customer</div>
+        <div class="rc-desc">Post-install issue — functional, cosmetic, or NRA</div>
+      </div>
+      <div class="role-card warehouse" onclick="setScenario('showroom')">
+        <div class="rc-icon">🏪</div>
+        <div class="rc-title">Showroom Floor</div>
+        <div class="rc-desc">Damage to display or floor unit</div>
+      </div>
+    </div>
+    <div class="options" style="margin-top:.75rem">
+      <button class="opt-btn urgent" onclick="setScenario('scrap')">
+        <div class="opt-icon">🔨</div>
+        <div class="opt-text"><div class="opt-title">Field Scrap Authorization</div><div class="opt-desc">Unit cannot come back — need vendor approval before disposal</div></div>
+      </button>
+      <button class="opt-btn" onclick="setScenario('lookup')">
+        <div class="opt-icon">📋</div>
+        <div class="opt-text"><div class="opt-title">Policy Lookup</div><div class="opt-desc">Just need to check windows, contacts, fees, or RA process</div></div>
+      </button>
+    </div>
     <button class="back-btn" onclick="reset()">← Change Role</button>
+  </div>`;
+}
+
+function installedSubpicker(){
+  return `<div class="step-card">
+    <div class="step-label">Warranty / Office — Installed at Customer Home</div>
+    <div class="step-q">What kind of issue?</div>
+    <div class="step-hint">Each path is different — pick the one that matches.</div>
+    <div class="role-cards">
+      <div class="role-card delivery" onclick="setScenario('installed_functional')">
+        <div class="rc-icon">🔌</div>
+        <div class="rc-title">Functional Issue</div>
+        <div class="rc-desc">Unit isn't working right — needs warranty service call</div>
+      </div>
+      <div class="role-card warehouse" onclick="setScenario('installed_cosmetic')">
+        <div class="rc-icon">✨</div>
+        <div class="rc-title">Cosmetic Issue</div>
+        <div class="rc-desc">Visual damage (dings, scratches, finish) — cosmetic ticket</div>
+      </div>
+      <div class="role-card warranty" onclick="setScenario('installed_nra')">
+        <div class="rc-icon">⚠️</div>
+        <div class="rc-title">NRA / Unrepairable</div>
+        <div class="rc-desc">Structural or unrepairable damage — allowance or replacement</div>
+      </div>
+    </div>
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+const SCENARIO_LABELS={
+  warehouse:'At Warehouse',
+  service:'Service / Parts Room',
+  installed:'Installed at Customer',
+  installed_functional:'Installed — Functional',
+  installed_cosmetic:'Installed — Cosmetic',
+  installed_nra:'Installed — NRA / Unrepairable',
+  showroom:'Showroom Floor',
+  scrap:'Field Scrap',
+  lookup:'Policy Lookup'
+};
+
+function warrantyLookup(){
+  const sc=SCENARIO_LABELS[state.scenario]||'Policy Lookup';
+  const hint=state.scenario==='lookup'
+    ?'Full policy details: windows, contacts, RA process, allowances, scrap notes.'
+    :`We'll show you only the ${sc.toLowerCase()} workflow for the vendor you pick.`;
+  return `<div class="step-card">
+    <div class="step-label">Warranty / Office — ${sc}</div>
+    <div class="step-q">Select a vendor</div>
+    <div class="step-hint" style="margin-bottom:1rem">${hint}</div>
+    ${vendorGrid('selectWarrantyVendor')}
+    <button class="back-btn" onclick="back()">← Change Scenario</button>
   </div>`;
 }
 
@@ -706,61 +814,101 @@ function warrantyVendorDetail(){
   const v=VENDORS.find(x=>x.id===state.vendor);
   if(!v)return '';
   const samsung=v.id==='samsung';
-  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
-    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
-  const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ Delivery Action</div><div class="ic-body"><strong>REFUSE</strong> — do not accept. Note on BOL required.</div></div>`:
-    v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">Delivery Action</div><div class="ic-body"><strong>ALWAYS ACCEPT</strong> — never refuse. Document on freight bill.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">Delivery Action</div><div class="ic-body">Refuse OR accept with full BOL documentation.</div></div>`;
-  return `<div class="vendor-detail-card">
-    <div class="step-label" style="margin-bottom:.4rem">Warranty — Vendor Policy</div>
-    <h2>${v.n}</h2>
-    <div class="brands">${v.b}</div>
+  const hasWarranty=!!v.warranty;
+  const scenario=state.scenario||'lookup';
+  const scLabel=SCENARIO_LABELS[scenario]||'Policy Lookup';
 
-    ${ac}
-
-    <div class="section-head">Claim Windows</div>
-    <div class="policy-row"><span class="pl">Delivery window</span><span class="pv">${v.del.win}</span></div>
-    <div class="policy-row"><span class="pl">Concealed window</span><span class="pv">${v.con.win}</span></div>
-
-    <div class="section-head">RA / Returns</div>
+  // Reusable blocks
+  const windowsDel=`<div class="section-head">Claim Window</div>
+    <div class="policy-row"><span class="pl">Delivery window</span><span class="pv">${v.del.win}</span></div>`;
+  const windowsCon=`<div class="section-head">Claim Window</div>
+    <div class="policy-row"><span class="pl">Concealed window</span><span class="pv">${v.con.win}</span></div>`;
+  const raBlock=`<div class="section-head">RA / Returns</div>
     <div class="policy-row"><span class="pl">How to initiate</span><span class="pv">${v.ra.how}</span></div>
     <div class="policy-row"><span class="pl">Restock fee</span><span class="pv">${v.ra.fee}</span></div>
-    <div class="policy-row"><span class="pl">Return freight</span><span class="pv">${v.ra.fr}</span></div>
+    <div class="policy-row"><span class="pl">Return freight</span><span class="pv">${v.ra.fr}</span></div>`;
+  const allowance=v.con.al?`<div class="info-card green"><div class="ic-label">💰 Damage Allowance Available</div><div class="ic-body">${v.con.alNote}</div></div>`:'';
+  const contactDel=`<div class="section-head">Contact</div>
+    <div class="contact-box"><div class="label">Delivery Claims</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>`;
+  const contactCon=`<div class="section-head">Contact</div>
+    <div class="contact-box"><div class="label">Concealed / RA</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>`;
+  const scrapNotes=`<div class="section-head">Scrap Notes</div>
+    <div class="info-card neutral"><div class="ic-body">${v.sc}</div></div>`;
+  const samsungCosmetic=samsung?`<div class="info-card blue" style="margin-top:.75rem">
+    <div class="ic-label">Samsung — Post-Install Cosmetic Path</div>
+    <div class="ic-body" style="font-size:13px;line-height:1.7">
+      <strong>Do not contact Mike Moore for cosmetic.</strong> All post-install cosmetic issues go through Warranty (Klarissa).<br><br>
+      <ol class="steps-list" style="margin-top:.5rem">
+        <li>Delivery sends photos to Klarissa with model#, serial#, damage description</li>
+        <li>Klarissa opens cosmetic ticket with Samsung Builder Support</li>
+        <li>Samsung Builder Support: <strong>SamsungBuilderB2B@sea.samsung.com</strong> | 1-844-SAM4BLD</li>
+        <li>Klarissa orders cosmetic parts and schedules certified tech</li>
+        <li>Non-bulky parts (knobs, handles, shelves, bins) can ship direct — no tech needed</li>
+        <li>Bulky parts (doors, panels) require tech installation</li>
+      </ol>
+      <br><strong>Window:</strong> Occupied — 30 days | Unoccupied/pre-closing — 90 days<br><br>
+      <strong>⚠ Physical damage</strong> (frame, unrepairable cabinet) NOT covered by cosmetic program — NRA allowance applies.
+    </div>
+  </div>`:'';
 
-    ${v.con.al?`<div class="info-card green"><div class="ic-label">💰 Damage Allowance Available</div><div class="ic-body">${v.con.alNote}</div></div>`:''}
+  // Helper: builds workflow section for a given step key, or fallback message
+  function wfBlock(stepKey, label){
+    if(hasWarranty && v.warranty[stepKey]){
+      return `<div class="section-head" style="color:var(--green);border-bottom-color:var(--green)">Your Workflow — ${label}</div>${stepsHtml(v.warranty[stepKey])}`;
+    }
+    return `<div class="info-card amber"><div class="ic-label">⚠ Workflow not yet authored</div><div class="ic-body">${v.n}'s ${label.toLowerCase()} workflow hasn't been added yet. Showing reference data only.</div></div>`;
+  }
 
-    <div class="section-head">Delivery Steps (for field reference)</div>
-    ${stepsHtml(v.del.steps)}
+  // Scenario-specific body
+  let body='';
+  if(scenario==='warehouse'){
+    body=`<div class="section-head">Claim Windows</div>
+      <div class="policy-row"><span class="pl">Visible damage</span><span class="pv">${v.del.win}</span></div>
+      <div class="policy-row"><span class="pl">Concealed damage</span><span class="pv">${v.con.win}</span></div>
+      ${raBlock}${allowance}${wfBlock('warehouseSteps','Warehouse')}${contactDel}`;
+  } else if(scenario==='service'){
+    body=`${raBlock}${wfBlock('serviceRoomSteps','Service / Parts Room')}${scrapNotes}${contactCon}`;
+  } else if(scenario==='installed_functional'){
+    body=`${wfBlock('installedFunctionalSteps','Installed — Functional')}${contactCon}`;
+  } else if(scenario==='installed_cosmetic'){
+    body=`<div class="info-card neutral"><div class="ic-label">Window</div><div class="ic-body">${v.con.win}</div></div>
+      ${allowance}${wfBlock('installedCosmeticSteps','Installed — Cosmetic')}${contactCon}`;
+  } else if(scenario==='installed_nra'){
+    body=`${raBlock}${allowance}${wfBlock('installedNraSteps','Installed — NRA / Unrepairable')}${scrapNotes}${contactCon}`;
+  } else if(scenario==='showroom'){
+    body=`${raBlock}${allowance}${wfBlock('showroomSteps','Showroom Floor')}${contactCon}`;
+  } else if(scenario==='scrap'){
+    body=`${wfBlock('scrapSteps','Field Scrap')}${scrapNotes}${contactCon}`;
+  } else {
+    // Full policy lookup view — show everything
+    const allWorkflows=hasWarranty?[
+      ['warehouseSteps','Warehouse'],
+      ['serviceRoomSteps','Service / Parts Room'],
+      ['installedFunctionalSteps','Installed — Functional'],
+      ['installedCosmeticSteps','Installed — Cosmetic'],
+      ['installedNraSteps','Installed — NRA / Unrepairable'],
+      ['showroomSteps','Showroom Floor'],
+      ['scrapSteps','Field Scrap']
+    ].filter(([k])=>v.warranty[k]).map(([k,l])=>
+      `<div class="section-head" style="color:var(--green);border-bottom-color:var(--green)">Your Workflow — ${l}</div>${stepsHtml(v.warranty[k])}`
+    ).join(''):
+      `<div class="info-card amber"><div class="ic-label">⚠ Warranty workflow not yet authored</div><div class="ic-body">Showing field steps as reference.</div></div>
+       <div class="section-head">Field Steps — Delivery (reference)</div>${stepsHtml(v.del.steps)}
+       <div class="section-head">Field Steps — Concealed (reference)</div>${stepsHtml(v.con.steps)}`;
+    body=`<div class="section-head">Claim Windows</div>
+      <div class="policy-row"><span class="pl">Delivery window</span><span class="pv">${v.del.win}</span></div>
+      <div class="policy-row"><span class="pl">Concealed window</span><span class="pv">${v.con.win}</span></div>
+      ${raBlock}${allowance}${allWorkflows}${scrapNotes}
+      <div class="section-head">Contacts</div>
+      <div class="contact-box"><div class="label">Delivery Claims</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+      <div class="contact-box" style="margin-top:.5rem"><div class="label">Concealed / RA</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>`;
+  }
 
-    <div class="section-head">Concealed Damage Steps</div>
-    ${stepsHtml(v.con.steps)}
-
-    ${samsung?`<div class="info-card blue" style="margin-top:.75rem">
-      <div class="ic-label">Samsung — Post-Install Cosmetic Path</div>
-      <div class="ic-body" style="font-size:13px;line-height:1.7">
-        <strong>Do not contact Mike Moore for cosmetic.</strong> All post-install cosmetic issues go through Warranty (Klarissa).<br><br>
-        <ol class="steps-list" style="margin-top:.5rem">
-          <li>Delivery sends photos to Klarissa with model#, serial#, damage description</li>
-          <li>Klarissa opens cosmetic ticket with Samsung Builder Support</li>
-          <li>Samsung Builder Support: <strong>SamsungBuilderB2B@sea.samsung.com</strong> | 1-844-SAM4BLD</li>
-          <li>Klarissa orders cosmetic parts and schedules certified tech</li>
-          <li>Non-bulky parts (knobs, handles, shelves, bins) can ship direct — no tech needed</li>
-          <li>Bulky parts (doors, panels) require tech installation</li>
-        </ol>
-        <br><strong>Window:</strong> Occupied — 30 days | Unoccupied/pre-closing — 90 days<br><br>
-        <strong>⚠ Physical damage</strong> (frame, unrepairable cabinet) NOT covered by cosmetic program — NRA allowance applies.
-      </div>
-    </div>`:''}
-
-    <div class="section-head">Scrap Notes</div>
-    <div class="info-card neutral"><div class="ic-body">${v.sc}</div></div>
-
-    <div class="section-head">Contacts</div>
-    <div class="contact-box"><div class="label">Delivery Claims</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
-    <div class="contact-box" style="margin-top:.5rem"><div class="label">Concealed / RA</div>${v.con.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
-
+  return `<div class="vendor-detail-card">
+    <div class="step-label" style="margin-bottom:.4rem">Warranty — ${scLabel}</div>
+    <h2>${v.n}</h2>
+    <div class="brands">${v.b}</div>
+    ${body}
     <button class="reset-btn" onclick="go('warranty_lookup')">← Back to Vendor List</button>
     <button class="back-btn" onclick="reset()">↩ Change Role</button>
   </div>`;
@@ -776,6 +924,8 @@ const SL={
   del_vendor_lookup:'Vendor Lookup',del_vendor_detail:'Vendor Details',
   wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_concealed:'Concealed Damage',
   wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
+  warranty_scenario:'Warranty',
+  warranty_installed_subpicker:'Installed at Customer',
   warranty_lookup:'Vendor Lookup',warranty_vendor_detail:'Vendor Details'
 };
 function renderBreadcrumb(){
@@ -839,6 +989,8 @@ function render(){
   else if(s==='wh_concealed')   app.innerHTML=whConcealed();
   else if(s==='wh_vendor_lookup')app.innerHTML=whVendorLookup();
   else if(s==='wh_vendor_detail')app.innerHTML=whVendorDetail();
+  else if(s==='warranty_scenario')app.innerHTML=warrantyScenario();
+  else if(s==='warranty_installed_subpicker')app.innerHTML=installedSubpicker();
   else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();
   else if(s==='warranty_vendor_detail')app.innerHTML=warrantyVendorDetail();
   else app.innerHTML='<p style="padding:2rem;color:#888">Unknown step.</p>';

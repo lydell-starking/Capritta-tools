@@ -204,7 +204,7 @@ const VENDORS=[
      showroomSteps:['Document damage: model #, serial #, PO/SO#, photos, date discovered, cause if known','Service team assesses — can it be restored to sellable?','For parts: order via ASAP@almo.com or direct to manufacturer','If restored to sellable: return to floor inventory, close out damage record','If NOT restorable: email SE-DealerCCC@almo.com with photos, damage details, age on floor, repair attempts — escalate to Mike if needed','Almo advises: allowance, RA, or sell-at-discount','If RA: 0% restock within 10 days from receipt | 20% after | dealer pays return freight | factory sealed required','Create the replacement PO in Aptora as soon as RA approval is received','⚠ Returned items not in claimed condition: up to 50% restock','⚠ 30-day total window from original receipt','If sold at discount: document discount amount in Aptora','Track credit if applicable, close out damage record'],
      scrapSteps:['Receive notification that unit is unrepairable and must be scrapped','Verify documentation: model #, serial #, all PO/DO/SO numbers, photos of damage','Email SE-DealerCCC@almo.com with scrap request, photos, full reference numbers — escalate to Mike Impellizeri if needed','⚠ Do NOT scrap until Almo authorization is received in writing','Create the replacement PO in Aptora as soon as scrap authorization is received — don\'t wait for physical disposal','Once approved: physically scrap — sever power cord, photograph, retain documentation','Required scrap-claim photos: damage to product, model/serial tag with legible numbers, evidence rendered inoperable (e.g., severed power cord)','Track credit, close out damage sheet, file in records']
    }},
-  {id:'ge',n:'GE',b:'GE, GE Profile, Café, Hotpoint, Haier',
+  {id:'ge',n:'GE',b:'GE, GE Profile, Café, Monogram, Hotpoint, Haier',
    del:{act:'either',win:'30 days free | up to 90 days with restock fee',contact:'Troy Adams | Troy.Adams@geappliances.com | Tim Willibey (Monogram) 813-599-1827',
      steps:['Document damage on BOL with model# AND serial# — carrier must sign','Photograph damage AND legible serial/model numbers','BOL properly noted within 30 days = 0% restock','After 30 days (up to 90) = 10% restock','No BOL notation = 15% restock up to 90 days','⚠ No returns after 90 days — Troy willing to go out of policy if both parties agree']},
    con:{win:'Up to 90 days — BOL notation determines fee',contact:'Troy Adams | Troy.Adams@geappliances.com',
@@ -864,7 +864,7 @@ function whVendorDetail(){
     v.del.act==='accept'?
     `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment and document damage on the freight bill.</div></div>`:
     `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if you can</div><div class="ic-body">Refuse if possible. If you must accept, document on BOL before truck leaves.</div></div>`;
-  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')?'red':
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')||v.con.win.toLowerCase().includes('5 days')||v.con.win.toLowerCase().includes('3 days')?'red':
     v.con.win.toLowerCase().includes('12')?'amber':'neutral';
   return `<div class="step-card">
     <div class="step-label">Vendor Info — ${v.n}</div>
@@ -1034,7 +1034,7 @@ function warrantyVendorDetail(){
     body=`${wfBlock('installedFunctionalSteps','Installed — Functional')}${contactCon}`;
   } else if(scenario==='installed_cosmetic'){
     body=`<div class="info-card neutral"><div class="ic-label">Window</div><div class="ic-body">${v.con.win}</div></div>
-      ${allowance}${wfBlock('installedCosmeticSteps','Installed — Cosmetic')}${contactCon}`;
+      ${allowance}${wfBlock('installedCosmeticSteps','Installed — Cosmetic')}${samsungCosmetic}${contactCon}`;
   } else if(scenario==='installed_nra'){
     body=`${raBlock}${allowance}${wfBlock('installedNraSteps','Installed — NRA / Unrepairable')}${scrapNotes}${contactCon}`;
   } else if(scenario==='showroom'){
@@ -1125,7 +1125,7 @@ function goStep(step){
   if(idx>=0){
     const s=state.history[idx];
     state.history=state.history.slice(0,idx);
-    state.step=s.step;state.vendor=s.vendor;render();
+    state.step=s.step;state.vendor=s.vendor;state.scenario=s.scenario;render();
   }
 }
 window.goStep=goStep;

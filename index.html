@@ -596,7 +596,6 @@ function delInstall(){
         'Email warranty (CC Lydell): attach all photos, damage sheet, and note that the Lead authorized install as-is'
       ])}
     </div>
-    ${warrantyHandoff()}
     ${docBox()}
     <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
@@ -604,6 +603,7 @@ function delInstall(){
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -627,7 +627,6 @@ function delReturn(){
         'Email warranty (CC Lydell) before you leave the job site: attach all photos, the damage sheet, and note who authorized the return'
       ])}
     </div>
-    ${warrantyHandoff()}
     ${docBox()}
     <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
@@ -635,6 +634,7 @@ function delReturn(){
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -658,10 +658,10 @@ function delPartsroom(){
         'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
       ])}
     </div>
-    ${warrantyHandoff()}
     ${docBox()}
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -700,9 +700,9 @@ function delPostinstallFunctional(){
         'Warranty will initiate a service call'
       ])}
     </div>
-    ${warrantyHandoff()}
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -720,13 +720,13 @@ function delPostinstallCosmetic(){
         'Do not promise the customer anything — warranty will determine next steps'
       ])}
     </div>
-    ${warrantyHandoff()}
     <div class="info-card blue">
       <div class="ic-label">Samsung — Special Note</div>
       <div class="ic-body" style="font-size:13px">Samsung cosmetic issues go through <strong>Warranty (Klarissa)</strong> — not Mike Moore. Window: 30 days (occupied) / 90 days (unoccupied/pre-closing).</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -801,7 +801,6 @@ function whVisible(){
         'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original delivery date'
       ])}
     </div>
-    ${warrantyHandoff()}
     ${docBox()}
     <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
@@ -809,6 +808,7 @@ function whVisible(){
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 
@@ -835,7 +835,6 @@ function whConcealed(){
         'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original received date'
       ])}
     </div>
-    ${warrantyHandoff()}
     ${docBox()}
     <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
@@ -843,6 +842,7 @@ function whConcealed(){
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
+    ${warrantyHandoff()}
   </div>`;
 }
 

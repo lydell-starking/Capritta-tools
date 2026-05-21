@@ -618,10 +618,10 @@ function delInstall(){
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
         'Install the unit',
-        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage and location',
+        'Fill out the damage sheet below: customer name, work order #, model #, serial #, description of damage and location',
         'Leave a copy of the damage sheet with the customer or with the unit',
         'Bring the other copy to the warranty desk when you return',
-        'Email warranty (CC Lydell): attach all photos, damage sheet, and note that the Lead authorized install as-is'
+        'Use the damage report below — note that the Lead authorized install as-is'
       ])}
     </div>
     ${docBox()}
@@ -652,7 +652,7 @@ function delReturn(){
         'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
         'Note in the work order: decision to return, who authorized it (Lead or Kevin), and the original delivery date',
         'Attach the damage sheet to the unit',
-        'Email warranty (CC Lydell) before you leave the job site: attach all photos, the damage sheet, and note who authorized the return'
+        'Use the damage report below before you leave the job site — note who authorized the return'
       ])}
     </div>
     ${docBox()}
@@ -682,7 +682,7 @@ function delPartsroom(){
         'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
         'Note in the work order: decision to repair, who authorized it (Lead or Kevin)',
         'Attach the damage sheet to the unit',
-        'Email warranty (CC Lydell): attach all photos and the damage sheet — note that it is going to the parts room for repair',
+        'Use the damage report below — note that it is going to the parts room for repair',
         'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
       ])}
     </div>
@@ -724,10 +724,11 @@ function delPostinstallFunctional(){
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
         'Document the issue — photograph and note model #, serial #, customer name, work order #',
-        'Email warranty (CC Lydell): describe the issue, attach photos — do not contact the vendor yourself',
+        'Use the damage report below to send everything to warranty — do not contact the vendor yourself',
         'Warranty will initiate a service call'
       ])}
     </div>
+    ${docBox()}
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -744,7 +745,7 @@ function delPostinstallCosmetic(){
       ${stepsHtml([
         'Photograph all damage clearly — unit, all sides, model/serial tag',
         'Note model #, serial #, customer name, work order #, and description',
-        'Email warranty (CC Lydell): attach all photos with the above info — do not contact the vendor yourself',
+        'Use the damage report below — do not contact the vendor yourself',
         'Do not promise the customer anything — warranty will determine next steps'
       ])}
     </div>
@@ -752,6 +753,7 @@ function delPostinstallCosmetic(){
       <div class="ic-label">Samsung — Special Note</div>
       <div class="ic-body" style="font-size:13px">Samsung cosmetic issues go through <strong>Warranty (Klarissa)</strong> — not Mike Moore. Window: 30 days (occupied) / 90 days (unoccupied/pre-closing).</div>
     </div>
+    ${docBox()}
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -826,7 +828,7 @@ function whVisible(){
         'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
         'Place one copy of the damage sheet on the unit',
         'Bring the other copy to the warranty desk',
-        'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original delivery date'
+        'Use the damage report below — include the original delivery date'
       ])}
     </div>
     ${docBox()}
@@ -860,7 +862,7 @@ function whConcealed(){
         'Fill out the damage sheet: customer name, work order #, model #, serial #, date received, description of damage',
         'Place one copy of the damage sheet on the unit',
         'Bring the other copy to the warranty desk',
-        'Email warranty (CC Lydell): attach all photos and the damage sheet — include the original received date'
+        'Use the damage report below — include the original received date'
       ])}
     </div>
     ${docBox()}
@@ -1115,6 +1117,7 @@ const SL={
   wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_concealed:'Concealed Damage',
   wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
   damage_report:'Damage Report',
+  warranty_scenario:'Warranty',
   warranty_installed_subpicker:'Installed at Customer',
   warranty_lookup:'Vendor Lookup',warranty_vendor_detail:'Vendor Details'
 };

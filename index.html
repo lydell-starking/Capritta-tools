@@ -10,6 +10,7 @@
 <meta name="theme-color" content="#0a1628">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Damage & Return Action Tree — Capritta Fine Appliance</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&display=swap');
 :root {
@@ -147,6 +148,84 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 </div>
 
 <script>
+// ── EMAILJS CONFIG — swap in your credentials ──
+const EJS={
+  publicKey: 'AwQ-VsdDDFtRrwKDm',
+  serviceId: 'service_i1e0ems',
+  templateId: 'template_c8wv70k',
+};
+// Recipients
+const EMAIL_TO   = 'warranty@caprittaappliances.com';
+const EMAIL_CC   = 'scheduling@caprittaappliances.com,orders@caprittaappliances.com';
+const EMAIL_CC_TECH = ''; // tech role — warranty only, no CC
+
+emailjs.init({publicKey: EJS.publicKey});
+
+// ── IMAGE COMPRESSION ──
+// Resizes to max 1600px, JPEG 0.75 — keeps files ~300-500KB for email
+async function compressImage(file){
+  return new Promise(resolve=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const MAX=1600;
+      let w=img.width, h=img.height;
+      if(w>MAX||h>MAX){
+        if(w>h){h=Math.round(h*MAX/w);w=MAX;}
+        else{w=Math.round(w*MAX/h);h=MAX;}
+      }
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      canvas.toBlob(blob=>{
+        URL.revokeObjectURL(url);
+        const reader=new FileReader();
+        reader.onload=e=>resolve({
+          name: file.name||`photo-${Date.now()}.jpg`,
+          data: e.target.result.split(',')[1], // base64 only
+          content_type:'image/jpeg'
+        });
+        reader.readAsDataURL(blob);
+      },'image/jpeg',0.75);
+    };
+    img.src=url;
+  });
+}
+
+// ── SEND VIA EMAILJS ──
+async function ejsSend({subject, message, photos, ccField, btn, successMsg}){
+  // Compress all photos
+  btn.disabled=true;
+  btn.textContent='📤 Compressing photos…';
+  let attachments=[];
+  try{
+    attachments=await Promise.all(photos.map(f=>compressImage(f)));
+  }catch(e){
+    console.error('Compress error',e);
+  }
+  btn.textContent='📤 Sending…';
+  try{
+    await emailjs.send(EJS.serviceId, EJS.templateId, {
+      to_email:    EMAIL_TO,
+      cc_email:    ccField||'',
+      subject:     subject,
+      message:     message,
+    }, {
+      publicKey:   EJS.publicKey,
+      attachments: attachments
+    });
+    btn.textContent=successMsg||'✓ Sent to Warranty';
+    btn.style.background='var(--green)';
+    btn.style.color='white';
+    btn.disabled=false;
+  }catch(err){
+    console.error('EmailJS error',err);
+    btn.textContent='⚠ Send failed — tap to retry';
+    btn.style.background='var(--red)';
+    btn.style.color='white';
+    btn.disabled=false;
+  }
+}
 const VENDORS=[
   {id:'samsung',n:'Samsung',b:'Samsung',
    del:{act:'either',win:'Immediately',contact:'M. Moore | m.moore@sea.samsung.com',
@@ -1240,11 +1319,11 @@ function techReport(){
       <div id="tr-preview" class="email-preview"></div>
     </div>
     <button id="tr-send-btn" class="send-btn" onclick="techSend()" disabled>
-      📧 Send Field Report to Warranty
+      📤 Send Field Report &amp; Photos to Warranty
     </button>
-    <div class="info-card amber" style="margin-top:.75rem">
-      <div class="ic-label">After Tapping Send</div>
-      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Photos were saved to your device when taken — attach them from your Photos app before hitting send.</div>
+    <div class="info-card neutral" style="margin-top:.75rem">
+      <div class="ic-label">Photos sent automatically</div>
+      <div class="ic-body" style="font-size:12px">All photos are compressed and sent with the report — no manual attach needed.</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Change Role</button>
   </div>`;
@@ -1339,7 +1418,15 @@ window.techPreview=function(){
 
 window.techSend=function(){
   const btn=document.getElementById('tr-send-btn');
-  window.location.href=`mailto:warranty@caprittaappliances.com?subject=${encodeURIComponent(btn._subject||'Field Report')}&body=${encodeURIComponent(btn._body||'')}`;
+  const photos=TECH_PHOTO_SLOTS.map(s=>techPhotos[s.key]).filter(Boolean);
+  ejsSend({
+    subject: btn._subject||'Field Report',
+    message: btn._body||'',
+    photos,
+    ccField: EMAIL_CC_TECH,
+    btn,
+    successMsg:'✓ Sent to Warranty'
+  });
 };
 
 // ── PHOTO SAVE HELPER ──
@@ -1415,11 +1502,11 @@ function damageReport(){
       <div id="dr-preview" class="email-preview"></div>
     </div>
     <button id="dr-send-btn" class="send-btn" onclick="drSend()" disabled>
-      📧 Open Email to Warranty
+      📤 Send Report &amp; Photos to Warranty
     </button>
-    <div class="info-card amber" style="margin-top:.75rem">
-      <div class="ic-label">After Tapping Send</div>
-      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Photos were saved to your device when taken — attach them from your Photos app before hitting send. Print or write out the damage sheet — one copy stays with the unit, one goes to the warranty desk.</div>
+    <div class="info-card neutral" style="margin-top:.75rem">
+      <div class="ic-label">Photos sent automatically</div>
+      <div class="ic-body" style="font-size:12px">Photos are compressed and attached automatically — no manual steps. Print or write out the damage sheet: one copy stays with the unit, one goes to the warranty desk.</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
@@ -1511,7 +1598,14 @@ window.drPreview=function(){
 };
 window.drSend=function(){
   const btn=document.getElementById('dr-send-btn');
-  window.location.href=`mailto:warranty@caprittaappliances.com?cc=lydell@caprittaappliances.com,scheduling@caprittaappliances.com,orders@caprittaappliances.com&subject=${encodeURIComponent(btn._subject||'Damage Report')}&body=${encodeURIComponent(btn._body||'')}`;
+  ejsSend({
+    subject: btn._subject||'Damage Report',
+    message: btn._body||'',
+    photos:  drPhotos,
+    ccField: EMAIL_CC,
+    btn,
+    successMsg:'✓ Sent to Warranty'
+  });
 };
 
 // ── RENDER ──

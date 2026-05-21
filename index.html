@@ -1214,7 +1214,11 @@ function techReport(){
           </label>
         </div>`).join('')}
     </div>
-    <div id="tech-photo-count" class="photo-count" style="margin-bottom:1rem"></div>
+    <div id="tech-photo-count" class="photo-count" style="margin-bottom:.4rem"></div>
+    <div id="tech-save-wrap" style="display:none;margin-bottom:1rem">
+      <button id="tech-save-all-btn" class="photo-save-btn" onclick="techSaveAll()">💾 Save All Photos to Device</button>
+      <div class="photo-save-hint">Tap once to save — then attach from Photos or Files when sending email</div>
+    </div>
     <div class="form-section">
       <div class="form-label">Customer Name *</div>
       <input class="form-input" id="tr-customer" type="text" placeholder="Last, First or Job Name" oninput="techPreview()">
@@ -1250,7 +1254,6 @@ window.techAddPhoto=function(key,input){
   if(!input.files[0])return;
   const file=input.files[0];
   techPhotos[key]=file;
-  savePhotoToDevice(file,`capritta-${key}-${Date.now()}.jpg`);
   const thumbWrap=document.getElementById(`tp-thumb-${key}`);
   const btnText=document.getElementById(`tp-btn-text-${key}`);
   const slot=document.getElementById(`slot-${key}`);
@@ -1259,8 +1262,34 @@ window.techAddPhoto=function(key,input){
   if(slot) slot.classList.add('slot-done');
   const done=Object.values(techPhotos).filter(Boolean).length;
   const countEl=document.getElementById('tech-photo-count');
-  if(countEl) countEl.textContent=`${done} of 3 photos saved${done===3?' ✓':''}`;
+  if(countEl) countEl.textContent=`${done} of 3 photos taken${done===3?' ✓':''}`;
+  const saveWrap=document.getElementById('tech-save-wrap');
+  if(saveWrap) saveWrap.style.display=done>0?'block':'none';
+  const saveBtn=document.getElementById('tech-save-all-btn');
+  if(saveBtn){saveBtn.textContent='💾 Save All Photos to Device';saveBtn.style.background='';saveBtn.style.color='';}
   techPreview();
+};
+
+window.techSaveAll=async function(){
+  const slots=TECH_PHOTO_SLOTS.filter(s=>techPhotos[s.key]);
+  const files=slots.map(s=>techPhotos[s.key]);
+  const btn=document.getElementById('tech-save-all-btn');
+  if(navigator.canShare && navigator.canShare({files})){
+    try{
+      await navigator.share({files, title:'Capritta Field Report Photos'});
+      if(btn){btn.textContent='✓ Saved';btn.style.background='var(--green)';btn.style.color='white';}
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
+  // Fallback — download each
+  slots.forEach((s,i)=>{
+    const url=URL.createObjectURL(techPhotos[s.key]);
+    const a=document.createElement('a');
+    a.href=url;a.download=`capritta-${s.key}-${Date.now()+i}.jpg`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  if(btn){btn.textContent='✓ Saved to Files';btn.style.background='var(--green)';btn.style.color='white';}
 };
 
 window.techSavePhotos=function(){
@@ -1358,6 +1387,10 @@ function damageReport(){
       </label>
       <div id="dr-thumb-row" class="thumb-row"></div>
       <div id="dr-photo-count" class="photo-count"></div>
+      <div id="dr-save-wrap" style="display:none;margin-top:.5rem;margin-bottom:.25rem">
+        <button id="dr-save-all-btn" class="photo-save-btn" onclick="drSaveAll()">💾 Save All Photos to Device</button>
+        <div class="photo-save-hint">Tap once to save — then attach from Photos or Files when sending email</div>
+      </div>
     </div>
     <div class="form-section">
       <div class="form-label">Customer Name *</div>
@@ -1396,7 +1429,6 @@ function damageReport(){
 window.drAddPhotos=function(input){
   Array.from(input.files).forEach((file,i)=>{
     drPhotos.push(file);
-    savePhotoToDevice(file,`capritta-damage-${Date.now()+i}.jpg`);
   });
   drRenderThumbs();
   drPreview();
@@ -1409,10 +1441,32 @@ window.drRemovePhoto=function(i){
 function drRenderThumbs(){
   const row=document.getElementById('dr-thumb-row');
   const count=document.getElementById('dr-photo-count');
+  const saveWrap=document.getElementById('dr-save-wrap');
+  const saveBtn=document.getElementById('dr-save-all-btn');
   if(!row)return;
   row.innerHTML=drPhotos.map((f,i)=>`<div class="thumb-wrap"><img class="thumb" src="${URL.createObjectURL(f)}"><button class="thumb-del" onclick="drRemovePhoto(${i})">✕</button></div>`).join('');
-  if(count)count.textContent=drPhotos.length?`${drPhotos.length} photo${drPhotos.length>1?'s':''} saved to device`:'';
+  if(count)count.textContent=drPhotos.length?`${drPhotos.length} photo${drPhotos.length>1?'s':''} taken`:'';
+  if(saveWrap)saveWrap.style.display=drPhotos.length>0?'block':'none';
+  if(saveBtn){saveBtn.textContent='💾 Save All Photos to Device';saveBtn.style.background='';saveBtn.style.color='';}
 }
+window.drSaveAll=async function(){
+  const btn=document.getElementById('dr-save-all-btn');
+  if(navigator.canShare && navigator.canShare({files:drPhotos})){
+    try{
+      await navigator.share({files:drPhotos, title:'Capritta Damage Report Photos'});
+      if(btn){btn.textContent='✓ Saved';btn.style.background='var(--green)';btn.style.color='white';}
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
+  drPhotos.forEach((f,i)=>{
+    const url=URL.createObjectURL(f);
+    const a=document.createElement('a');
+    a.href=url;a.download=`capritta-damage-${Date.now()+i}.jpg`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  if(btn){btn.textContent='✓ Saved to Files';btn.style.background='var(--green)';btn.style.color='white';}
+};
 window.drSavePhotos=function(){
   drPhotos.forEach((f,i)=>{
     const url=URL.createObjectURL(f);

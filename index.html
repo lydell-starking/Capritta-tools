@@ -671,6 +671,11 @@ function delReturn(){
         'Use the damage report below before you leave the job site — note who authorized the return'
       ])}
     </div>
+    <div class="info-card purple" style="--purple-bg:#F0EBF9">
+      <div class="ic-label">🧾 Replacement PO — Warranty Action Required</div>
+      <div class="ic-body" style="font-size:13px">Warranty creates the replacement PO in Aptora <strong>at the time of vendor approval</strong> — not at the end of the process. Do not wait until the RA is closed.</div>
+    </div>
+    </div>
     ${docBox()}
     <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
@@ -701,6 +706,11 @@ function delPartsroom(){
         'Use the damage report below — note that it is going to the parts room for repair',
         'If you cannot get to the parts room today, drop the unit in the warehouse with the damage sheet attached — it will not be routed without it'
       ])}
+    </div>
+    <div class="info-card purple" style="--purple-bg:#F0EBF9">
+      <div class="ic-label">🧾 Replacement PO — Warranty Action Required</div>
+      <div class="ic-body" style="font-size:13px">Warranty creates the replacement PO in Aptora <strong>at the time of vendor approval</strong> — not at the end of the process. Do not wait until the RA is closed.</div>
+    </div>
     </div>
     ${docBox()}
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
@@ -1240,12 +1250,7 @@ window.techAddPhoto=function(key,input){
   if(!input.files[0])return;
   const file=input.files[0];
   techPhotos[key]=file;
-  // Auto-save to device immediately
-  const url=URL.createObjectURL(file);
-  const a=document.createElement('a');
-  a.href=url;a.download=`capritta-${key}-${Date.now()}.jpg`;
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  savePhotoToDevice(file,`capritta-${key}-${Date.now()}.jpg`);
   const thumbWrap=document.getElementById(`tp-thumb-${key}`);
   const btnText=document.getElementById(`tp-btn-text-${key}`);
   const slot=document.getElementById(`slot-${key}`);
@@ -1254,7 +1259,7 @@ window.techAddPhoto=function(key,input){
   if(slot) slot.classList.add('slot-done');
   const done=Object.values(techPhotos).filter(Boolean).length;
   const countEl=document.getElementById('tech-photo-count');
-  if(countEl) countEl.textContent=`${done} of 3 photos saved to device${done===3?' ✓':''}`;
+  if(countEl) countEl.textContent=`${done} of 3 photos saved${done===3?' ✓':''}`;
   techPreview();
 };
 
@@ -1308,7 +1313,26 @@ window.techSend=function(){
   window.location.href=`mailto:warranty@caprittaappliances.com?subject=${encodeURIComponent(btn._subject||'Field Report')}&body=${encodeURIComponent(btn._body||'')}`;
 };
 
-// ── DAMAGE REPORT ──
+// ── PHOTO SAVE HELPER ──
+async function savePhotoToDevice(file, filename){
+  // iOS 15+ with Web Share API — saves directly to Photos via share sheet
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file], title:filename});
+      return 'shared';
+    }catch(e){
+      if(e.name==='AbortError') return 'cancelled';
+      // Fall through to download
+    }
+  }
+  // Fallback — saves to Downloads/Files
+  const url=URL.createObjectURL(file);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  return 'downloaded';
+}
 let drPhotos=[];
 
 function damageReport(){
@@ -1344,10 +1368,8 @@ function damageReport(){
       <input class="form-input" id="dr-model" type="text" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="drPreview()">
       <div class="form-label">Serial # *</div>
       <input class="form-input" id="dr-serial" type="text" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="drPreview()">
-      ${isWarehouse?`<div class="form-label">Date Received *</div>
-      <input class="form-input" id="dr-received" type="date" value="${new Date().toISOString().split('T')[0]}" oninput="drPreview()">`:
-      `<div class="form-label">Today's Date</div>
-      <input class="form-input" id="dr-received" type="date" value="${new Date().toISOString().split('T')[0]}" oninput="drPreview()">`}
+      <div class="form-label">Date Damage Found</div>
+      <input class="form-input" id="dr-received" type="date" value="${new Date().toISOString().split('T')[0]}" oninput="drPreview()">
       <div class="form-label">Damage Description *</div>
       <textarea class="form-input form-textarea" id="dr-desc" placeholder="Describe location and type of damage — e.g. 'Dent on front door panel, upper left corner, approx 3in'" oninput="drPreview()"></textarea>
       <div class="form-label">Authorized By</div>
@@ -1372,14 +1394,9 @@ function damageReport(){
 }
 
 window.drAddPhotos=function(input){
-  Array.from(input.files).forEach(file=>{
+  Array.from(input.files).forEach((file,i)=>{
     drPhotos.push(file);
-    // Auto-save to device immediately
-    const url=URL.createObjectURL(file);
-    const a=document.createElement('a');
-    a.href=url;a.download=`capritta-damage-${Date.now()}.jpg`;
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    savePhotoToDevice(file,`capritta-damage-${Date.now()+i}.jpg`);
   });
   drRenderThumbs();
   drPreview();
@@ -1426,7 +1443,7 @@ window.drPreview=function(){
   const lines=[
     `DAMAGE REPORT — ${ctxLabel.toUpperCase()}`,``,
     `Customer: ${customer}`,`Work Order #: ${wo}`,`Model #: ${model}`,`Serial #: ${serial}`,
-    `Date: ${dateStr}`,``,`Damage Description:`,desc,``
+    `Date Damage Found: ${dateStr}`,``,`Damage Description:`,desc,``
   ];
   if(auth)lines.push(`Authorized By: ${auth}`,``);
   if(notes)lines.push(`Additional Notes:`,notes,``);

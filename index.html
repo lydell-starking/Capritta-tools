@@ -194,25 +194,31 @@ async function compressImage(file){
 
 // ── SEND VIA EMAILJS ──
 async function ejsSend({subject, message, photos, ccField, btn, successMsg}){
-  // Compress all photos
   btn.disabled=true;
   btn.textContent='📤 Compressing photos…';
-  let attachments=[];
-  try{
-    attachments=await Promise.all(photos.map(f=>compressImage(f)));
-  }catch(e){
-    console.error('Compress error',e);
+
+  // Build inline photo HTML
+  let photoHtml='';
+  if(photos && photos.length){
+    const compressed=await Promise.all(photos.map(f=>compressImage(f)));
+    photoHtml=compressed.map((p,i)=>
+      `<div style="margin:12px 0">
+        <div style="font-size:11px;color:#666;margin-bottom:4px">Photo ${i+1}</div>
+        <img src="data:image/jpeg;base64,${p.data}" style="max-width:100%;border:1px solid #ddd;border-radius:4px">
+      </div>`
+    ).join('');
   }
+
+  // Build full HTML message
+  const htmlMessage=`<pre style="font-family:monospace;font-size:13px;white-space:pre-wrap;background:#f5f5f5;padding:12px;border-radius:4px">${message}</pre>${photoHtml}`;
+
   btn.textContent='📤 Sending…';
   try{
     await emailjs.send(EJS.serviceId, EJS.templateId, {
-      to_email:    EMAIL_TO,
-      cc_email:    ccField||'',
-      subject:     subject,
-      message:     message,
-    }, {
-      publicKey:   EJS.publicKey,
-      attachments: attachments
+      to_email: EMAIL_TO,
+      cc_email: ccField||'',
+      subject:  subject,
+      message:  htmlMessage,
     });
     btn.textContent=successMsg||'✓ Sent to Warranty';
     btn.style.background='var(--green)';

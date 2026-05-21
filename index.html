@@ -55,7 +55,7 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .role-card:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
 .role-card.delivery{border-top:4px solid #8b2020}
 .role-card.warehouse{border-top:4px solid #2a6096}
-.role-card.warranty{border-top:4px solid #1e6b3a}
+.role-card.tech{border-top:4px solid var(--purple)}
 .role-card .rc-icon{font-size:28px;margin-bottom:.65rem}
 .role-card .rc-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:.3rem}
 .role-card .rc-desc{font-size:12px;color:var(--ink3);line-height:1.4}
@@ -121,6 +121,14 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .send-btn{display:block;width:100%;padding:.9rem;border:none;border-radius:10px;background:#0a1628;color:#c9a84c;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-bottom:.5rem;transition:opacity .15s}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 .send-btn:not(:disabled):active{opacity:.8}
+.tech-photo-slots{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem}
+.tech-slot{border:1px solid var(--border);border-radius:10px;padding:.85rem;background:var(--bg2);transition:border-color .2s,background .2s}
+.tech-slot.slot-done{border-color:var(--green);background:var(--green-bg)}
+.tech-slot-label{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:.2rem;display:flex;align-items:center;gap:6px}
+.tech-slot-hint{font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace;margin-bottom:.65rem}
+.tech-slot-btn{display:flex;align-items:center;gap:8px;width:100%;padding:.6rem .75rem;border:1.5px dashed var(--border);border-radius:8px;background:white;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--blue);box-sizing:border-box}
+.tech-slot.slot-done .tech-slot-btn{border-color:var(--green);color:var(--green)}
+.tp-thumb-wrap{display:flex;align-items:center}
 </style>
 </head>
 <body>
@@ -462,6 +470,7 @@ function setRole(r){
   state.history=[];
   if(r==='delivery') state.step='del_situation';
   else if(r==='warehouse') state.step='wh_situation';
+  else if(r==='tech') state.step='tech_report';
   else state.step='warranty_scenario';
   render();
 }
@@ -535,6 +544,11 @@ function rolePick(){
         <div class="rc-icon">📋</div>
         <div class="rc-title">Warranty / Office</div>
         <div class="rc-desc">Vendor policy lookup — windows, contacts, RA process, allowances</div>
+      </div>
+      <div class="role-card tech" onclick="setRole('tech')">
+        <div class="rc-icon">🔧</div>
+        <div class="rc-title">Service Technician</div>
+        <div class="rc-desc">Document a warranty issue in the field — photos, auth numbers, send to warranty</div>
       </div>
     </div>
   </div>`;
@@ -1107,7 +1121,7 @@ function warrantyVendorDetail(){
 }
 
 // ── BREADCRUMB ──
-const ROLE_LABELS={delivery:'Delivery',warehouse:'Warehouse',warranty:'Warranty'};
+const ROLE_LABELS={delivery:'Delivery',warehouse:'Warehouse',warranty:'Warranty',tech:'Technician'};
 const SL={
   role_pick:'Home',
   del_situation:'Delivery',del_damage_found:'Damage Found',del_install:'Install As-Is',
@@ -1116,7 +1130,7 @@ const SL={
   del_vendor_lookup:'Vendor Lookup',del_vendor_detail:'Vendor Details',
   wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_concealed:'Concealed Damage',
   wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
-  damage_report:'Damage Report',
+  tech_report:'Field Report',
   warranty_scenario:'Warranty',
   warranty_installed_subpicker:'Installed at Customer',
   warranty_lookup:'Vendor Lookup',warranty_vendor_detail:'Vendor Details'
@@ -1159,7 +1173,117 @@ function goStep(step){
     state.step=s.step;state.vendor=s.vendor;state.scenario=s.scenario;render();
   }
 }
-window.goStep=goStep;
+// ── TECH REPORT ──
+const TECH_PHOTO_SLOTS=[
+  {key:'damage_close',label:'Close-Up of Damage',icon:'🔍',hint:'Fill the frame — capture the exact damage clearly'},
+  {key:'full_unit',label:'Full Appliance Shot',icon:'📦',hint:'Full unit in frame, in its installed position'},
+  {key:'model_serial',label:'Model & Serial Tag',icon:'🏷️',hint:'Tag must be fully legible in the photo'},
+];
+let techPhotos={damage_close:null,full_unit:null,model_serial:null};
+
+function techReport(){
+  return `<div class="step-card">
+    <div class="step-label">Service Technician — Field Report</div>
+    <div class="step-q">Document the issue and send to warranty</div>
+    <div class="info-card neutral" style="margin-bottom:1rem">
+      <div class="ic-label">3 Required Photos</div>
+      <div class="ic-body" style="font-size:12px">Take all photos before filling out the form. Warranty needs all three — missing photos will delay the claim.</div>
+    </div>
+    <div class="tech-photo-slots">
+      ${TECH_PHOTO_SLOTS.map(s=>`
+        <div class="tech-slot" id="slot-${s.key}">
+          <div class="tech-slot-label"><span>${s.icon}</span> ${s.label}</div>
+          <div class="tech-slot-hint">${s.hint}</div>
+          <label class="tech-slot-btn" for="tp-${s.key}">
+            <span id="tp-thumb-${s.key}" class="tp-thumb-wrap"></span>
+            <span id="tp-btn-text-${s.key}">Tap to take photo</span>
+            <input type="file" id="tp-${s.key}" accept="image/*" capture="environment"
+              onchange="techAddPhoto('${s.key}',this)" style="display:none">
+          </label>
+        </div>`).join('')}
+    </div>
+    <div id="tech-photo-count" class="photo-count" style="margin-bottom:1rem"></div>
+    <div class="form-section">
+      <div class="form-label">Customer Name *</div>
+      <input class="form-input" id="tr-customer" type="text" placeholder="Last, First or Job Name" oninput="techPreview()">
+      <div class="form-label">Work Order # *</div>
+      <input class="form-input" id="tr-wo" type="text" placeholder="e.g. 12345" oninput="techPreview()">
+      <div class="form-label">Model # *</div>
+      <input class="form-input" id="tr-model" type="text" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="techPreview()">
+      <div class="form-label">Serial # *</div>
+      <input class="form-input" id="tr-serial" type="text" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="techPreview()">
+      <div class="form-label">Manufacturer Auth / Case # <span style="color:var(--ink3);font-weight:400">(if obtained)</span></div>
+      <input class="form-input" id="tr-auth" type="text" placeholder="e.g. AUTH-123456 or Case #789" oninput="techPreview()">
+      <div class="form-label">Issue Description *</div>
+      <textarea class="form-input form-textarea" id="tr-desc" placeholder="Describe the issue — what you found, what was tested, what the manufacturer rep said" oninput="techPreview()"></textarea>
+      <div class="form-label">Additional Notes</div>
+      <textarea class="form-input form-textarea" id="tr-notes" placeholder="Parts ordered, next steps discussed, anything warranty should know" oninput="techPreview()"></textarea>
+    </div>
+    <div id="tr-preview-wrap" style="display:none">
+      <div class="section-head">Email Preview</div>
+      <div id="tr-preview" class="email-preview"></div>
+    </div>
+    <button id="tr-send-btn" class="send-btn" onclick="techSend()" disabled>
+      📧 Send Field Report to Warranty
+    </button>
+    <div class="info-card amber" style="margin-top:.75rem">
+      <div class="ic-label">After Tapping Send</div>
+      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Attach all 3 photos before hitting send.</div>
+    </div>
+    <button class="reset-btn" onclick="reset()">↩ Change Role</button>
+  </div>`;
+}
+
+window.techAddPhoto=function(key,input){
+  if(!input.files[0])return;
+  techPhotos[key]=input.files[0];
+  const thumbWrap=document.getElementById(`tp-thumb-${key}`);
+  const btnText=document.getElementById(`tp-btn-text-${key}`);
+  const slot=document.getElementById(`slot-${key}`);
+  if(thumbWrap){
+    thumbWrap.innerHTML=`<img src="${URL.createObjectURL(input.files[0])}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;margin-right:10px;flex-shrink:0">`;
+  }
+  if(btnText) btnText.textContent='Tap to retake';
+  if(slot) slot.classList.add('slot-done');
+  const done=Object.values(techPhotos).filter(Boolean).length;
+  const countEl=document.getElementById('tech-photo-count');
+  if(countEl) countEl.textContent=`${done} of 3 photos taken${done===3?' — all required photos complete':''}`;
+  techPreview();
+};
+
+window.techPreview=function(){
+  const v=id=>document.getElementById(id)?.value.trim()||'';
+  const customer=v('tr-customer'),wo=v('tr-wo'),model=v('tr-model'),serial=v('tr-serial');
+  const auth=v('tr-auth'),desc=v('tr-desc'),notes=v('tr-notes');
+  const btn=document.getElementById('tr-send-btn');
+  const wrap=document.getElementById('tr-preview-wrap');
+  if(!customer||!wo||!model||!serial||!desc){if(btn)btn.disabled=true;if(wrap)wrap.style.display='none';return;}
+  const done=Object.values(techPhotos).filter(Boolean).length;
+  const photoStatus=TECH_PHOTO_SLOTS.map(s=>`  ${techPhotos[s.key]?'✓':'✗'} ${s.label}`).join('\n');
+  const lines=[
+    `FIELD SERVICE REPORT`,``,
+    `Customer: ${customer}`,`Work Order #: ${wo}`,
+    `Model #: ${model}`,`Serial #: ${serial}`,
+    auth?`Manufacturer Auth / Case #: ${auth}`:'',
+    ``,`Issue Description:`,desc,``
+  ];
+  if(notes) lines.push(`Additional Notes:`,notes,``);
+  lines.push(
+    `Photos (${done}/3):`,photoStatus,``,
+    `—`,`Submitted via Capritta Service Tech Tool`
+  );
+  const body=lines.filter(l=>l!==null).join('\n');
+  const subject=`Field Report — ${customer} — ${model}`;
+  const prev=document.getElementById('tr-preview');
+  if(prev) prev.textContent=body;
+  if(wrap) wrap.style.display='block';
+  if(btn){btn.disabled=false;btn._body=body;btn._subject=subject;}
+};
+
+window.techSend=function(){
+  const btn=document.getElementById('tr-send-btn');
+  window.location.href=`mailto:warranty@caprittaappliances.com?subject=${encodeURIComponent(btn._subject||'Field Report')}&body=${encodeURIComponent(btn._body||'')}`;
+};
 
 // ── DAMAGE REPORT ──
 let drPhotos=[];
@@ -1274,7 +1398,7 @@ window.drPreview=function(){
 };
 window.drSend=function(){
   const btn=document.getElementById('dr-send-btn');
-  window.location.href=`mailto:warranty@caprittaappliances.com?cc=lydell@caprittaappliances.com,scheduling@caprittaappliances.com&subject=${encodeURIComponent(btn._subject||'Damage Report')}&body=${encodeURIComponent(btn._body||'')}`;
+  window.location.href=`mailto:warranty@caprittaappliances.com?cc=lydell@caprittaappliances.com,scheduling@caprittaappliances.com,orders@caprittaappliances.com&subject=${encodeURIComponent(btn._subject||'Damage Report')}&body=${encodeURIComponent(btn._body||'')}`;
 };
 
 // ── RENDER ──
@@ -1303,6 +1427,7 @@ function render(){
   else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();
   else if(s==='warranty_vendor_detail')app.innerHTML=warrantyVendorDetail();
   else if(s==='damage_report')    app.innerHTML=damageReport();
+  else if(s==='tech_report')      app.innerHTML=techReport();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 render();

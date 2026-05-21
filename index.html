@@ -121,6 +121,8 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .send-btn{display:block;width:100%;padding:.9rem;border:none;border-radius:10px;background:#0a1628;color:#c9a84c;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-bottom:.5rem;transition:opacity .15s}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 .send-btn:not(:disabled):active{opacity:.8}
+.photo-save-btn{display:block;width:100%;padding:.8rem;border:none;border-radius:10px;background:#0a1628;color:#c9a84c;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:all .2s;margin-bottom:.4rem}
+.photo-save-hint{font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace;text-align:center}
 .tech-photo-slots{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem}
 .tech-slot{border:1px solid var(--border);border-radius:10px;padding:.85rem;background:var(--bg2);transition:border-color .2s,background .2s}
 .tech-slot.slot-done{border-color:var(--green);background:var(--green-bg)}
@@ -1228,7 +1230,7 @@ function techReport(){
     </button>
     <div class="info-card amber" style="margin-top:.75rem">
       <div class="ic-label">After Tapping Send</div>
-      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Attach all 3 photos before hitting send.</div>
+      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Photos were saved to your device when taken — attach them from your Photos app before hitting send.</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Change Role</button>
   </div>`;
@@ -1236,19 +1238,40 @@ function techReport(){
 
 window.techAddPhoto=function(key,input){
   if(!input.files[0])return;
-  techPhotos[key]=input.files[0];
+  const file=input.files[0];
+  techPhotos[key]=file;
+  // Auto-save to device immediately
+  const url=URL.createObjectURL(file);
+  const a=document.createElement('a');
+  a.href=url;a.download=`capritta-${key}-${Date.now()}.jpg`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
   const thumbWrap=document.getElementById(`tp-thumb-${key}`);
   const btnText=document.getElementById(`tp-btn-text-${key}`);
   const slot=document.getElementById(`slot-${key}`);
-  if(thumbWrap){
-    thumbWrap.innerHTML=`<img src="${URL.createObjectURL(input.files[0])}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;margin-right:10px;flex-shrink:0">`;
-  }
-  if(btnText) btnText.textContent='Tap to retake';
+  if(thumbWrap) thumbWrap.innerHTML=`<img src="${URL.createObjectURL(file)}" style="width:52px;height:52px;object-fit:cover;border-radius:6px;margin-right:10px;flex-shrink:0">`;
+  if(btnText) btnText.textContent='✓ Saved — tap to retake';
   if(slot) slot.classList.add('slot-done');
   const done=Object.values(techPhotos).filter(Boolean).length;
   const countEl=document.getElementById('tech-photo-count');
-  if(countEl) countEl.textContent=`${done} of 3 photos taken${done===3?' — all required photos complete':''}`;
+  if(countEl) countEl.textContent=`${done} of 3 photos saved to device${done===3?' ✓':''}`;
   techPreview();
+};
+
+window.techSavePhotos=function(){
+  const slots=TECH_PHOTO_SLOTS.filter(s=>techPhotos[s.key]);
+  slots.forEach((s,i)=>{
+    const url=URL.createObjectURL(techPhotos[s.key]);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`capritta-${s.key}-${Date.now()}.jpg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  const saveBtn=document.querySelector('.photo-save-btn');
+  if(saveBtn){saveBtn.textContent='✓ Photos Saved — Now Open Email';saveBtn.style.background='var(--green)';saveBtn.style.color='white';}
 };
 
 window.techPreview=function(){
@@ -1341,7 +1364,7 @@ function damageReport(){
     </button>
     <div class="info-card amber" style="margin-top:.75rem">
       <div class="ic-label">After Tapping Send</div>
-      <div class="ic-body" style="font-size:12px">Your email app will open with the report pre-filled. Attach the photos before hitting send. Print or write out the damage sheet — one copy stays with the unit, one goes to the warranty desk.</div>
+      <div class="ic-body" style="font-size:12px">Your email app opens with the report pre-filled. Photos were saved to your device when taken — attach them from your Photos app before hitting send. Print or write out the damage sheet — one copy stays with the unit, one goes to the warranty desk.</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
@@ -1349,7 +1372,15 @@ function damageReport(){
 }
 
 window.drAddPhotos=function(input){
-  drPhotos=[...drPhotos,...Array.from(input.files)];
+  Array.from(input.files).forEach(file=>{
+    drPhotos.push(file);
+    // Auto-save to device immediately
+    const url=URL.createObjectURL(file);
+    const a=document.createElement('a');
+    a.href=url;a.download=`capritta-damage-${Date.now()}.jpg`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
   drRenderThumbs();
   drPreview();
 };
@@ -1363,8 +1394,19 @@ function drRenderThumbs(){
   const count=document.getElementById('dr-photo-count');
   if(!row)return;
   row.innerHTML=drPhotos.map((f,i)=>`<div class="thumb-wrap"><img class="thumb" src="${URL.createObjectURL(f)}"><button class="thumb-del" onclick="drRemovePhoto(${i})">✕</button></div>`).join('');
-  if(count)count.textContent=drPhotos.length?`${drPhotos.length} photo${drPhotos.length>1?'s':''} ready to attach`:'';
+  if(count)count.textContent=drPhotos.length?`${drPhotos.length} photo${drPhotos.length>1?'s':''} saved to device`:'';
 }
+window.drSavePhotos=function(){
+  drPhotos.forEach((f,i)=>{
+    const url=URL.createObjectURL(f);
+    const a=document.createElement('a');
+    a.href=url;a.download=`capritta-damage-${i+1}-${Date.now()}.jpg`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  const btn=document.querySelector('#dr-save-btn-wrap .photo-save-btn');
+  if(btn){btn.textContent='✓ Photos Saved — Now Open Email';btn.style.background='var(--green)';btn.style.color='white';}
+};
 window.drPreview=function(){
   const v=id=>document.getElementById(id)?.value.trim()||'';
   const customer=v('dr-customer'),wo=v('dr-wo'),model=v('dr-model'),serial=v('dr-serial');

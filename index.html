@@ -199,7 +199,7 @@ async function compressImage(file){
     const img=new Image();
     const url=URL.createObjectURL(file);
     img.onload=()=>{
-      const MAX=1600;
+      const MAX=800;
       let w=img.width, h=img.height;
       if(w>MAX||h>MAX){
         if(w>h){h=Math.round(h*MAX/w);w=MAX;}
@@ -217,7 +217,7 @@ async function compressImage(file){
           content_type:'image/jpeg'
         });
         reader.readAsDataURL(blob);
-      },'image/jpeg',0.75);
+      },'image/jpeg',0.55);
     };
     img.src=url;
   });
@@ -266,7 +266,8 @@ async function ejsSend({subject, message, photos, ccField, btn, successMsg}){
     ejsIncrementCounter();
   }catch(err){
     console.error('EmailJS error',err);
-    btn.textContent='⚠ Send failed — tap to retry';
+    const msg=err?.text||err?.message||JSON.stringify(err)||'Unknown error';
+    btn.textContent=`⚠ Failed: ${msg.slice(0,60)} — tap to retry`;
     btn.style.background='var(--red)';
     btn.style.color='white';
     btn.disabled=false;

@@ -140,7 +140,12 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
     <div class="header-title">Damage & Return Action Tree</div>
     <div class="header-sub">Capritta Fine Appliance — Internal Use Only</div>
   </div>
-  <div id="role-indicator" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a9bb0"></div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+    <div id="role-indicator" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a9bb0"></div>
+    <div id="ejs-counter" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a9bb0;display:none">
+      <span id="ejs-used">0</span>/200 emails this month
+    </div>
+  </div>
 </div>
 <div class="container">
   <div class="breadcrumb" id="breadcrumb"></div>
@@ -160,6 +165,32 @@ const EMAIL_CC   = 'scheduling@caprittaappliances.com,orders@caprittaappliances.
 const EMAIL_CC_TECH = ''; // tech role — warranty only, no CC
 
 emailjs.init({publicKey: EJS.publicKey});
+
+// ── EMAIL USAGE COUNTER ──
+function ejsCounterKey(){
+  const d=new Date();
+  return `ejs_count_${d.getFullYear()}_${d.getMonth()+1}`;
+}
+function ejsInitCounter(){
+  const key=ejsCounterKey();
+  const used=parseInt(localStorage.getItem(key)||'0');
+  const el=document.getElementById('ejs-counter');
+  const usedEl=document.getElementById('ejs-used');
+  if(el&&usedEl){
+    usedEl.textContent=used;
+    el.style.display='block';
+    const pct=used/200;
+    el.style.color=pct>=0.9?'#c9a84c':pct>=0.75?'#8a9bb0':'#8a9bb0';
+    if(pct>=0.9) el.style.color='#e8a030';
+    if(used>=200) el.style.color='#8b2020';
+  }
+}
+function ejsIncrementCounter(){
+  const key=ejsCounterKey();
+  const used=parseInt(localStorage.getItem(key)||'0')+1;
+  localStorage.setItem(key,used);
+  ejsInitCounter();
+}
 
 // ── IMAGE COMPRESSION ──
 // Resizes to max 1600px, JPEG 0.75 — keeps files ~300-500KB for email
@@ -195,6 +226,13 @@ async function compressImage(file){
 // ── SEND VIA EMAILJS ──
 async function ejsSend({subject, message, photos, ccField, btn, successMsg}){
   btn.disabled=true;
+
+  // Warn if no photos
+  if(!photos || photos.length===0){
+    const proceed=confirm('No photos attached. Warranty may not be able to process this without photos. Send anyway?');
+    if(!proceed){btn.disabled=false;return;}
+  }
+
   btn.textContent='📤 Compressing photos…';
 
   // Build inline photo HTML
@@ -224,6 +262,8 @@ async function ejsSend({subject, message, photos, ccField, btn, successMsg}){
     btn.style.background='var(--green)';
     btn.style.color='white';
     btn.disabled=false;
+    // Update usage counter
+    ejsIncrementCounter();
   }catch(err){
     console.error('EmailJS error',err);
     btn.textContent='⚠ Send failed — tap to retry';
@@ -582,7 +622,11 @@ function stepsHtml(arr){
 function warrantyHandoff(){
   return `<div class="info-card purple">
     <div class="ic-label">→ Hand Off to Warranty</div>
-    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.</div>
+    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.
+    <div style="margin-top:.65rem;padding-top:.65rem;border-top:1px solid rgba(91,42,139,.2);font-size:11px;line-height:1.8">
+      <strong>If warranty is unavailable:</strong><br>
+      Klarissa → <strong>Rebecca</strong> (her manager) → <strong>Steve Vuillermet</strong> (Service Manager)
+    </div></div>
   </div>`;
 }
 function docBox(){
@@ -1616,6 +1660,7 @@ window.drSend=function(){
 
 // ── RENDER ──
 function render(){
+  ejsInitCounter();
   renderBreadcrumb();
   const app=document.getElementById('app');
   const s=state.step;

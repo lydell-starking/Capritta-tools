@@ -569,12 +569,8 @@ function stepsHtml(arr){
 }
 function warrantyHandoff(){
   return `<div class="info-card purple">
-    <div class="ic-label">→ Hand Off to Warranty</div>
-    <div class="ic-body"><strong>Your job ends here.</strong> Once you email warranty and drop the damage sheet, warranty handles everything — vendor contacts, claims, RAs, parts, and reorders. Do not contact the vendor yourself.
-    <div style="margin-top:.65rem;padding-top:.65rem;border-top:1px solid rgba(91,42,139,.2);font-size:11px;line-height:1.8">
-      <strong>If warranty is unavailable:</strong><br>
-      Klarissa → <strong>Rebecca</strong> (her manager) → <strong>Steve Vuillermet</strong> (Service Manager)
-    </div></div>
+    <div class="ic-label">✓ Your Part Is Done When:</div>
+    <div class="ic-body">Damage report sent · Dispatcher notified · Unit dropped off at warehouse damage area or service room (or installed if applicable) · Photos taken and ready to upload in Aptora</div>
   </div>`;
 }
 function docBox(){
@@ -715,10 +711,6 @@ function delInstall(){
       ])}
     </div>
     ${docBox()}
-    <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
-      <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up vendor details for warranty</div><div class="opt-desc">Optional — windows, contacts, RA process</div></div>
-    </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -745,10 +737,6 @@ function delReturn(){
       ])}
     </div>
     ${docBox()}
-    <button class="opt-btn" onclick="go('del_vendor_lookup')" style="margin-bottom:.5rem">
-      <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up vendor details for warranty</div><div class="opt-desc">Optional — windows, contacts, RA process</div></div>
-    </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -917,7 +905,7 @@ function whVisible(){
     ${docBox()}
     <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up this vendor's receive policy</div><div class="opt-desc">Refuse vs. accept, windows, contacts — for warranty reference</div></div>
+      <div class="opt-text"><div class="opt-title">Look up vendor receiving policy</div><div class="opt-desc">Refuse vs. accept and claim windows</div></div>
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
@@ -950,7 +938,7 @@ function whConcealed(){
     ${docBox()}
     <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
       <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up this vendor's claim window</div><div class="opt-desc">See how urgent the timeline is — for warranty reference</div></div>
+      <div class="opt-text"><div class="opt-title">Look up vendor receiving policy</div><div class="opt-desc">Refuse vs. accept and claim windows</div></div>
     </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
@@ -972,19 +960,19 @@ function whVendorDetail(){
   const v=VENDORS.find(x=>x.id===state.vendor);
   if(!v)return '';
   const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE this shipment</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign before the truck leaves.</div></div>`:
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign before the truck leaves.</div></div>`:
     v.del.act==='accept'?
     `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment and document damage on the freight bill.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if you can</div><div class="ic-body">Refuse if possible. If you must accept, document on BOL before truck leaves.</div></div>`;
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if possible</div><div class="ic-body">Refuse if possible. If you must accept, document damage on the BOL before the truck leaves.</div></div>`;
   const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')||v.con.win.toLowerCase().includes('5 days')||v.con.win.toLowerCase().includes('3 days')?'red':
     v.con.win.toLowerCase().includes('12')?'amber':'neutral';
   return `<div class="step-card">
-    <div class="step-label">Vendor Info — ${v.n}</div>
+    <div class="step-label">Receiving Policy — ${v.n}</div>
     <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
     ${ac}
-    <div class="info-card neutral"><div class="ic-label">Delivery Window</div><div class="ic-body">${v.del.win}</div></div>
+    <div class="info-card neutral"><div class="ic-label">Visible Damage Window</div><div class="ic-body">${v.del.win}</div></div>
     <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}Concealed Damage Window</div><div class="ic-body">${v.con.win}</div></div>
-    <div class="contact-box"><div class="label">Vendor Contact (for Warranty)</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
+    <div class="info-card neutral"><div class="ic-label">Next Step</div><div class="ic-body">Fill out the damage report and send to office. The office will handle vendor contacts and the claim from here.</div></div>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;

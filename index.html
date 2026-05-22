@@ -118,6 +118,30 @@ body{font-family:var(--font-mono);background:var(--bg);color:var(--ink);min-heig
 
 .tech-slot.slot-done 
 
+.ref-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.ref-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11px}
+.ref-table thead tr{background:#0a1628}
+.ref-table thead th{padding:.6rem .75rem;color:#c9a84c;font-size:10px;letter-spacing:.8px;text-align:left;white-space:nowrap;border-right:1px solid #1e2d40}
+.ref-row{border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.ref-row:hover{background:var(--blue-bg)}
+.ref-row td{padding:.65rem .75rem;vertical-align:top;border-right:1px solid var(--border)}
+.ref-vendor-name{font-weight:600;color:var(--ink);font-size:12px}
+.ref-brands{color:var(--ink3);font-size:10px;margin-top:2px}
+.ref-action{text-align:center;vertical-align:middle}
+.ref-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.ref-badge.red{background:var(--red-bg);color:var(--red)}
+.ref-badge.amber{background:var(--amber-bg);color:var(--amber)}
+.ref-badge.blue{background:var(--blue-bg);color:var(--blue)}
+.ref-win{color:var(--ink2);font-size:11px;min-width:90px}
+.urgent-cell{color:var(--red);font-weight:600;background:var(--red-bg)}
+.ref-fee{color:var(--ink2);font-size:11px;min-width:100px}
+.ref-detail-block{margin-bottom:1rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ref-detail-block .section-head{margin:0;border-radius:0;border-bottom:1px solid var(--border);padding:.5rem .85rem}
+.ref-detail-sec{display:flex;gap:.5rem;padding:.5rem .85rem;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:12px}
+.ref-detail-sec:last-child{border-bottom:none}
+.ref-detail-label{color:var(--ink3);font-size:10px;min-width:120px;padding-top:1px;flex-shrink:0}
+.ref-detail-val{color:var(--ink);line-height:1.5}
+.ref-steps-list{margin:.5rem .85rem .75rem;padding-left:1.2rem;font-family:var(--font-mono);font-size:11px;color:var(--ink2);line-height:1.8}
 </style>
 </head>
 <body>
@@ -789,6 +813,10 @@ function whSituation(){
         <div class="opt-icon">🔍</div>
         <div class="opt-text"><div class="opt-title">Concealed damage</div><div class="opt-desc">Box looked fine but damage found during inspection</div></div>
       </button>
+      <button class="opt-btn" onclick="go('reference_table')" style="border-color:var(--gold);background:var(--amber-bg)">
+        <div class="opt-icon">📊</div>
+        <div class="opt-text"><div class="opt-title" style="color:var(--amber)">Vendor Policy Reference</div><div class="opt-desc">All vendors — refuse/accept rules, windows, contacts</div></div>
+      </button>
     </div>
     <button class="back-btn" onclick="reset()">← Change Role</button>
   </div>`;
@@ -917,6 +945,10 @@ function warrantyScenario(){
       <button class="opt-btn" onclick="setScenario('lookup')">
         <div class="opt-icon">📋</div>
         <div class="opt-text"><div class="opt-title">Policy Lookup</div><div class="opt-desc">Just need to check windows, contacts, fees, or RA process</div></div>
+      </button>
+      <button class="opt-btn" onclick="go('reference_table')" style="border-color:var(--gold);background:var(--amber-bg)">
+        <div class="opt-icon">📊</div>
+        <div class="opt-text"><div class="opt-title" style="color:var(--amber)">Full Vendor Reference</div><div class="opt-desc">All 19 vendors — windows, fees, contacts, RA process at a glance</div></div>
       </button>
     </div>
     <button class="back-btn" onclick="reset()">← Change Role</button>
@@ -1090,6 +1122,7 @@ const SL={
   del_postinstall:'Post-Install',del_postinstall_functional:'Functional Issue',del_postinstall_cosmetic:'Cosmetic Issue',
   wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_visible_detail:'Vendor Policy',wh_concealed:'Concealed Damage',wh_concealed_detail:'Vendor Policy',
   tech_report:'Field Report',
+  reference_table:'Vendor Reference',reference_vendor_detail:'Vendor Detail',
   warranty_scenario:'Warranty',
   warranty_installed_subpicker:'Installed at Customer',
   warranty_lookup:'Vendor Lookup',warranty_vendor_detail:'Vendor Details'
@@ -1101,7 +1134,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.3.2 · May 22, 2026';
+    ri.textContent='v3.4 · May 22, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1326,7 +1359,129 @@ window.drSend=function(){
   });
 };
 
-// ── RENDER ──
+// ── REFERENCE TABLE ──
+function referenceTable(){
+  const urgentWin=w=>w&&(w.includes('⚠')||w.toLowerCase().includes('3 day')||w.toLowerCase().includes('5 day')||w.toLowerCase().includes('immediately'));
+  const rows=VENDORS.map(v=>{
+    const actColor=v.del.act==='refuse'?'red':v.del.act==='accept'?'amber':'blue';
+    const actLabel=v.del.act==='refuse'?'REFUSE':v.del.act==='accept'?'ACCEPT':'EITHER';
+    const conUrgent=urgentWin(v.con.win);
+    return `<tr class="ref-row" onclick="selectRefVendor('${v.id}')">
+      <td class="ref-vendor"><div class="ref-vendor-name">${v.n}</div><div class="ref-brands">${v.b}</div></td>
+      <td class="ref-action"><span class="ref-badge ${actColor}">${actLabel}</span></td>
+      <td class="ref-win">${v.del.win||'—'}</td>
+      <td class="ref-win ${conUrgent?'urgent-cell':''}">${v.con.win||'—'}</td>
+      <td class="ref-fee">${v.ra.fee||'—'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="step-card" style="padding:0">
+    <div style="padding:1.25rem 1.25rem .75rem">
+      <div class="step-label">Vendor Policy Reference</div>
+      <div class="step-q">All Vendors — Quick View</div>
+      <div style="font-size:11px;color:var(--ink3);font-family:var(--font-mono);margin-top:.25rem">Tap any vendor for full details</div>
+    </div>
+    <div class="ref-table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>VENDOR</th>
+            <th>ACTION</th>
+            <th>VISIBLE WINDOW</th>
+            <th>CONCEALED WINDOW</th>
+            <th>RESTOCK FEE</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="padding:.75rem 1.25rem 1.25rem">
+      <button class="reset-btn" onclick="reset()">↩ Start Over</button>
+      <button class="back-btn" onclick="back()">← Back</button>
+    </div>
+  </div>`;
+}
+
+function referenceVendorDetail(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const actColor=v.del.act==='refuse'?'red':v.del.act==='accept'?'amber':'blue';
+  const actLabel=v.del.act==='refuse'?'⚠ REFUSE':v.del.act==='accept'?'ALWAYS ACCEPT':'EITHER — Refuse if possible';
+  const sec=(label,content)=>content?`<div class="ref-detail-sec"><div class="ref-detail-label">${label}</div><div class="ref-detail-val">${content}</div></div>`:'';
+  const list=(items)=>items&&items.length?`<ol class="ref-steps-list">${items.map(i=>`<li>${i}</li>`).join('')}</ol>`:'';
+  const hasWarranty=!!v.warranty;
+
+  return `<div class="step-card">
+    <div class="step-label">Vendor Reference — ${v.n}</div>
+    <div class="step-q">${v.n}</div>
+    <div style="font-size:12px;color:var(--ink3);font-family:var(--font-mono);margin-bottom:1rem">${v.b}</div>
+
+    <div class="ref-detail-block">
+      <div class="section-head">Receiving</div>
+      ${sec('Action',`<span class="ref-badge ${actColor}" style="font-size:12px">${actLabel}</span>`)}
+      ${sec('Visible damage window',v.del.win)}
+      ${sec('Concealed damage window',v.con.win)}
+      ${v.con.al!==undefined?sec('Damage allowance',v.con.al?'Yes — see notes':'No'):''}
+    </div>
+
+    <div class="ref-detail-block">
+      <div class="section-head">Returns &amp; RA</div>
+      ${sec('How to submit RA',v.ra.how)}
+      ${sec('Restock fee',v.ra.fee)}
+      ${sec('Freight responsibility',v.ra.fr)}
+    </div>
+
+    <div class="ref-detail-block">
+      <div class="section-head">Contacts</div>
+      ${sec('Delivery / damage',v.del.contact)}
+      ${sec('Concealed claims',v.con.contact!==v.del.contact?v.con.contact:null)}
+    </div>
+
+    ${v.sc?`<div class="ref-detail-block">
+      <div class="section-head">Notes</div>
+      <div class="ref-detail-val" style="font-size:12px">${v.sc}</div>
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.warehouseSteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — Warehouse Steps</div>
+      ${list(v.warranty.warehouseSteps)}
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.serviceRoomSteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — Service Room Steps</div>
+      ${list(v.warranty.serviceRoomSteps)}
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.installedFunctionalSteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — Installed Functional</div>
+      ${list(v.warranty.installedFunctionalSteps)}
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.installedCosmeticSteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — Installed Cosmetic</div>
+      ${list(v.warranty.installedCosmeticSteps)}
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.installedNRASteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — NRA / Unrepairable</div>
+      ${list(v.warranty.installedNRASteps)}
+    </div>`:''}
+
+    ${hasWarranty&&v.warranty.showroomSteps?`<div class="ref-detail-block">
+      <div class="section-head">Warranty — Showroom</div>
+      ${list(v.warranty.showroomSteps)}
+    </div>`:''}
+
+    <button class="reset-btn" onclick="go('reference_table')">← Back to Reference</button>
+    <button class="back-btn" onclick="reset()">↩ Start Over</button>
+  </div>`;
+}
+
+window.selectRefVendor=function(id){
+  state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});
+  state.vendor=id;
+  state.step='reference_vendor_detail';
+  render();
+};
 function render(){
   renderBreadcrumb();
   const app=document.getElementById('app');
@@ -1349,8 +1504,8 @@ function render(){
   else if(s==='warranty_installed_subpicker')app.innerHTML=installedSubpicker();
   else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();
   else if(s==='warranty_vendor_detail')app.innerHTML=warrantyVendorDetail();
-  else if(s==='damage_report')    app.innerHTML=damageReport();
-  else if(s==='tech_report')      app.innerHTML=techReport();
+  else if(s==='reference_table')        app.innerHTML=referenceTable();
+  else if(s==='reference_vendor_detail') app.innerHTML=referenceVendorDetail();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 render();

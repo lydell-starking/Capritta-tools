@@ -1134,7 +1134,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.4 · May 22, 2026';
+    ri.textContent='v3.4.1 · May 22, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1504,7 +1504,9 @@ function render(){
   else if(s==='warranty_installed_subpicker')app.innerHTML=installedSubpicker();
   else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();
   else if(s==='warranty_vendor_detail')app.innerHTML=warrantyVendorDetail();
-  else if(s==='reference_table')        app.innerHTML=referenceTable();
+  else if(s==='damage_report')           app.innerHTML=damageReport();
+  else if(s==='tech_report')             app.innerHTML=techReport();
+  else if(s==='reference_table')         app.innerHTML=referenceTable();
   else if(s==='reference_vendor_detail') app.innerHTML=referenceVendorDetail();
   window.scrollTo({top:0,behavior:'smooth'});
 }

@@ -127,9 +127,9 @@ body{font-family:var(--font-mono);background:var(--bg);color:var(--ink);min-heig
     <div class="header-sub">Capritta Fine Appliance — Internal Use Only</div>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-    <div id="role-indicator" style="font-family:var(--font-mono);font-size:11px;color:#8a9bb0"></div>
-    <div id="ejs-counter" style="font-family:var(--font-mono);font-size:10px;color:#8a9bb0;display:none">
-      <span id="ejs-used">0</span>/200 emails this month
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="window.location.reload(true)" title="Refresh to latest version" style="background:none;border:none;color:#8a9bb0;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1" aria-label="Hard refresh">↺</button>
+      <div id="role-indicator" style="font-family:var(--font-mono);font-size:11px;color:#8a9bb0"></div>
     </div>
   </div>
 </div>
@@ -152,31 +152,6 @@ const EMAIL_CC_TECH = ''; // tech role — warranty only, no CC
 
 emailjs.init({publicKey: EJS.publicKey});
 
-// ── EMAIL USAGE COUNTER ──
-function ejsCounterKey(){
-  const d=new Date();
-  return `ejs_count_${d.getFullYear()}_${d.getMonth()+1}`;
-}
-function ejsInitCounter(){
-  const key=ejsCounterKey();
-  const used=parseInt(localStorage.getItem(key)||'0');
-  const el=document.getElementById('ejs-counter');
-  const usedEl=document.getElementById('ejs-used');
-  if(el&&usedEl){
-    usedEl.textContent=used;
-    el.style.display='block';
-    const pct=used/200;
-    el.style.color=pct>=0.9?'#c9a84c':pct>=0.75?'#8a9bb0':'#8a9bb0';
-    if(pct>=0.9) el.style.color='#e8a030';
-    if(used>=200) el.style.color='#8b2020';
-  }
-}
-function ejsIncrementCounter(){
-  const key=ejsCounterKey();
-  const used=parseInt(localStorage.getItem(key)||'0')+1;
-  localStorage.setItem(key,used);
-  ejsInitCounter();
-}
 
 // ── SEND VIA EMAILJS ──
 async function ejsSend({subject, message, ccField, btn, successMsg}){
@@ -193,7 +168,6 @@ async function ejsSend({subject, message, ccField, btn, successMsg}){
     btn.style.background='var(--green)';
     btn.style.color='white';
     btn.disabled=false;
-    ejsIncrementCounter();
   }catch(err){
     console.error('EmailJS error',err);
     const msg=err?.text||err?.message||JSON.stringify(err)||'Unknown error';
@@ -971,6 +945,7 @@ function installedSubpicker(){
         <div class="rc-desc">Structural or unrepairable damage — allowance or replacement</div>
       </div>
     </div>
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
 }
@@ -997,6 +972,7 @@ function warrantyLookup(){
     <div class="step-q">Select a vendor</div>
     <div class="step-hint" style="margin-bottom:1rem">${hint}</div>
     ${vendorGrid('selectWarrantyVendor')}
+    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Change Scenario</button>
   </div>`;
 }
@@ -1125,7 +1101,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.3 · May 21, 2026';
+    ri.textContent='v3.3.2 · May 22, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1195,6 +1171,7 @@ function techReport(){
       <div class="ic-body" style="font-size:12px">Report sent to warranty. Upload photos separately through Aptora mobile.</div>
     </div>
     <button class="reset-btn" onclick="reset()">↩ Change Role</button>
+    <button class="back-btn" onclick="back()">← Back</button>
   </div>`;
 }
 
@@ -1351,7 +1328,6 @@ window.drSend=function(){
 
 // ── RENDER ──
 function render(){
-  ejsInitCounter();
   renderBreadcrumb();
   const app=document.getElementById('app');
   const s=state.step;

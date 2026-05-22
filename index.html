@@ -17,27 +17,27 @@
   --bg:#f5f3ef;--bg2:#e8e2d8;--bg3:#d4c9b8;--ink:#1a1a1a;--ink2:#3a3a3a;--ink3:#5a5a5a;
   --border:#c0b8a8;--green:#1e6b3a;--green-bg:#e8f5ee;--amber:#8a6a1a;--amber-bg:#fdf3dc;
   --red:#8b2020;--red-bg:#faeaea;--blue:#2a6096;--blue-bg:#e8f0f8;--accent:#8b2020;
-  --purple:#5B2A8B;--purple-bg:#F0EBF9;--gold:#8a6a1a;
+  --purple:#5B2A8B;--purple-bg:#F0EBF9;--gold:#8a6a1a;--font-mono:'IBM Plex Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink);min-height:100vh}
+body{font-family:var(--font-mono);background:var(--bg);color:var(--ink);min-height:100vh}
 .header{background:#0a1628;color:#f5f3ef;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between}
 .header-title{font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:#c9a84c}
-.header-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a9bb0;margin-top:2px}
-.role-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #8a9bb0;color:#8a9bb0;cursor:pointer}
-.role-badge:hover{border-color:#c9a84c;color:#c9a84c}
+.header-sub{font-family:var(--font-mono);font-size:11px;color:#8a9bb0;margin-top:2px}
+
+
 .container{max-width:680px;margin:0 auto;padding:2rem 1.5rem 4rem}
-.breadcrumb{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink3);margin-bottom:1.75rem;flex-wrap:wrap}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;color:var(--ink3);margin-bottom:1.75rem;flex-wrap:wrap}
 .breadcrumb .sep{color:var(--border)}
 .breadcrumb .current{color:var(--ink);font-weight:500}
 .breadcrumb span{cursor:pointer}
 .breadcrumb span:hover{color:var(--ink)}
 .step-card{background:white;border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.step-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:.6rem}
+.step-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:.6rem}
 .step-q{font-size:20px;font-weight:600;line-height:1.2;margin-bottom:.6rem;color:var(--ink);font-family:'Bebas Neue',sans-serif;letter-spacing:.5px}
 .step-hint{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:1.5rem}
 .options{display:flex;flex-direction:column;gap:8px}
-.opt-btn{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;font-family:'IBM Plex Mono',monospace;transition:all .15s;width:100%}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;font-family:var(--font-mono);transition:all .15s;width:100%}
 .opt-btn:hover{background:white;border-color:var(--ink2);transform:translateX(2px)}
 .opt-btn .opt-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--bg2)}
 .opt-btn .opt-text{flex:1}
@@ -52,7 +52,7 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 /* Role picker cards */
 .role-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:1.5rem}
 @media(max-width:520px){.role-cards{grid-template-columns:1fr}}
-.role-card{background:white;border:2px solid var(--border);border-radius:14px;padding:1.5rem 1rem;cursor:pointer;text-align:center;transition:all .2s;font-family:'IBM Plex Mono',monospace}
+.role-card{background:white;border:2px solid var(--border);border-radius:14px;padding:1.5rem 1rem;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font-mono)}
 .role-card:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
 .role-card.delivery{border-top:4px solid #8b2020}
 .role-card.warehouse{border-top:4px solid #2a6096}
@@ -62,7 +62,7 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .role-card .rc-desc{font-size:12px;color:var(--ink3);line-height:1.4}
 /* Vendor lookup grid */
 .vendor-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.vendor-btn{padding:.7rem .85rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;text-align:left;font-family:'IBM Plex Mono',monospace;transition:all .15s}
+.vendor-btn{padding:.7rem .85rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;text-align:left;font-family:var(--font-mono);transition:all .15s}
 .vendor-btn:hover{background:white;border-color:var(--ink2)}
 .vendor-btn .vn{font-size:13px;font-weight:500;color:var(--ink)}
 .vendor-btn .vb{font-size:11px;color:var(--ink3);margin-top:1px}
@@ -73,29 +73,28 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .info-card.blue{border-left:3px solid var(--blue);background:var(--blue-bg)}
 .info-card.purple{border-left:3px solid var(--purple);background:var(--purple-bg)}
 .info-card.neutral{border-left:3px solid var(--ink3)}
-.ic-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.45rem;font-weight:500}
+.ic-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.45rem;font-weight:500}
 .red .ic-label{color:var(--red)}.amber .ic-label{color:var(--amber)}.green .ic-label{color:var(--green)}
 .blue .ic-label{color:var(--blue)}.purple .ic-label{color:var(--purple)}.neutral .ic-label{color:var(--ink3)}
 .ic-body{font-size:13px;line-height:1.65;color:var(--ink)}
 .steps-list{list-style:none;padding:0;counter-reset:step-counter}
 .steps-list li{padding:.35rem 0 .35rem 1.6rem;position:relative;font-size:13px;line-height:1.5;color:var(--ink);border-bottom:.5px solid var(--border)}
 .steps-list li:last-child{border-bottom:none}
-.steps-list li::before{content:counter(step-counter);counter-increment:step-counter;position:absolute;left:0;top:.38rem;width:18px;height:18px;background:var(--ink);color:white;border-radius:50%;font-size:10px;font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;justify-content:center;font-weight:500}
+.steps-list li::before{content:counter(step-counter);counter-increment:step-counter;position:absolute;left:0;top:.38rem;width:18px;height:18px;background:var(--ink);color:white;border-radius:50%;font-size:10px;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center;font-weight:500}
 .steps-list li.warn::before{background:var(--accent)}
-.responsible{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace;margin-bottom:.65rem;flex-wrap:wrap}
+.responsible{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3);font-family:var(--font-mono);margin-bottom:.65rem;flex-wrap:wrap}
 .responsible .r-tag{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--ink2);font-size:11px}
 .contact-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;font-size:12px;margin-top:.5rem;line-height:1.6}
-.contact-box .label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);font-family:'IBM Plex Mono',monospace;margin-bottom:.2rem}
-.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer;background:none;border:none;font-family:'IBM Plex Mono',monospace;padding:.4rem 0;margin-top:.5rem;transition:color .15s}
+.contact-box .label{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);font-family:var(--font-mono);margin-bottom:.2rem}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink3);cursor:pointer;background:none;border:none;font-family:var(--font-mono);padding:.4rem 0;margin-top:.5rem;transition:color .15s}
 .back-btn:hover{color:var(--ink)}
-.reset-btn{display:block;width:100%;padding:.75rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--ink2);text-align:center;margin-top:.75rem;transition:all .15s}
+.reset-btn{display:block;width:100%;padding:.75rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px;font-family:var(--font-mono);color:var(--ink2);text-align:center;margin-top:.75rem;transition:all .15s}
 .reset-btn:hover{background:white;color:var(--ink)}
-.divider{height:1px;background:var(--border);margin:1rem 0}
+
 .doc-box{background:#FFFBF0;border:1px solid #E8D88A;border-radius:10px;padding:1rem 1.1rem;margin-bottom:.65rem}
 .doc-box .ic-label{color:#7A6500}
-.escalation-chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}
-.e-node{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:500;color:var(--ink)}
-.e-arrow{color:var(--ink3);font-size:12px}
+
+
 /* Warranty vendor lookup card */
 .vendor-detail-card{background:white;border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .vendor-detail-card h2{font-size:20px;font-weight:600;margin-bottom:.2rem}
@@ -103,31 +102,18 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
 .policy-row{display:flex;gap:.5rem;margin-bottom:.45rem;font-size:13px;line-height:1.5}
 .policy-row .pl{font-weight:500;min-width:120px;color:var(--ink2);flex-shrink:0}
 .policy-row .pv{color:var(--ink)}
-.section-head{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin:1rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.3rem}
-
-
-
-
-
-
-
+.section-head{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin:1rem 0 .5rem;border-bottom:1px solid var(--border);padding-bottom:.3rem}
 
 
 .form-section{display:flex;flex-direction:column;gap:.15rem;margin-bottom:1rem}
-.form-label{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3);margin-top:.75rem;margin-bottom:.25rem;font-weight:500}
-.form-input{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:8px;background:white;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);box-sizing:border-box;outline:none}
+.form-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3);margin-top:.75rem;margin-bottom:.25rem;font-weight:500}
+.form-input{width:100%;padding:.65rem .75rem;border:1px solid var(--border);border-radius:8px;background:white;font-family:var(--font-mono);font-size:13px;color:var(--ink);box-sizing:border-box;outline:none}
 .form-input:focus{border-color:var(--blue)}
 .form-textarea{min-height:80px;resize:vertical}
-.email-preview{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.85rem;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink2);white-space:pre-wrap;line-height:1.6;margin-bottom:1rem}
-.send-btn{display:block;width:100%;padding:.9rem;border:none;border-radius:10px;background:#0a1628;color:#c9a84c;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-bottom:.5rem;transition:opacity .15s}
+.email-preview{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.85rem;font-family:var(--font-mono);font-size:11px;color:var(--ink2);white-space:pre-wrap;line-height:1.6;margin-bottom:1rem}
+.send-btn{display:block;width:100%;padding:.9rem;border:none;border-radius:10px;background:#0a1628;color:#c9a84c;font-family:var(--font-mono);font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.5px;margin-bottom:.5rem;transition:opacity .15s}
 .send-btn:disabled{opacity:.4;cursor:not-allowed}
 .send-btn:not(:disabled):active{opacity:.8}
-
-
-
-
-
-
 
 
 .tech-slot.slot-done 
@@ -141,15 +127,15 @@ body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--ink)
     <div class="header-sub">Capritta Fine Appliance — Internal Use Only</div>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-    <div id="role-indicator" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a9bb0"></div>
-    <div id="ejs-counter" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8a9bb0;display:none">
+    <div id="role-indicator" style="font-family:var(--font-mono);font-size:11px;color:#8a9bb0"></div>
+    <div id="ejs-counter" style="font-family:var(--font-mono);font-size:10px;color:#8a9bb0;display:none">
       <span id="ejs-used">0</span>/200 emails this month
     </div>
   </div>
 </div>
 <div class="container">
   <div class="breadcrumb" id="breadcrumb"></div>
-  <div id="app"></div>
+  <div id="app" aria-live="polite" aria-atomic="true"></div>
 </div>
 
 <script>
@@ -161,7 +147,7 @@ const EJS={
 };
 // Recipients
 const EMAIL_TO   = 'warranty@caprittaappliances.com';
-const EMAIL_CC   = 'scheduling@caprittaappliances.com,orders@caprittaappliances.com,kevin@caprittaappliances.com,invoices@caprittaappliances.com';
+const EMAIL_CC   = 'scheduling@caprittaappliances.com,orders@caprittaappliances.com,kevin@caprittaappliances.com,invoices@caprittaappliances.com,jerry@caprittaappliances.com';
 const EMAIL_CC_TECH = ''; // tech role — warranty only, no CC
 
 emailjs.init({publicKey: EJS.publicKey});
@@ -557,7 +543,6 @@ function setScenario(s){
 }
 window.go=go;window.back=back;window.reset=reset;window.setRole=setRole;window.setScenario=setScenario;
 window.selectWarrantyVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='warranty_vendor_detail';render();};
-window.selectDelVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='del_vendor_detail';render();};
 window.selectWhVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_vendor_detail';render();};
 window.selectWhVendorVisible=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_visible_detail';render();};
 window.selectWhVendorConcealed=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_concealed_detail';render();};
@@ -815,35 +800,6 @@ function delPostinstallCosmetic(){
   </div>`;
 }
 
-function delVendorLookup(){
-  return `<div class="step-card">
-    <div class="step-label">Vendor Details — For Warranty Reference</div>
-    <div class="step-q">Which vendor?</div>
-    <div class="step-hint" style="margin-bottom:1rem">Pick the brand to see what warranty will need to know.</div>
-    ${vendorGrid('selectDelVendor')}
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-
-function delVendorDetail(){
-  const v=VENDORS.find(x=>x.id===state.vendor);
-  if(!v)return '';
-  const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body">Do not accept. Driver must note damage on BOL before leaving.</div></div>`:
-    v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body">Do NOT refuse. Document on freight bill with model# and serial#.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if possible</div><div class="ic-body">Refuse OR accept with full BOL documentation.</div></div>`;
-  return `<div class="step-card">
-    <div class="step-label">Vendor Info — ${v.n}</div>
-    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
-    ${ac}
-    <div class="info-card neutral"><div class="ic-label">Delivery Window</div><div class="ic-body">${v.del.win}</div></div>
-    <div class="info-card neutral"><div class="ic-label">Vendor Steps</div>${stepsHtml(v.del.steps)}</div>
-    <div class="contact-box"><div class="label">Vendor Contact (for Warranty)</div>${v.del.contact.split('|').map(p=>p.trim()).join('<br>')}</div>
-    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
 
 // ── WAREHOUSE SCREENS ──
 function whSituation(){
@@ -889,8 +845,13 @@ function whVisibleDetail(){
     ${ac}
     <div class="info-card neutral"><div class="ic-label">Visible Damage Window</div><div class="ic-body">${v.del.win}</div></div>
     <div class="info-card neutral">
-      <div class="ic-label">Your Steps — Do These Before Moving the Unit</div>
-      ${stepsHtml([
+      <div class="ic-label">Your Steps</div>
+      ${v.del.act==='refuse'?stepsHtml([
+        'BOL: get driver to note damage + sign before truck leaves',
+        'Photo: carton damage + model/serial tag before truck pulls away',
+        'Fill out damage report → send',
+        'Email photos to dispatcher, warranty, Kevin, Lydell'
+      ]):stepsHtml([
         'BOL: get driver to note damage + sign before truck leaves',
         'Photo: all 4 sides of carton + damage + model/serial tag',
         'Keep all packaging',
@@ -945,37 +906,6 @@ function whConcealedDetail(){
   </div>`;
 }
 
-function whVendorLookup(){
-  return `<div class="step-card">
-    <div class="step-label">Vendor Details — For Warranty Reference</div>
-    <div class="step-q">Which vendor?</div>
-    <div class="step-hint" style="margin-bottom:1rem">Pick the brand to see receive policy and claim windows.</div>
-    ${vendorGrid('selectWhVendor')}
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
-
-function whVendorDetail(){
-  const v=VENDORS.find(x=>x.id===state.vendor);
-  if(!v)return '';
-  const ac=v.del.act==='refuse'?
-    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE at delivery</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign before the truck leaves.</div></div>`:
-    v.del.act==='accept'?
-    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept the shipment and document damage on the freight bill.</div></div>`:
-    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if possible</div><div class="ic-body">Refuse if possible. If you must accept, document damage on the BOL before the truck leaves.</div></div>`;
-  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')||v.con.win.toLowerCase().includes('5 days')||v.con.win.toLowerCase().includes('3 days')?'red':
-    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
-  return `<div class="step-card">
-    <div class="step-label">Receiving Policy — ${v.n}</div>
-    <div class="step-q">${v.n} <span style="font-weight:300;font-size:16px">· ${v.b}</span></div>
-    ${ac}
-    <div class="info-card neutral"><div class="ic-label">Visible Damage Window</div><div class="ic-body">${v.del.win}</div></div>
-    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}Concealed Damage Window</div><div class="ic-body">${v.con.win}</div></div>
-    <div class="info-card neutral"><div class="ic-label">Next Step</div><div class="ic-body">Fill out the damage report and send to office. The office will handle vendor contacts and the claim from here.</div></div>
-    <button class="reset-btn" onclick="reset()">↩ Start Over</button>
-    <button class="back-btn" onclick="back()">← Back</button>
-  </div>`;
-}
 
 // ── WARRANTY SCREENS ──
 function warrantyScenario(){
@@ -1182,9 +1112,7 @@ const SL={
   del_situation:'Delivery',del_damage_found:'Damage Found',del_install:'Install As-Is',
   del_return:'Return to Warehouse',del_partsroom:'Parts Room',
   del_postinstall:'Post-Install',del_postinstall_functional:'Functional Issue',del_postinstall_cosmetic:'Cosmetic Issue',
-  del_vendor_lookup:'Vendor Lookup',del_vendor_detail:'Vendor Details',
   wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_visible_detail:'Vendor Policy',wh_concealed:'Concealed Damage',wh_concealed_detail:'Vendor Policy',
-  wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
   tech_report:'Field Report',
   warranty_scenario:'Warranty',
   warranty_installed_subpicker:'Installed at Customer',
@@ -1197,7 +1125,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.2 · May 21, 2026';
+    ri.textContent='v3.3 · May 21, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1231,7 +1159,6 @@ function goStep(step){
 // ── TECH REPORT ──
 
 
-
 function techReport(){
   return `<div class="step-card">
     <div class="step-label">Service Technician — Field Report</div>
@@ -1241,19 +1168,19 @@ function techReport(){
       <div class="ic-body" style="font-size:12px">Take photos with your camera app and upload through Aptora mobile. Required: close-up of damage · full appliance shot · model/serial tag.</div>
     </div>
     <div class="form-section">
-      <div class="form-label">Customer Name *</div>
-      <input class="form-input" id="tr-customer" type="text" placeholder="Last, First or Job Name" oninput="techPreview()">
-      <div class="form-label">Work Order # *</div>
-      <input class="form-input" id="tr-wo" type="text" placeholder="e.g. 12345" oninput="techPreview()">
-      <div class="form-label">Model # *</div>
-      <input class="form-input" id="tr-model" type="text" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="techPreview()">
-      <div class="form-label">Serial # *</div>
-      <input class="form-input" id="tr-serial" type="text" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="techPreview()">
-      <div class="form-label">Manufacturer Auth / Case # <span style="color:var(--ink3);font-weight:400">(if obtained)</span></div>
-      <input class="form-input" id="tr-auth" type="text" placeholder="e.g. AUTH-123456 or Case #789" oninput="techPreview()">
-      <div class="form-label">Issue Description *</div>
+      <label class="form-label" for="tr-customer">Customer Name *</label>
+      <input class="form-input" id="tr-customer" type="text" autocomplete="name" placeholder="Last, First or Job Name" oninput="techPreview()">
+      <label class="form-label" for="tr-wo">Work Order # *</label>
+      <input class="form-input" id="tr-wo" type="text" autocomplete="off" placeholder="e.g. 12345" oninput="techPreview()">
+      <label class="form-label" for="tr-model">Model # *</label>
+      <input class="form-input" id="tr-model" type="text" autocomplete="off" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="techPreview()">
+      <label class="form-label" for="tr-serial">Serial # *</label>
+      <input class="form-input" id="tr-serial" type="text" autocomplete="off" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="techPreview()">
+      <label class="form-label" for="tr-auth">Manufacturer Auth / Case # <span style="color:var(--ink3);font-weight:400">(if obtained)</span></label>
+      <input class="form-input" id="tr-auth" type="text" autocomplete="off" placeholder="e.g. AUTH-123456 or Case #789" oninput="techPreview()">
+      <label class="form-label" for="tr-desc">Issue Description *</label>
       <textarea class="form-input form-textarea" id="tr-desc" placeholder="Describe the issue — what you found, what was tested, what the manufacturer rep said" oninput="techPreview()"></textarea>
-      <div class="form-label">Additional Notes</div>
+      <label class="form-label" for="tr-notes">Additional Notes</label>
       <textarea class="form-input form-textarea" id="tr-notes" placeholder="Parts ordered, next steps discussed, anything warranty should know" oninput="techPreview()"></textarea>
     </div>
     <div id="tr-preview-wrap" style="display:none">
@@ -1270,11 +1197,6 @@ function techReport(){
     <button class="reset-btn" onclick="reset()">↩ Change Role</button>
   </div>`;
 }
-
-
-
-
-
 
 
 window.techPreview=function(){
@@ -1353,21 +1275,21 @@ function damageReport(){
       <div class="ic-body" style="font-size:12px">Take photos with your camera app and upload through Aptora mobile. Required: all 4 sides of carton · the damage itself · model/serial tag.</div>
     </div>
     <div class="form-section">
-      <div class="form-label">Customer Name *</div>
-      <input class="form-input" id="dr-customer" type="text" placeholder="Last, First or Job Name" oninput="drPreview()">
-      <div class="form-label">Work Order # *</div>
-      <input class="form-input" id="dr-wo" type="text" placeholder="e.g. 12345" oninput="drPreview()">
-      <div class="form-label">Model # *</div>
-      <input class="form-input" id="dr-model" type="text" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="drPreview()">
-      <div class="form-label">Serial # *</div>
-      <input class="form-input" id="dr-serial" type="text" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="drPreview()">
-      <div class="form-label">Date Damage Found</div>
-      <input class="form-input" id="dr-received" type="date" value="${new Date().toISOString().split('T')[0]}" oninput="drPreview()">
-      <div class="form-label">Damage Description *</div>
+      <label class="form-label" for="dr-customer">Customer Name *</label>
+      <input class="form-input" id="dr-customer" type="text" autocomplete="name" placeholder="Last, First or Job Name" oninput="drPreview()">
+      <label class="form-label" for="dr-wo">Work Order # *</label>
+      <input class="form-input" id="dr-wo" type="text" autocomplete="off" placeholder="e.g. 12345" oninput="drPreview()">
+      <label class="form-label" for="dr-model">Model # *</label>
+      <input class="form-input" id="dr-model" type="text" autocomplete="off" placeholder="e.g. RF28R7351SR" autocapitalize="characters" oninput="drPreview()">
+      <label class="form-label" for="dr-serial">Serial # *</label>
+      <input class="form-input" id="dr-serial" type="text" autocomplete="off" placeholder="e.g. 0A2B3C4D5E" autocapitalize="characters" oninput="drPreview()">
+      <label class="form-label" for="dr-received">Date Damage Found</label>
+      <input class="form-input" id="dr-received" type="date" autocomplete="off" value="${new Date().toISOString().split('T')[0]}" oninput="drPreview()">
+      <label class="form-label" for="dr-desc">Damage Description *</label>
       <textarea class="form-input form-textarea" id="dr-desc" placeholder="Describe location and type of damage — e.g. 'Dent on front door panel, upper left corner, approx 3in'" oninput="drPreview()"></textarea>
-      <div class="form-label">Authorized By</div>
-      <input class="form-input" id="dr-auth" type="text" placeholder="e.g. Kevin, Delivery Lead — leave blank if N/A" oninput="drPreview()">
-      <div class="form-label">Additional Notes</div>
+      <label class="form-label" for="dr-auth">Authorized By</label>
+      <input class="form-input" id="dr-auth" type="text" autocomplete="off" placeholder="e.g. Kevin, Delivery Lead — leave blank if N/A" oninput="drPreview()">
+      <label class="form-label" for="dr-notes">Additional Notes</label>
       <textarea class="form-input form-textarea" id="dr-notes" placeholder="BOL signed by driver, customer was present, etc." oninput="drPreview()"></textarea>
     </div>
     <div id="dr-preview-wrap" style="display:none">
@@ -1442,15 +1364,11 @@ function render(){
   else if(s==='del_postinstall')app.innerHTML=delPostinstall();
   else if(s==='del_postinstall_functional')app.innerHTML=delPostinstallFunctional();
   else if(s==='del_postinstall_cosmetic')  app.innerHTML=delPostinstallCosmetic();
-  else if(s==='del_vendor_lookup')app.innerHTML=delVendorLookup();
-  else if(s==='del_vendor_detail')app.innerHTML=delVendorDetail();
   else if(s==='wh_situation')   app.innerHTML=whSituation();
   else if(s==='wh_visible')       app.innerHTML=whVisible();
   else if(s==='wh_visible_detail')app.innerHTML=whVisibleDetail();
   else if(s==='wh_concealed')     app.innerHTML=whConcealed();
   else if(s==='wh_concealed_detail')app.innerHTML=whConcealedDetail();
-  else if(s==='wh_vendor_lookup')app.innerHTML=whVendorLookup();
-  else if(s==='wh_vendor_detail')app.innerHTML=whVendorDetail();
   else if(s==='warranty_scenario')app.innerHTML=warrantyScenario();
   else if(s==='warranty_installed_subpicker')app.innerHTML=installedSubpicker();
   else if(s==='warranty_lookup')app.innerHTML=warrantyLookup();

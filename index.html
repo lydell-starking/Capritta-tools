@@ -559,6 +559,8 @@ window.go=go;window.back=back;window.reset=reset;window.setRole=setRole;window.s
 window.selectWarrantyVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='warranty_vendor_detail';render();};
 window.selectDelVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='del_vendor_detail';render();};
 window.selectWhVendor=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_vendor_detail';render();};
+window.selectWhVendorVisible=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_visible_detail';render();};
+window.selectWhVendorConcealed=id=>{state.history.push({step:state.step,vendor:state.vendor,scenario:state.scenario});state.vendor=id;state.step='wh_concealed_detail';render();};
 
 // ── HELPERS ──
 function resp(roles){
@@ -575,13 +577,10 @@ function warrantyHandoff(){
 }
 function docBox(){
   return `<div class="doc-box">
-    <div class="ic-label">📋 What Warranty Needs From You — Every Time</div>
+    <div class="ic-label">📋 Damage Report — Required Every Time</div>
     <div class="ic-body" style="font-size:12px;line-height:1.8">
-      <strong>Damage Report</strong> — fill it out completely:<br>
-      Customer name · Work order # · Model # · Serial # · Date damage found · Damage description<br><br>
-      <strong>Photos</strong> — take with camera app, upload through Aptora mobile:<br>
-      All 4 sides of the carton · The damage itself · The model/serial number tag<br><br>
-      <strong>Call your dispatcher</strong> — let them know you're bringing a damaged unit back so they can create a work order to route it to the service room
+      Fill out: Customer name · Work order # · Model # · Serial # · Date · Damage description<br><br>
+      Photos via camera app → upload in Aptora · Warehouse: email photos to dispatcher, warranty, Kevin, Lydell
     </div>
     <button class="opt-btn" onclick="go('damage_report')" style="margin-top:.75rem;border-color:#2a6096;background:#e8f0f8">
       <div class="opt-icon">📝</div>
@@ -632,15 +631,15 @@ function rolePick(){
 function delSituation(){
   return `<div class="step-card">
     <div class="step-label">Delivery Team</div>
-    <div class="step-q">What's happening?</div>
+    <div class="step-q">What's the situation?</div>
     <div class="options" style="margin-top:1rem">
       <button class="opt-btn" onclick="go('del_damage_found')">
         <div class="opt-icon">📦</div>
-        <div class="opt-text"><div class="opt-title">I found damage at the job site</div><div class="opt-desc">Damage visible during delivery, unboxing, or before install</div></div>
+        <div class="opt-text"><div class="opt-title">Damage found before install</div><div class="opt-desc">Found during delivery or unboxing</div></div>
       </button>
       <button class="opt-btn" onclick="go('del_postinstall')">
         <div class="opt-icon">🔧</div>
-        <div class="opt-text"><div class="opt-title">Product already installed — issue found</div><div class="opt-desc">Functional problem or cosmetic damage after install</div></div>
+        <div class="opt-text"><div class="opt-title">Already installed — issue found</div><div class="opt-desc">Problem or damage noticed after install</div></div>
       </button>
     </div>
     <button class="back-btn" onclick="reset()">← Change Role</button>
@@ -653,30 +652,19 @@ function delDamageFound(){
     <div class="step-q">Stop. Document first, then call the Delivery Lead.</div>
     ${resp(['Delivery Team','Delivery Lead'])}
     <div class="info-card neutral">
-      <div class="ic-label">Do These Right Now — Before You Call Anyone</div>
+      <div class="ic-label">First — Before you call anyone</div>
       ${stepsHtml([
-        'Do not install the unit and do not discard any packaging',
-        'Photograph all damage — unit and carton, all sides',
-        'Photograph the model number and serial number tag'
+        'Don\'t install · Don\'t discard packaging',
+        'Photo: all sides of carton + damage + model/serial tag'
       ])}
     </div>
     <div class="info-card red">
-      <div class="ic-label">⚠ Now Call the Delivery Lead</div>
-      <div class="ic-body">You do not decide what happens next — that is the Delivery Lead's call. Call them now. If the Lead is unsure or unreachable, escalate to Kevin (Sales &amp; Delivery Manager).</div>
-    </div>
-    <div class="info-card neutral">
-      <div class="ic-label">Escalation Chain</div>
-      <div class="ic-body">
-        <div class="escalation-chain">
-          <div class="e-node">Delivery Team</div><div class="e-arrow">→</div>
-          <div class="e-node">Delivery Lead</div><div class="e-arrow">→</div>
-          <div class="e-node">Kevin — Sales &amp; Delivery Mgr</div>
-        </div>
-      </div>
+      <div class="ic-label">⚠ Call the Delivery Lead — they decide</div>
+      <div class="ic-body">Lead unavailable? → Kevin (Sales &amp; Delivery Mgr)</div>
     </div>
     <div class="info-card blue">
-      <div class="ic-label">Delivery Lead — What Was Decided?</div>
-      <div class="ic-body" style="margin-bottom:.75rem">Select what the Lead authorized:</div>
+      <div class="ic-label">What did the Lead say?</div>
+      <div class="ic-body" style="margin-bottom:.75rem">Select the decision:</div>
       <div class="options" style="margin-top:.5rem">
         <button class="opt-btn good" onclick="go('del_install')">
           <div class="opt-icon">✅</div>
@@ -705,9 +693,9 @@ function delInstall(){
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
         'Install the unit',
-        'Use the damage report below — fill it out and send to warranty',
-        'Call your dispatcher — let them know you installed a damaged unit so they can create a service work order',
-        'Take photos with your camera app and upload through Aptora mobile'
+        'Fill out damage report → send to warranty',
+        'Call dispatcher — damaged unit installed, need service work order',
+        'Take photos → upload in Aptora'
       ])}
     </div>
     ${docBox()}
@@ -723,17 +711,17 @@ function delReturn(){
     <div class="step-q">Your job is to get it back with the right paperwork</div>
     ${resp(['Delivery Team'])}
     <div class="info-card amber">
-      <div class="ic-label">⏱ Don't Wait — Vendor Windows Are Already Running</div>
-      <div class="ic-body">The claim window started the day this unit arrived at our warehouse — not today. Get it back and emailed to warranty as fast as possible.</div>
+      <div class="ic-label">⏱ Vendor clock is already running</div>
+      <div class="ic-body">Window started when the unit arrived — get it back and reported fast.</div>
     </div>
     <div class="info-card neutral">
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
-        'Do not leave the unit at the job site — load it and bring it back',
-        'Keep all original packaging and cartons — do not throw anything away',
-        'Use the damage report below before you leave the job site — note who authorized the return',
-        'Call your dispatcher — let them know you are bringing back a damaged unit so they can create a work order to route it to the service room',
-        'Take photos with your camera app and upload through Aptora mobile'
+        'Load it — don\'t leave it at the job site',
+        'Keep all packaging — don\'t throw anything away',
+        'Fill out damage report → send before you leave',
+        'Call dispatcher — bringing back damaged unit, need work order to service room',
+        'Take photos → upload in Aptora'
       ])}
     </div>
     ${docBox()}
@@ -749,17 +737,17 @@ function delPartsroom(){
     <div class="step-q">Your job is to get it back with the right paperwork</div>
     ${resp(['Delivery Team'])}
     <div class="info-card blue">
-      <div class="ic-label">Same Day if Possible</div>
-      <div class="ic-body">Bring the unit straight to the parts room today if you can. Don't leave it on the truck overnight.</div>
+      <div class="ic-label">Same day if possible</div>
+      <div class="ic-body">Don't leave it on the truck overnight.</div>
     </div>
     <div class="info-card neutral">
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
-        'Load the unit and bring it back — keep all original packaging, do not throw anything away',
-        'Use the damage report below — note that it is going to the parts room for repair',
-        'Call your dispatcher — let them know you are bringing back a damaged unit so they can create a work order to route it to the service room',
-        'Take photos with your camera app and upload through Aptora mobile',
-        'If you cannot get to the service room today, drop the unit in the warehouse damage area — your dispatcher will have the work order to route it'
+        'Load it — keep all packaging',
+        'Fill out damage report → note it\'s going to parts room for repair',
+        'Call dispatcher — bringing back damaged unit, need work order for service room',
+        'Take photos → upload in Aptora',
+        'Can\'t reach service room today? → drop in warehouse damage area, dispatcher will route it'
       ])}
     </div>
     ${docBox()}
@@ -776,11 +764,11 @@ function delPostinstall(){
     <div class="options" style="margin-top:1rem">
       <button class="opt-btn" onclick="go('del_postinstall_functional')">
         <div class="opt-icon">⚙️</div>
-        <div class="opt-text"><div class="opt-title">Functional — product doesn't work</div><div class="opt-desc">Not powering on, not operating correctly</div></div>
+        <div class="opt-text"><div class="opt-title">Not working</div><div class="opt-desc">Won't power on or not operating correctly</div></div>
       </button>
       <button class="opt-btn" onclick="go('del_postinstall_cosmetic')">
         <div class="opt-icon">🪞</div>
-        <div class="opt-text"><div class="opt-title">Cosmetic — visible damage only</div><div class="opt-desc">Dent, scratch, chip — product still works</div></div>
+        <div class="opt-text"><div class="opt-title">Visible damage only</div><div class="opt-desc">Dent, scratch, or chip — unit still works</div></div>
       </button>
     </div>
     <button class="back-btn" onclick="back()">← Back</button>
@@ -792,16 +780,12 @@ function delPostinstallFunctional(){
     <div class="step-label">Post-Install — Functional Issue</div>
     <div class="step-q">This goes through warranty / service</div>
     ${resp(['Warranty','Service Team'])}
-    <div class="info-card amber">
-      <div class="ic-label">Do Not Promise a Replacement</div>
-      <div class="ic-body">Most vendors require a service attempt before any return on installed product. Let warranty handle it — do not make promises to the customer about replacement.</div>
-    </div>
     <div class="info-card neutral">
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
-        'Document the issue — photograph and note model #, serial #, customer name, work order #',
-        'Use the damage report below to send everything to warranty — do not contact the vendor yourself',
-        'Warranty will initiate a service call'
+        'Fill out damage report → send to warranty',
+        'Take photos → upload in Aptora',
+        'Don\'t promise the customer a replacement — warranty decides next steps'
       ])}
     </div>
     ${docBox()}
@@ -819,9 +803,9 @@ function delPostinstallCosmetic(){
     <div class="info-card neutral">
       <div class="ic-label">Your Steps</div>
       ${stepsHtml([
-        'Use the damage report below — fill it out and send to warranty',
-        'Take photos with your camera app and upload through Aptora mobile',
-        'Do not promise the customer anything — warranty will determine next steps'
+        'Fill out damage report → send to warranty',
+        'Take photos → upload in Aptora',
+        'Don\'t promise the customer anything — warranty decides'
       ])}
     </div>
     ${docBox()}
@@ -883,30 +867,39 @@ function whSituation(){
 function whVisible(){
   return `<div class="step-card">
     <div class="step-label">Warehouse — Visible Damage at Receiving</div>
+    <div class="step-q">Which vendor shipped this unit?</div>
+    <div class="step-hint" style="margin-bottom:1rem">Select the brand to see the receiving policy for this shipment.</div>
+    ${vendorGrid('selectWhVendorVisible')}
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function whVisibleDetail(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const ac=v.del.act==='refuse'?
+    `<div class="info-card red"><div class="ic-label">⚠ ${v.n} — REFUSE this shipment</div><div class="ic-body"><strong>Do not accept.</strong> Have the driver note the damage on the BOL and sign before the truck leaves.</div></div>`:
+    v.del.act==='accept'?
+    `<div class="info-card amber"><div class="ic-label">${v.n} — Always Accept</div><div class="ic-body"><strong>Do NOT refuse.</strong> Accept and document damage on the freight bill before the driver leaves.</div></div>`:
+    `<div class="info-card blue"><div class="ic-label">${v.n} — Refuse if possible</div><div class="ic-body">Refuse if you can. If you must accept, document damage on the BOL before the truck leaves.</div></div>`;
+  return `<div class="step-card">
+    <div class="step-label">Warehouse — Visible Damage · ${v.n}</div>
     <div class="step-q">What to do right now</div>
     ${resp(['Warehouse'])}
-    <div class="info-card amber">
-      <div class="ic-label">First: Check if this vendor requires refusal</div>
-      <div class="ic-body">Some vendors require you to refuse the shipment — others say always accept. Look up the vendor at the end of this checklist if you're unsure, or check with warranty.</div>
-    </div>
+    ${ac}
+    <div class="info-card neutral"><div class="ic-label">Visible Damage Window</div><div class="ic-body">${v.del.win}</div></div>
     <div class="info-card neutral">
       <div class="ic-label">Your Steps — Do These Before Moving the Unit</div>
       ${stepsHtml([
-        'Get the driver to note the damage on the BOL and sign it — do this before the truck leaves',
-        'Photograph all 4 sides of the carton',
-        'Photograph the damage itself and the model/serial number tag',
-        'Do not discard any packaging',
-        'Fill out the damage sheet: customer name, work order #, model #, serial #, description of damage',
-        'Place one copy of the damage sheet on the unit',
-        'Bring the other copy to the warranty desk',
-        'Use the damage report below — include the original delivery date'
+        'BOL: get driver to note damage + sign before truck leaves',
+        'Photo: all 4 sides of carton + damage + model/serial tag',
+        'Keep all packaging',
+        'Stage unit in warehouse damage area',
+        'Fill out damage report → send',
+        'Email photos to dispatcher, warranty, Kevin, Lydell'
       ])}
     </div>
     ${docBox()}
-    <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
-      <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up vendor receiving policy</div><div class="opt-desc">Refuse vs. accept and claim windows</div></div>
-    </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -916,30 +909,36 @@ function whVisible(){
 function whConcealed(){
   return `<div class="step-card">
     <div class="step-label">Warehouse — Concealed Damage</div>
+    <div class="step-q">Which vendor shipped this unit?</div>
+    <div class="step-hint" style="margin-bottom:1rem">Select the brand to see the claim window — some are very short.</div>
+    ${vendorGrid('selectWhVendorConcealed')}
+    <button class="back-btn" onclick="back()">← Back</button>
+  </div>`;
+}
+
+function whConcealedDetail(){
+  const v=VENDORS.find(x=>x.id===state.vendor);
+  if(!v)return '';
+  const wc=v.con.win.includes('⚠')||v.con.win.toLowerCase().includes('3-day')||v.con.win.toLowerCase().includes('5-day')||v.con.win.toLowerCase().includes('5 days')||v.con.win.toLowerCase().includes('3 days')?'red':
+    v.con.win.toLowerCase().includes('12')?'amber':'neutral';
+  return `<div class="step-card">
+    <div class="step-label">Warehouse — Concealed Damage · ${v.n}</div>
     <div class="step-q">What to do right now</div>
     ${resp(['Warehouse'])}
-    <div class="info-card red">
-      <div class="ic-label">⚠ The Clock Started When the Unit Arrived — Not Today</div>
-      <div class="ic-body">Vendor claim windows run from the original received date. Some windows are as short as 5 days. Email warranty immediately.</div>
-    </div>
+    <div class="info-card ${wc}"><div class="ic-label">${wc==='red'?'⚠ Urgent — ':''}${v.n} Concealed Damage Window</div><div class="ic-body">${v.con.win}</div></div>
     <div class="info-card neutral">
       <div class="ic-label">Your Steps — Do These Now</div>
       ${stepsHtml([
-        'Stop — do not move or install the unit',
-        'Keep all packaging and cartons — do not discard anything',
-        'Photograph all 4 sides of the carton',
-        'Photograph the damage and the model/serial number tag',
-        'Look up or confirm the original date this unit was received',
-        'Use the damage report below — include the date received',
-        'Stage the unit in the warehouse damage area until warranty advises next steps',
-        'Take photos and send to dispatcher, warranty, Kevin, and Lydell via your device email'
+        'Stop — don\'t move or install the unit',
+        'Keep all packaging',
+        'Photo: all 4 sides of carton + damage + model/serial tag',
+        'Note the original received date',
+        'Stage unit in warehouse damage area',
+        'Fill out damage report → include received date → send',
+        'Email photos to dispatcher, warranty, Kevin, Lydell'
       ])}
     </div>
     ${docBox()}
-    <button class="opt-btn" onclick="go('wh_vendor_lookup')" style="margin-bottom:.5rem">
-      <div class="opt-icon">🔍</div>
-      <div class="opt-text"><div class="opt-title">Look up vendor receiving policy</div><div class="opt-desc">Refuse vs. accept and claim windows</div></div>
-    </button>
     <button class="reset-btn" onclick="reset()">↩ Start Over</button>
     <button class="back-btn" onclick="back()">← Back</button>
     ${warrantyHandoff()}
@@ -1184,7 +1183,7 @@ const SL={
   del_return:'Return to Warehouse',del_partsroom:'Parts Room',
   del_postinstall:'Post-Install',del_postinstall_functional:'Functional Issue',del_postinstall_cosmetic:'Cosmetic Issue',
   del_vendor_lookup:'Vendor Lookup',del_vendor_detail:'Vendor Details',
-  wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_concealed:'Concealed Damage',
+  wh_situation:'Warehouse',wh_visible:'Visible Damage',wh_visible_detail:'Vendor Policy',wh_concealed:'Concealed Damage',wh_concealed_detail:'Vendor Policy',
   wh_vendor_lookup:'Vendor Lookup',wh_vendor_detail:'Vendor Details',
   tech_report:'Field Report',
   warranty_scenario:'Warranty',
@@ -1198,7 +1197,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.1 · May 21, 2026';
+    ri.textContent='v3.2 · May 21, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1397,8 +1396,9 @@ window.drPreview=function(){
   const ctxLabel={
     del_install:'Install As-Is (unit was installed)',del_return:'Returned to Warehouse',
     del_partsroom:'Returned for Parts Room Repair',del_postinstall_functional:'Post-Install Functional Issue',
-    del_postinstall_cosmetic:'Post-Install Cosmetic Damage',wh_visible:'Warehouse — Visible Damage at Receiving',
-    wh_concealed:'Warehouse — Concealed Damage'
+    del_postinstall_cosmetic:'Post-Install Cosmetic Damage',
+    wh_visible:'Warehouse — Visible Damage at Receiving',wh_visible_detail:'Warehouse — Visible Damage at Receiving',
+    wh_concealed:'Warehouse — Concealed Damage',wh_concealed_detail:'Warehouse — Concealed Damage'
   }[ctx&&ctx.step]||'Damage Report';
   const dateStr=received?new Date(received+'T12:00:00').toLocaleDateString('en-US'):'';
   const lines=[
@@ -1445,8 +1445,10 @@ function render(){
   else if(s==='del_vendor_lookup')app.innerHTML=delVendorLookup();
   else if(s==='del_vendor_detail')app.innerHTML=delVendorDetail();
   else if(s==='wh_situation')   app.innerHTML=whSituation();
-  else if(s==='wh_visible')     app.innerHTML=whVisible();
-  else if(s==='wh_concealed')   app.innerHTML=whConcealed();
+  else if(s==='wh_visible')       app.innerHTML=whVisible();
+  else if(s==='wh_visible_detail')app.innerHTML=whVisibleDetail();
+  else if(s==='wh_concealed')     app.innerHTML=whConcealed();
+  else if(s==='wh_concealed_detail')app.innerHTML=whConcealedDetail();
   else if(s==='wh_vendor_lookup')app.innerHTML=whVendorLookup();
   else if(s==='wh_vendor_detail')app.innerHTML=whVendorDetail();
   else if(s==='warranty_scenario')app.innerHTML=warrantyScenario();

@@ -1134,7 +1134,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.4.2 · May 22, 2026';
+    ri.textContent='v3.4.3 · May 22, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
@@ -1177,6 +1177,8 @@ function techReport(){
       <div class="ic-body" style="font-size:12px">Take photos with your camera app and upload through Aptora mobile. Required: close-up of damage · full appliance shot · model/serial tag.</div>
     </div>
     <div class="form-section">
+      <label class="form-label" for="tr-reporter">Reported By *</label>
+      <input class="form-input" id="tr-reporter" type="text" autocomplete="name" placeholder="Your name" oninput="techPreview()">
       <label class="form-label" for="tr-customer">Customer Name *</label>
       <input class="form-input" id="tr-customer" type="text" autocomplete="name" placeholder="Last, First or Job Name" oninput="techPreview()">
       <label class="form-label" for="tr-wo">Work Order # *</label>
@@ -1211,13 +1213,14 @@ function techReport(){
 
 window.techPreview=function(){
   const v=id=>document.getElementById(id)?.value.trim()||'';
-  const customer=v('tr-customer'),wo=v('tr-wo'),model=v('tr-model'),serial=v('tr-serial');
+  const reporter=v('tr-reporter'),customer=v('tr-customer'),wo=v('tr-wo'),model=v('tr-model'),serial=v('tr-serial');
   const auth=v('tr-auth'),desc=v('tr-desc'),notes=v('tr-notes');
   const btn=document.getElementById('tr-send-btn');
   const wrap=document.getElementById('tr-preview-wrap');
-  if(!customer||!wo||!model||!serial||!desc){if(btn)btn.disabled=true;if(wrap)wrap.style.display='none';return;}
+  if(!reporter||!customer||!wo||!model||!serial||!desc){if(btn)btn.disabled=true;if(wrap)wrap.style.display='none';return;}
   const lines=[
     `FIELD SERVICE REPORT`,``,
+    `Reported By: ${reporter}`,
     `Customer: ${customer}`,`Work Order #: ${wo}`,
     `Model #: ${model}`,`Serial #: ${serial}`,
     auth?`Manufacturer Auth / Case #: ${auth}`:'',
@@ -1285,6 +1288,8 @@ function damageReport(){
       <div class="ic-body" style="font-size:12px">Take photos with your camera app and upload through Aptora mobile. Required: all 4 sides of carton · the damage itself · model/serial tag.</div>
     </div>
     <div class="form-section">
+      <label class="form-label" for="dr-reporter">Reported By *</label>
+      <input class="form-input" id="dr-reporter" type="text" autocomplete="name" placeholder="Your name" oninput="drPreview()">
       <label class="form-label" for="dr-customer">Customer Name *</label>
       <input class="form-input" id="dr-customer" type="text" autocomplete="name" placeholder="Last, First or Job Name" oninput="drPreview()">
       <label class="form-label" for="dr-wo">Work Order # *</label>
@@ -1319,11 +1324,11 @@ function damageReport(){
 }
 window.drPreview=function(){
   const v=id=>document.getElementById(id)?.value.trim()||'';
-  const customer=v('dr-customer'),wo=v('dr-wo'),model=v('dr-model'),serial=v('dr-serial');
+  const reporter=v('dr-reporter'),customer=v('dr-customer'),wo=v('dr-wo'),model=v('dr-model'),serial=v('dr-serial');
   const received=v('dr-received'),desc=v('dr-desc'),auth=v('dr-auth'),notes=v('dr-notes');
   const btn=document.getElementById('dr-send-btn');
   const wrap=document.getElementById('dr-preview-wrap');
-  if(!customer||!wo||!model||!serial||!desc){if(btn)btn.disabled=true;if(wrap)wrap.style.display='none';return;}
+  if(!reporter||!customer||!wo||!model||!serial||!desc){if(btn)btn.disabled=true;if(wrap)wrap.style.display='none';return;}
   const ctx=state.history[state.history.length-1];
   const ctxLabel={
     del_install:'Install As-Is (unit was installed)',del_return:'Returned to Warehouse',
@@ -1335,6 +1340,7 @@ window.drPreview=function(){
   const dateStr=received?new Date(received+'T12:00:00').toLocaleDateString('en-US'):'';
   const lines=[
     `DAMAGE REPORT — ${ctxLabel.toUpperCase()}`,``,
+    `Reported By: ${reporter}`,
     `Customer: ${customer}`,`Work Order #: ${wo}`,`Model #: ${model}`,`Serial #: ${serial}`,
     `Date Damage Found: ${dateStr}`,``,`Damage Description:`,desc,``
   ];

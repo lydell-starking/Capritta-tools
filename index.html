@@ -152,7 +152,7 @@ body{font-family:var(--font-mono);background:var(--bg);color:var(--ink);min-heig
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
     <div style="display:flex;align-items:center;gap:8px">
-      <button onclick="window.location.reload(true)" title="Refresh to latest version" style="background:none;border:none;color:#8a9bb0;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1" aria-label="Hard refresh">↺</button>
+      <button onclick="window.location.reload(true)" title="Refresh to latest version" style="background:none;border:none;color:#8a9bb0;font-size:18px;cursor:pointer;padding:8px 12px;line-height:1;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center" aria-label="Hard refresh">↺</button>
       <div id="role-indicator" style="font-family:var(--font-mono);font-size:11px;color:#8a9bb0"></div>
     </div>
   </div>
@@ -555,7 +555,7 @@ function stepsHtml(arr){
 function warrantyHandoff(){
   return `<div class="info-card purple">
     <div class="ic-label">✓ Your Part Is Done When:</div>
-    <div class="ic-body">Damage report sent · Dispatcher notified · Unit dropped off at warehouse damage area or service room (or installed if applicable) · Photos taken and ready to upload in Aptora</div>
+    <div class="ic-body">Damage report sent · Dispatcher notified · Unit dropped off at warehouse damage area or service room (or installed if applicable) · Photos uploaded to Aptora</div>
   </div>`;
 }
 function docBox(){
@@ -1134,7 +1134,7 @@ function renderBreadcrumb(){
     ri.textContent=ROLE_LABELS[state.role]||'';
     ri.style.color='#c9a84c';
   } else {
-    ri.textContent='v3.4.1 · May 22, 2026';
+    ri.textContent='v3.4.2 · May 22, 2026';
     ri.style.color='#8a9bb0';
   }
   let crumbs=[{label:'Home',step:'role_pick'}];
